@@ -2,7 +2,7 @@ import React from "react";
 
 const Diagrams = {
   llmPrediction: () => (
-    <svg viewBox="0 0 460 204" style={{width:"100%",maxWidth:600,display:"block",margin:"0 auto"}}>
+    <svg viewBox="0 0 460 222" style={{width:"100%",maxWidth:600,display:"block",margin:"0 auto"}}>
       <text x="230" y="18" textAnchor="middle" fontSize="13" fill="#374151" fontFamily="Inter,sans-serif" fontWeight="700">How an LLM generates text</text>
       <text x="230" y="34" textAnchor="middle" fontSize="11" fill="#9ca3af" fontFamily="Inter,sans-serif">It predicts the most likely next word, one at a time</text>
       <rect x="10" y="44" width="300" height="32" rx="8" fill="#eef2ff" stroke="#6366f1" strokeWidth="1.5"/>
