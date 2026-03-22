@@ -9,12 +9,14 @@ if (!document.getElementById("vl-css")) {
   const s = document.createElement("style"); s.id="vl-css";
   s.textContent=`
     *{box-sizing:border-box;margin:0;padding:0;}
+    body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}
     .vl-hover{transition:transform 0.17s ease,box-shadow 0.17s ease;cursor:pointer;}
     .vl-hover:hover{transform:translateY(-2px);box-shadow:0 12px 36px rgba(0,0,0,0.11)!important;}
     .vl-btn{transition:all 0.14s ease;cursor:pointer;}
     .vl-btn:hover:not(:disabled){transform:translateY(-1px);filter:brightness(1.06);}
     .vl-btn:active:not(:disabled){transform:translateY(0);}
     .vl-back:hover{color:#6366f1!important;}
+    textarea{font-size:16px!important;}
     textarea:focus{outline:none!important;border-color:#6366f1!important;box-shadow:0 0 0 3px rgba(99,102,241,0.13)!important;}
     @keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
     @keyframes fadeIn{from{opacity:0}to{opacity:1}}
@@ -35,9 +37,14 @@ if (!document.getElementById("vl-css")) {
     .vl-card-in{animation:cardIn 0.3s cubic-bezier(.34,1.56,.64,1) both;}
     ::-webkit-scrollbar{width:5px;}
     ::-webkit-scrollbar-thumb{background:#d4d0c8;border-radius:3px;}
-    .vl-card-body{font-size:17px;line-height:1.85;}
+    .vl-card-body{font-size:16px;line-height:1.85;}
     @media(min-width:700px){
-      .vl-card-body{font-size:19px!important;line-height:1.95!important;}
+      .vl-card-body{font-size:18px!important;line-height:1.95!important;}
+    }
+    @media(max-width:480px){
+      .vl-topic-card{padding:14px 14px!important;}
+      .vl-topic-emoji{font-size:24px!important;width:34px!important;}
+      .vl-topic-title{font-size:16px!important;}
     }
   `;
   document.head.appendChild(s);
@@ -188,7 +195,8 @@ function XPToast({xp,k}){
   const[vis,setVis]=useState(true);
   useEffect(()=>{const t=setTimeout(()=>setVis(false),2200);return()=>clearTimeout(t);},[k]);
   if(!vis)return null;
-  return <div className="vl-pop" style={{position:"fixed",top:76,right:20,background:"#6366f1",color:"#fff",borderRadius:12,padding:"10px 20px",fontSize:14,fontWeight:700,...F,boxShadow:"0 8px 24px rgba(99,102,241,0.4)",zIndex:888}}>+{xp} XP ✨</div>;
+  const msg=xp===10?"Prompt saved ✓":"Topic complete ✓";
+  return <div className="vl-pop" style={{position:"fixed",top:76,right:20,background:"#111827",color:"#fff",borderRadius:12,padding:"10px 20px",fontSize:14,fontWeight:700,...F,boxShadow:"0 8px 24px rgba(0,0,0,0.25)",zIndex:888}}>{msg}</div>;
 }
 
 function BadgeModal({badge,onClose}){
@@ -208,9 +216,9 @@ function BadgeModal({badge,onClose}){
 function IntroCard({onDismiss}){
   const steps=[
     {n:"1",icon:"📖",text:"Read a short lesson broken into focused cards"},
-    {n:"2",icon:"✅",text:"Answer 3 questions to prove you got it and earn XP"},
+    {n:"2",icon:"✅",text:"Answer 3 questions to prove you understood it"},
     {n:"3",icon:"⚡",text:"Try the concept live with real AI"},
-    {n:"4",icon:"🏆",text:"Level up, earn badges, and build a daily streak"},
+    {n:"4",icon:"🏆",text:"Build your AI literacy profile topic by topic"},
   ];
   return(
     <div className="vl-slide" style={{background:"#fff",borderRadius:20,padding:"36px 32px 32px",marginBottom:24,border:"2px solid #e0e7ff",boxShadow:"0 4px 24px rgba(99,102,241,0.08)"}}>
@@ -329,7 +337,7 @@ function LessonView({topic,appState,persist,onBack}){
         {done&&<Chip label="✓ Done" color="#16a34a" bg="#f0fdf4"/>}
       </div>
 
-      <div style={{maxWidth:880,margin:"0 auto",padding:"32px 24px"}}>
+      <div style={{maxWidth:880,margin:"0 auto",padding:"24px 16px"}}>
         <div style={{textAlign:"center",marginBottom:24}} className="vl-fade">
           <div style={{display:"flex",gap:8,justifyContent:"center",marginBottom:12}}><Chip label={topic.difficulty} color={dc.color} bg={dc.bg}/></div>
           <h1 style={{fontFamily:"'Playfair Display',serif",fontSize:34,fontWeight:800,color:"#111827",lineHeight:1.2,marginBottom:10}}>{topic.title}</h1>
@@ -352,7 +360,7 @@ function LessonView({topic,appState,persist,onBack}){
                     <div style={{width:3,height:16,borderRadius:2,background:cm.color,flexShrink:0}}/>
                     <span style={{fontSize:13,color:cm.color,fontWeight:700,letterSpacing:1.5,textTransform:"uppercase",...F}}>{step.heading}</span>
                   </div>
-                  <div style={{background:"#f9f8f5",borderRadius:12,padding:"18px 10px",border:"1px solid #ebe8e0"}}>{Diagrams[step.diagramKey]?.()}</div>
+                  <div style={{background:"#f9f8f5",borderRadius:12,padding:"16px 8px",border:"1px solid #ebe8e0",overflowX:"auto"}}>{Diagrams[step.diagramKey]?.()}</div>
                 </div>
               ):step.type==="analogy"?(
                 <AnalogyCard step={step} cm={cm}/>
@@ -461,7 +469,7 @@ function LessonView({topic,appState,persist,onBack}){
                       <div style={{width:36,height:36,borderRadius:999,background:"#22c55e",display:"flex",alignItems:"center",justifyContent:"center",fontSize:18,flexShrink:0}}>✓</div>
                       <div>
                         <div style={{fontSize:17,fontWeight:800,color:"#15803d",...F}}>Correct!</div>
-                        <div style={{fontSize:13,color:"#16a34a",...F}}>Well done: keep going.</div>
+                        <div style={{fontSize:15,color:"#16a34a",...F}}>Well done — keep going.</div>
                       </div>
                     </div>
                   ):(
@@ -470,14 +478,14 @@ function LessonView({topic,appState,persist,onBack}){
                         <div style={{width:36,height:36,borderRadius:999,background:"#ef4444",display:"flex",alignItems:"center",justifyContent:"center",fontSize:18,flexShrink:0,color:"#fff"}}>✗</div>
                         <div>
                           <div style={{fontSize:17,fontWeight:800,color:"#dc2626",...F}}>Not quite</div>
-                          <div style={{fontSize:13,color:"#ef4444",...F}}>Correct answer highlighted above.</div>
+                          <div style={{fontSize:15,color:"#ef4444",...F}}>Correct answer highlighted above.</div>
                         </div>
                       </div>
                       {(whyLoad||whyText)&&(
                         <div style={{padding:"16px 18px",background:"#fff",borderLeft:"1.5px solid #fca5a5",borderRight:"1.5px solid #fca5a5",borderBottom:"1.5px solid #fca5a5",borderRadius:"0 0 14px 14px"}}>
                           <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:10}}>
                             <div style={{width:3,height:14,borderRadius:2,background:"#6366f1",flexShrink:0}}/>
-                            <span style={{fontSize:13,color:"#6366f1",fontWeight:700,letterSpacing:1.2,textTransform:"uppercase",...F}}>Why was I wrong?</span>
+                            <span style={{fontSize:14,color:"#6366f1",fontWeight:700,letterSpacing:1.2,textTransform:"uppercase",...F}}>Why was I wrong?</span>
                           </div>
                           {whyLoad
                             ?<div style={{fontSize:13,color:"#6b7280",...F,display:"flex",alignItems:"center",gap:8}}><span className="vl-pulse" style={{display:"inline-block"}}>●</span> Explaining…</div>
@@ -502,7 +510,7 @@ function LessonView({topic,appState,persist,onBack}){
         {phase==="retry"&&(
           <div className="vl-fi" style={{textAlign:"center",padding:"16px 0"}}>
             <div style={{fontFamily:"'Playfair Display',serif",fontSize:22,fontWeight:800,color:"#111827",marginBottom:8}}>Almost there!</div>
-            <p style={{fontSize:14,color:"#6b7280",marginBottom:28,lineHeight:1.7,...F}}>You got {fs}/{topic.quiz.length}. Review the lesson and try again.</p>
+            <p style={{fontSize:15,color:"#4b5563",marginBottom:28,lineHeight:1.7,...F}}>You got {fs}/{topic.quiz.length}. Review the lesson and try the quiz again.</p>
             <div style={{display:"flex",gap:10,justifyContent:"center",flexWrap:"wrap"}}>
               <button onClick={()=>{setPhase("steps");setStepIdx(0);}} className="vl-btn" style={{background:"#fff",border:"1.5px solid #e5e2da",color:"#374151",borderRadius:12,padding:"11px 22px",fontSize:14,fontWeight:600,...F}}>← Review</button>
               <button onClick={()=>{setPhase("quiz");setQuizIdx(0);setScore(0);setSelected(null);setQResult(null);setWhyText("");}} className="vl-btn" style={{background:"#6366f1",color:"#fff",border:"none",borderRadius:12,padding:"11px 22px",fontSize:14,fontWeight:700,...F}}>Retry →</button>
@@ -514,18 +522,18 @@ function LessonView({topic,appState,persist,onBack}){
         {phase==="try"&&(
           <div className="vl-fi">
             <div style={{background:"#6366f1",borderRadius:20,padding:"28px 24px",marginBottom:18,textAlign:"center",boxShadow:"0 8px 32px rgba(99,102,241,0.28)"}}>
-              <div style={{fontFamily:"'Playfair Display',serif",fontSize:24,fontWeight:800,color:"#fff",marginBottom:6}}>{done?"Already mastered this one":"Lesson complete."}</div>
-              <p style={{fontSize:14,color:"#e0e7ff",lineHeight:1.7,...F,marginBottom:20}}>{fs}/{topic.quiz.length} correct{!done?" · +50 XP earned":""}</p>
+              <div style={{fontFamily:"'Playfair Display',serif",fontSize:24,fontWeight:800,color:"#fff",marginBottom:6}}>{done?"Already mastered this one":"Topic complete."}</div>
+              <p style={{fontSize:15,color:"#e0e7ff",lineHeight:1.7,...F,marginBottom:20}}>{fs}/{topic.quiz.length} correct · {done?"No new progress recorded":"Topic added to your profile"}</p>
               <div style={{display:"flex",gap:10,justifyContent:"center",flexWrap:"wrap"}}>
-                <button onClick={()=>{const text=`Just completed "${topic.title}" on VibeLearn: AI literacy that actually sticks. 🧠`;navigator.share?navigator.share({text}):navigator.clipboard?.writeText(text);}} className="vl-btn" style={{background:"rgba(255,255,255,0.15)",color:"#fff",border:"1px solid rgba(255,255,255,0.25)",borderRadius:10,padding:"10px 18px",fontSize:13,fontWeight:600,...F}}>Share this lesson</button>
-                <button onClick={onBack} className="vl-btn" style={{background:"rgba(255,255,255,0.15)",color:"#fff",border:"1px solid rgba(255,255,255,0.25)",borderRadius:10,padding:"10px 18px",fontSize:13,fontWeight:600,...F}}>Back to topics</button>
+                <button onClick={()=>{const text=`Just completed "${topic.title}" on VibeLearn — AI literacy that actually sticks. 🧠 vibelearn-pi.vercel.app`;navigator.share?navigator.share({text}):navigator.clipboard?.writeText(text);}} className="vl-btn" style={{background:"rgba(255,255,255,0.15)",color:"#fff",border:"1px solid rgba(255,255,255,0.25)",borderRadius:10,padding:"11px 20px",fontSize:14,fontWeight:600,...F}}>Share this lesson</button>
+                <button onClick={onBack} className="vl-btn" style={{background:"rgba(255,255,255,0.15)",color:"#fff",border:"1px solid rgba(255,255,255,0.25)",borderRadius:10,padding:"11px 20px",fontSize:14,fontWeight:600,...F}}>Back to topics</button>
               </div>
             </div>
             <div style={{background:"#fff",borderRadius:20,padding:"24px 22px",boxShadow:"0 2px 18px rgba(0,0,0,0.07)",border:"1px solid #ebe8e0",marginBottom:14}}>
               <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:6}}>
                 <div style={{width:3,height:16,borderRadius:2,background:"#6366f1",flexShrink:0}}/>
                 <span style={{fontSize:13,color:"#6366f1",fontWeight:700,letterSpacing:1.5,textTransform:"uppercase",...F}}>Try It Live</span>
-                <span style={{fontSize:13,color:"#6b7280",marginLeft:"auto",...F}}>+10 XP · max 3/day</span>
+                <span style={{fontSize:13,color:"#6b7280",marginLeft:"auto",...F}}>max 3/day</span>
               </div>
               <p style={{fontSize:15,color:"#6b7280",marginBottom:14,lineHeight:1.7,...F}}>Edit this prompt and hit Run for a real AI response.</p>
               <textarea value={editPrompt} onChange={e=>setEditPrompt(e.target.value)} style={{...F,width:"100%",background:"#f9f8f5",border:"1.5px solid #e5e2da",borderRadius:12,padding:"13px 14px",fontSize:14,color:"#374151",lineHeight:1.75,resize:"vertical",minHeight:90,transition:"all 0.15s"}}/>
@@ -558,7 +566,7 @@ function TopicGroup({label,emoji,topics,completed,onOpen,locked,xpNeeded,userXP,
         <span style={{fontSize:22,flexShrink:0}}>{locked?"🔒":emoji}</span>
         <div style={{flex:1,minWidth:0}}>
           <div style={{fontSize:15,fontWeight:700,color:locked?"#9ca3af":"#111827",...F,marginBottom:2}}>{label}</div>
-          {locked?<div style={{fontSize:14,color:"#6b7280",...F}}>Unlock at {xpNeeded} XP · you have {userXP} XP</div>:<div style={{fontSize:14,color:"#6b7280",...F}}>{doneCount}/{topics.length} complete</div>}
+          {locked?<div style={{fontSize:14,color:"#6b7280",...F}}>Complete {xpNeeded/50} topics to unlock</div>:<div style={{fontSize:14,color:"#6b7280",...F}}>{doneCount}/{topics.length} complete</div>}
         </div>
         {!locked&&<div style={{display:"flex",alignItems:"center",gap:10}}>
           {doneCount>0&&<div style={{background:"#f0fdf4",color:"#16a34a",borderRadius:999,padding:"3px 10px",fontSize:13,fontWeight:700,...F}}>{doneCount}/{topics.length}</div>}
@@ -570,22 +578,19 @@ function TopicGroup({label,emoji,topics,completed,onOpen,locked,xpNeeded,userXP,
           {topics.map((t,i)=>{
             const done=completed.includes(t.slug);
             const cm=CAT[t.category]||{color:"#6366f1",bg:"#eef2ff"};
-            const hasDiagram=t.steps.some(s=>s.type==="diagram");
             return(
-              <div key={t.slug} className="vl-hover vl-fade" onClick={()=>onOpen(t)}
-                style={{animationDelay:`${i*0.04}s`,background:"#fff",borderRadius:16,padding:"16px 18px",boxShadow:"0 2px 10px rgba(0,0,0,0.05)",border:done?"1.5px solid #bbf7d0":"1.5px solid #ebe8e0",display:"flex",alignItems:"center",gap:16}}>
-                <div style={{fontSize:30,flexShrink:0,width:42,textAlign:"center",lineHeight:1}}>{t.emoji}</div>
+              <div key={t.slug} className="vl-hover vl-fade vl-topic-card" onClick={()=>onOpen(t)}
+                style={{animationDelay:`${i*0.04}s`,background:"#fff",borderRadius:16,padding:"16px 18px",boxShadow:"0 2px 10px rgba(0,0,0,0.05)",border:done?"1.5px solid #bbf7d0":"1.5px solid #ebe8e0",display:"flex",alignItems:"center",gap:14}}>
+                <div className="vl-topic-emoji" style={{fontSize:28,flexShrink:0,width:40,textAlign:"center",lineHeight:1}}>{t.emoji}</div>
                 <div style={{flex:1,minWidth:0}}>
-                  <div style={{display:"flex",gap:6,marginBottom:6,flexWrap:"wrap",alignItems:"center"}}>
+                  <div style={{display:"flex",gap:6,marginBottom:5,flexWrap:"wrap",alignItems:"center"}}>
                     <Chip label={t.category} color={cm.color} bg={cm.bg} small/>
                     {done&&<Chip label="✓ Done" color="#16a34a" bg="#f0fdf4" small/>}
-                    {hasDiagram&&!done&&<Chip label="📊 Visual" color="#7c3aed" bg="#f5f3ff" small/>}
                   </div>
-                  <div style={{fontFamily:"'Playfair Display',serif",fontSize:19,fontWeight:700,color:"#111827",marginBottom:4,lineHeight:1.3}}>{t.title}</div>
-                  <div style={{fontSize:16,color:"#6b7280",lineHeight:1.7,...F,marginBottom:4}}>{t.short}</div>
-                  <div style={{fontSize:13,color:"#b0a898",fontWeight:600,...F}}>~{t.steps.length+1} min</div>
+                  <div className="vl-topic-title" style={{fontFamily:"'Playfair Display',serif",fontSize:18,fontWeight:700,color:"#111827",marginBottom:3,lineHeight:1.3}}>{t.title}</div>
+                  <div style={{fontSize:15,color:"#4b5563",lineHeight:1.7,...F}}>{t.short}</div>
                 </div>
-                <div style={{color:"#6b7280",fontSize:18,flexShrink:0}}>→</div>
+                <div style={{color:"#9ca3af",fontSize:18,flexShrink:0}}>›</div>
               </div>
             );
           })}
@@ -658,26 +663,24 @@ export default function VibeLearn(){
 
   return(
     <div style={{background:"#f5f4f0",minHeight:"100vh",...F,paddingBottom:80}}>
-      <div style={{background:"#fff",borderBottom:"1px solid #ebe8e0",padding:"16px 24px"}}>
-        <div style={{maxWidth:880,margin:"0 auto",display:"flex",alignItems:"center",justifyContent:"space-between",gap:16,flexWrap:"wrap"}}>
+      <div style={{background:"#fff",borderBottom:"1px solid #ebe8e0",padding:"14px 20px"}}>
+        <div style={{maxWidth:880,margin:"0 auto",display:"flex",alignItems:"center",justifyContent:"space-between",gap:12}}>
           <div>
-            <div style={{fontFamily:"'Playfair Display',serif",fontSize:28,fontWeight:800,color:"#111827",letterSpacing:-0.5,lineHeight:1}}>Vibe<span style={{color:"#6366f1"}}>Learn</span></div>
-            <div style={{fontSize:13,color:"#6b7280",marginTop:4,fontWeight:500}}>AI literacy for everyone</div>
+            <div style={{fontFamily:"'Playfair Display',serif",fontSize:26,fontWeight:800,color:"#111827",letterSpacing:-0.5,lineHeight:1}}>Vibe<span style={{color:"#6366f1"}}>Learn</span></div>
+            <div style={{fontSize:13,color:"#6b7280",marginTop:3,fontWeight:500}}>AI literacy for everyone</div>
           </div>
-          <div style={{display:"flex",alignItems:"center",gap:12,flexWrap:"wrap"}}>
-            <span style={{background:"#eef2ff",color:"#6366f1",borderRadius:999,padding:"6px 16px",fontSize:14,fontWeight:700}}>{level.label}</span>
-            <span style={{background:"#fff7ed",color:"#d97706",borderRadius:999,padding:"6px 14px",fontSize:14,fontWeight:700,border:"1px solid #fed7aa"}}>🔥 {st.streak}d</span>
+          {st.seenIntro&&(
             <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:4}}>
-              <div style={{background:"#f3f4f6",borderRadius:999,height:7,width:120,overflow:"hidden"}}>
-                <div className="vl-xp" style={{background:"linear-gradient(90deg,#6366f1,#818cf8)",height:"100%",width:`${lvlPct}%`,borderRadius:999}}/>
+              <div style={{fontSize:13,color:"#374151",fontWeight:700,...F}}>{st.completed.length} <span style={{color:"#6b7280",fontWeight:500}}>of {TOPICS.length} topics complete</span></div>
+              <div style={{background:"#f3f4f6",borderRadius:999,height:6,width:140,overflow:"hidden"}}>
+                <div className="vl-xp" style={{background:"linear-gradient(90deg,#6366f1,#818cf8)",height:"100%",width:`${Math.round(st.completed.length/TOPICS.length*100)}%`,borderRadius:999,transition:"width 1s ease"}}/>
               </div>
-              <span style={{fontSize:14,color:"#6b7280",fontWeight:600}}>{st.xp}{nextLvl?`/${nextLvl.min}`:""} XP</span>
             </div>
-          </div>
+          )}
         </div>
       </div>
 
-      <div style={{maxWidth:880,margin:"0 auto",padding:"24px 24px"}}>
+      <div style={{maxWidth:880,margin:"0 auto",padding:"20px 16px"}}>
         {!st.seenIntro&&<IntroCard onDismiss={dismissIntro}/>}
 
         {recommended&&st.seenIntro&&(
@@ -699,18 +702,20 @@ export default function VibeLearn(){
 
         {st.seenIntro&&(
           <div style={{display:"flex",gap:10,marginBottom:20}} className="vl-fade">
-            {[{label:"Done",value:`${st.completed.length}/${TOPICS.length}`},{label:"Badges",value:`${st.badges.length}/${BADGES.length}`},{label:"Best Streak",value:`${st.longestStreak}d`}].map((s,i)=>(
-              <div key={i} style={{flex:1,background:"#fff",borderRadius:12,padding:"12px 14px",border:"1px solid #ebe8e0",textAlign:"center",boxShadow:"0 1px 6px rgba(0,0,0,0.04)"}}>
-                <div style={{fontSize:16,fontWeight:800,color:"#111827",fontFamily:"'Playfair Display',serif"}}>{s.value}</div>
-                <div style={{fontSize:13,color:"#6b7280",fontWeight:600,marginTop:2}}>{s.label}</div>
+            {[
+              {label:"Topics Done",value:`${st.completed.length} of ${TOPICS.length}`},
+              {label:"Progress",value:`${Math.round(st.completed.length/TOPICS.length*100)}%`},
+              {label:"Category",value:st.completed.length===0?"Not started":st.completed.length<5?"Getting started":st.completed.length<15?"Building up":"Advanced"},
+            ].map((s,i)=>(
+              <div key={i} style={{flex:1,background:"#fff",borderRadius:14,padding:"14px 12px",border:"1px solid #ebe8e0",textAlign:"center",boxShadow:"0 1px 6px rgba(0,0,0,0.04)"}}>
+                <div style={{fontSize:18,fontWeight:800,color:"#111827",fontFamily:"'Playfair Display',serif"}}>{s.value}</div>
+                <div style={{fontSize:13,color:"#6b7280",fontWeight:600,marginTop:3,...F}}>{s.label}</div>
               </div>
             ))}
           </div>
         )}
 
-        {st.seenIntro&&st.completed.length>0&&<BadgesPanel earned={st.badges}/>}
-
-        <div style={{fontSize:13,color:"#6b7280",fontWeight:700,letterSpacing:1.5,textTransform:"uppercase",marginBottom:12}}>All Topics</div>
+        <div style={{fontSize:13,color:"#6b7280",fontWeight:700,letterSpacing:1.5,textTransform:"uppercase",marginBottom:12,...F}}>All Topics</div>
         <TopicGroup label="Beginner" emoji="🟢" topics={beginnerTopics} completed={st.completed} onOpen={openTopic} locked={false} defaultOpen={true}/>
         <TopicGroup label="Intermediate" emoji="🟡" topics={intermediateTopics} completed={st.completed} onOpen={openTopic} locked={false} defaultOpen={st.completed.length>0}/>
         <TopicGroup label="Advanced" emoji="🔴" topics={advancedTopics} completed={st.completed} onOpen={openTopic} locked={advancedLocked} xpNeeded={ADVANCED_XP_GATE} userXP={st.xp} defaultOpen={false}/>
