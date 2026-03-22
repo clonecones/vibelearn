@@ -203,53 +203,53 @@ const TRACKS=[
 const DIAGNOSTIC=[
   {
     q:"When you hear 'the AI hallucinated,' what does that mean?",
-    opts:["The AI had a dream","The AI generated false information confidently","The AI was slow to respond","The AI refused to answer"],
-    answer:1,topic:"hallucination",
+    opts:["The AI was slow to respond","The AI had a dream","The AI generated false information confidently","The AI refused to answer"],
+    answer:2,topic:"hallucination",
   },
   {
     q:"You want better results from ChatGPT. What's the most effective thing to do?",
-    opts:["Refresh the page","Use shorter messages","Give more context and specific instructions","Switch to a different AI tool"],
-    answer:2,topic:"prompt-engineering",
+    opts:["Switch to a different AI tool","Give more context and specific instructions","Refresh the page","Use shorter messages"],
+    answer:1,topic:"prompt-engineering",
   },
   {
     q:"What does it mean when an AI tool has a 'context window'?",
-    opts:["The size of the chat window on screen","How much text the AI can process at once","The number of topics the AI knows about","How fast the AI responds"],
-    answer:1,topic:"context-window",
+    opts:["The number of topics the AI knows about","How fast the AI responds","The size of the chat window on screen","How much text the AI can process at once"],
+    answer:3,topic:"context-window",
   },
   {
     q:"A company builds a customer service chatbot using Claude. What is Claude in this setup?",
-    opts:["The chatbot itself","A plugin for the chatbot","The foundation model the chatbot is built on","The company's database"],
+    opts:["A plugin for the chatbot","The chatbot itself","The foundation model the chatbot is built on","The company's database"],
     answer:2,topic:"foundation-models",
   },
   {
     q:"What is a 'system prompt'?",
-    opts:["The first message you type to an AI","Hidden instructions that shape how an AI behaves","A technical error message","The AI's training data"],
+    opts:["A technical error message","Hidden instructions that shape how an AI behaves","The first message you type to an AI","The AI's training data"],
     answer:1,topic:"system-prompt",
   },
   {
     q:"You ask AI to fact-check a recent news story. How reliable is this?",
-    opts:["Completely reliable — AI knows everything","Reliable for events before its training cutoff, unreliable for recent events","Unreliable for all events","Only reliable if you ask nicely"],
-    answer:1,topic:"hallucination",
+    opts:["Completely reliable — AI knows everything","Unreliable for all events","Only reliable if you ask nicely","Reliable for events before its training cutoff, unreliable for recent events"],
+    answer:3,topic:"hallucination",
   },
   {
     q:"What does RAG stand for and why does it matter?",
-    opts:["Random Answer Generation — AI picks random answers","Retrieval-Augmented Generation — AI looks up your docs before answering","Rapid AI Generation — makes AI faster","Real-time Answer Generation — AI searches the web"],
-    answer:1,topic:"rag",
+    opts:["Rapid AI Generation — makes AI faster","Real-time Answer Generation — AI searches the web","Random Answer Generation — AI picks random answers","Retrieval-Augmented Generation — AI looks up your docs before answering"],
+    answer:3,topic:"rag",
   },
   {
     q:"What is the difference between AI training and AI inference?",
-    opts:["Training is expensive and done rarely; inference is cheap and happens constantly","They are the same thing","Training happens when you use AI; inference happens in the lab","Training is free; inference costs money"],
+    opts:["Training is expensive and done rarely; inference is cheap and happens constantly","Training is free; inference costs money","Training happens when you use AI; inference happens in the lab","They are the same thing"],
     answer:0,topic:"inference-training",
   },
   {
     q:"What is 'prompt injection'?",
-    opts:["Giving an AI a very long prompt","A technique to make AI respond faster","An attack where hidden instructions override the AI's original purpose","Injecting medicine using AI guidance"],
+    opts:["A technique to make AI respond faster","Injecting medicine using AI guidance","An attack where hidden instructions override the AI's original purpose","Giving an AI a very long prompt"],
     answer:2,topic:"prompt-injection",
   },
   {
     q:"An AI agent is different from a chatbot because it…",
-    opts:["Uses better language","Can take actions in the world, not just answer questions","Costs more money","Requires more internet bandwidth"],
-    answer:1,topic:"ai-agent",
+    opts:["Uses better language","Costs more money","Can take actions in the world, not just answer questions","Requires more internet bandwidth"],
+    answer:2,topic:"ai-agent",
   },
 ];
 
@@ -345,14 +345,52 @@ function DiagnosticQuiz({onComplete}){
   function next(){
     const newAnswers=[...answers,{topic:q.topic,correct:selected===q.answer}];
     if(isLast){
-      // Score and recommend track
+      // Score and recommend track based on weighted gap analysis
       const wrongTopics=newAnswers.filter(a=>!a.correct).map(a=>a.topic);
       const score=newAnswers.filter(a=>a.correct).length;
-      // Find best track match based on gaps
-      let recommended=TRACKS[0];
-      if(wrongTopics.some(t=>["rag","fine-tuning","mcp","vector-database","inference-training"].includes(t)))recommended=TRACKS[2];
-      else if(wrongTopics.some(t=>["ai-safety","ai-governance","prompt-injection","rsp"].includes(t)))recommended=TRACKS[3];
-      else if(wrongTopics.some(t=>["prompt-engineering","system-prompt","ai-agent","vibe-coding"].includes(t)))recommended=TRACKS[1];
+      
+      // Map each diagnostic topic to which track it belongs
+      const topicToTrack={
+        "hallucination":"ai-curious",
+        "context-window":"ai-curious",
+        "foundation-models":"ai-curious",
+        "prompt-engineering":"ai-at-work",
+        "system-prompt":"ai-at-work",
+        "ai-agent":"ai-at-work",
+        "rag":"vibe-coder",
+        "inference-training":"vibe-coder",
+        "prompt-injection":"ai-governance-pro",
+      };
+      
+      // Count wrong answers per track
+      const trackGaps={"ai-curious":0,"ai-at-work":0,"vibe-coder":0,"ai-governance-pro":0};
+      wrongTopics.forEach(t=>{
+        const track=topicToTrack[t];
+        if(track)trackGaps[track]++;
+      });
+      
+      // If perfect score, recommend based on score level
+      // Otherwise recommend the track with most gaps
+      let recommendedId="ai-curious";
+      if(score===DIAGNOSTIC.length){
+        // Perfect score - recommend most advanced track
+        recommendedId="ai-governance-pro";
+      } else if(score>=7){
+        // High score - recommend intermediate or advanced
+        const advancedGaps=trackGaps["vibe-coder"]+trackGaps["ai-governance-pro"];
+        recommendedId=advancedGaps>0?(trackGaps["vibe-coder"]>=trackGaps["ai-governance-pro"]?"vibe-coder":"ai-governance-pro"):"ai-at-work";
+      } else {
+        // Find track with most gaps
+        const maxGaps=Math.max(...Object.values(trackGaps));
+        if(maxGaps===0){
+          // All wrong answers in unmapped topics - use score to decide
+          recommendedId=score<4?"ai-curious":score<7?"ai-at-work":"vibe-coder";
+        } else {
+          recommendedId=Object.entries(trackGaps).find(([,v])=>v===maxGaps)[0];
+        }
+      }
+      
+      const recommended=TRACKS.find(t=>t.id===recommendedId)||TRACKS[0];
       onComplete({score,total:DIAGNOSTIC.length,wrongTopics,recommendedTrack:recommended});
     } else {
       setAnswers(newAnswers);
