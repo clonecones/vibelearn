@@ -35,8 +35,9 @@ if (!document.getElementById("vl-css")) {
     .vl-card-in{animation:cardIn 0.3s cubic-bezier(.34,1.56,.64,1) both;}
     ::-webkit-scrollbar{width:5px;}
     ::-webkit-scrollbar-thumb{background:#d4d0c8;border-radius:3px;}
-    @media(min-width:900px){
-      .vl-card-body{font-size:18px!important;line-height:1.9!important;}
+    .vl-card-body{font-size:17px;line-height:1.85;}
+    @media(min-width:700px){
+      .vl-card-body{font-size:19px!important;line-height:1.95!important;}
     }
   `;
   document.head.appendChild(s);
@@ -52,22 +53,22 @@ function AnalogyCard({step,cm}){
   const Label=({color,light})=>(
     <div style={{display:"inline-flex",alignItems:"center",gap:6,background:light,borderRadius:999,padding:"4px 12px",marginBottom:20}}>
       <span style={{fontSize:13}}>💡</span>
-      <span style={{fontSize:11,color,fontWeight:700,letterSpacing:1.5,textTransform:"uppercase",fontFamily:"Inter,sans-serif"}}>Analogy</span>
+      <span style={{fontSize:13,color,fontWeight:700,letterSpacing:1.5,textTransform:"uppercase",fontFamily:"Inter,sans-serif"}}>Analogy</span>
     </div>
   );
 
   if(step.analogyStyle==="contractor") return(
     <div style={{background:"linear-gradient(135deg,#fffbeb 0%,#fef3c7 100%)",borderRadius:20,padding:"28px 24px",border:"none",overflow:"hidden",position:"relative"}}>
-      <div style={{position:"absolute",top:-30,right:-30,fontSize:120,opacity:0.06,lineHeight:1,pointerEvents:"none"}}>🏗️</div>
+      <div style={{position:"absolute",top:-30,right:-30,fontSize:140,opacity:0.06,lineHeight:1,pointerEvents:"none"}}>🏗️</div>
       <Label color="#92400e" light="#fde68a55"/>
       <div style={{display:"flex",gap:12,marginBottom:22,flexWrap:"wrap",position:"relative",zIndex:1}}>
         <div style={{flex:1,background:"#fff",borderRadius:14,padding:"16px",border:"none",boxShadow:"0 2px 12px rgba(217,119,6,0.15)",minWidth:130}}>
-          <div style={{fontSize:10,color:"#b45309",fontWeight:800,marginBottom:8,fontFamily:"Inter,sans-serif",letterSpacing:1}}>❌ VAGUE</div>
+          <div style={{fontSize:13,color:"#b45309",fontWeight:800,marginBottom:8,fontFamily:"Inter,sans-serif",letterSpacing:1}}>❌ VAGUE</div>
           <div style={{fontSize:16,color:"#374151",fontFamily:"'Playfair Display',serif",fontWeight:700,lineHeight:1.4,marginBottom:6}}>"Fix my house"</div>
           <div style={{fontSize:13,color:"#ef4444",fontWeight:600,fontFamily:"Inter,sans-serif"}}>→ Frustrating results</div>
         </div>
         <div style={{flex:1,background:"#fff",borderRadius:14,padding:"16px",border:"none",boxShadow:"0 2px 12px rgba(217,119,6,0.25)",minWidth:130}}>
-          <div style={{fontSize:10,color:"#16a34a",fontWeight:800,marginBottom:8,fontFamily:"Inter,sans-serif",letterSpacing:1}}>✓ SPECIFIC</div>
+          <div style={{fontSize:13,color:"#16a34a",fontWeight:800,marginBottom:8,fontFamily:"Inter,sans-serif",letterSpacing:1}}>✓ SPECIFIC</div>
           <div style={{fontSize:15,color:"#374151",fontFamily:"'Playfair Display',serif",fontWeight:700,lineHeight:1.4,marginBottom:6}}>"Replace 12×12 white subway tile, kitchen, by Friday"</div>
           <div style={{fontSize:13,color:"#16a34a",fontWeight:600,fontFamily:"Inter,sans-serif"}}>→ Exactly right</div>
         </div>
@@ -78,20 +79,20 @@ function AnalogyCard({step,cm}){
 
   if(step.analogyStyle==="whiteboard") return(
     <div style={{background:"linear-gradient(135deg,#eff6ff 0%,#dbeafe 100%)",borderRadius:20,padding:"28px 24px",overflow:"hidden",position:"relative"}}>
-      <div style={{position:"absolute",top:-20,right:-20,fontSize:100,opacity:0.07,lineHeight:1,pointerEvents:"none"}}>🖊️</div>
+      <div style={{position:"absolute",top:-20,right:-20,fontSize:130,opacity:0.07,lineHeight:1,pointerEvents:"none"}}>🖊️</div>
       <Label color="#1d4ed8" light="#bfdbfe55"/>
       <div style={{background:"#fff",borderRadius:14,padding:"18px",marginBottom:20,boxShadow:"0 2px 12px rgba(37,99,235,0.12)",position:"relative",zIndex:1}}>
-        <div style={{fontSize:10,color:"#6b7280",fontFamily:"Inter,sans-serif",marginBottom:10,fontWeight:700,letterSpacing:1,textTransform:"uppercase"}}>Context Window: filling up</div>
+        <div style={{fontSize:13,color:"#6b7280",fontFamily:"Inter,sans-serif",marginBottom:10,fontWeight:700,letterSpacing:1,textTransform:"uppercase"}}>Context Window: filling up</div>
         <div style={{display:"flex",gap:6,flexWrap:"wrap",marginBottom:12}}>
           {["System prompt","Your msg","Doc 1","Doc 2","History"].map((t,i)=>(
-            <span key={i} style={{background:"#eef2ff",color:"#6366f1",borderRadius:8,padding:"5px 10px",fontSize:11,fontFamily:"Inter,sans-serif",fontWeight:700}}>{t}</span>
+            <span key={i} style={{background:"#eef2ff",color:"#6366f1",borderRadius:8,padding:"5px 10px",fontSize:13,fontFamily:"Inter,sans-serif",fontWeight:700}}>{t}</span>
           ))}
-          <span style={{background:"#fef2f2",color:"#dc2626",borderRadius:8,padding:"5px 10px",fontSize:11,fontFamily:"Inter,sans-serif",fontWeight:800,border:"1.5px solid #fca5a5"}}>⚠️ FULL</span>
+          <span style={{background:"#fef2f2",color:"#dc2626",borderRadius:8,padding:"5px 10px",fontSize:13,fontFamily:"Inter,sans-serif",fontWeight:800,border:"1.5px solid #fca5a5"}}>⚠️ FULL</span>
         </div>
         <div style={{background:"#f3f4f6",borderRadius:999,height:8,overflow:"hidden"}}>
           <div style={{background:"linear-gradient(90deg,#6366f1,#f59e0b,#ef4444)",height:"100%",width:"92%",borderRadius:999}}/>
         </div>
-        <div style={{fontSize:11,color:"#ef4444",fontWeight:700,fontFamily:"Inter,sans-serif",marginTop:6}}>92% full: oldest content will be dropped next</div>
+        <div style={{fontSize:13,color:"#ef4444",fontWeight:700,fontFamily:"Inter,sans-serif",marginTop:6}}>92% full: oldest content will be dropped next</div>
       </div>
       <p style={{fontSize:17,color:"#1e3a5f",lineHeight:1.8,fontStyle:"italic",fontFamily:"'Playfair Display',serif",position:"relative",zIndex:1}}>{step.body}</p>
     </div>
@@ -99,19 +100,19 @@ function AnalogyCard({step,cm}){
 
   if(step.analogyStyle==="usb") return(
     <div style={{background:"linear-gradient(135deg,#f5f3ff 0%,#ede9fe 100%)",borderRadius:20,padding:"28px 24px",overflow:"hidden",position:"relative"}}>
-      <div style={{position:"absolute",top:-20,right:-20,fontSize:100,opacity:0.07,lineHeight:1,pointerEvents:"none"}}>🔌</div>
+      <div style={{position:"absolute",top:-20,right:-20,fontSize:130,opacity:0.07,lineHeight:1,pointerEvents:"none"}}>🔌</div>
       <Label color="#6d28d9" light="#ddd6fe55"/>
       <div style={{display:"flex",gap:12,marginBottom:20,alignItems:"stretch",flexWrap:"wrap",position:"relative",zIndex:1}}>
         <div style={{flex:1,background:"#fef2f2",borderRadius:14,padding:"16px",border:"1.5px solid #fecaca",minWidth:120}}>
           <div style={{fontSize:22,marginBottom:8}}>😤</div>
-          <div style={{fontSize:11,color:"#b91c1c",fontWeight:800,letterSpacing:1,fontFamily:"Inter,sans-serif",marginBottom:6}}>BEFORE MCP</div>
-          <div style={{fontSize:13,color:"#374151",fontFamily:"Inter,sans-serif",lineHeight:1.5}}>Custom cable for every device. Engineers rewrite integrations for each tool.</div>
+          <div style={{fontSize:13,color:"#b91c1c",fontWeight:800,letterSpacing:1,fontFamily:"Inter,sans-serif",marginBottom:6}}>BEFORE MCP</div>
+          <div style={{fontSize:13,color:"#374151",fontFamily:"Inter,sans-serif",lineHeight:1.7}}>Custom cable for every device. Engineers rewrite integrations for each tool.</div>
         </div>
-        <div style={{display:"flex",alignItems:"center",fontSize:24,color:"#9ca3af",fontWeight:700,flexShrink:0}}>→</div>
+        <div style={{display:"flex",alignItems:"center",fontSize:24,color:"#6b7280",fontWeight:700,flexShrink:0}}>→</div>
         <div style={{flex:1,background:"#f0fdf4",borderRadius:14,padding:"16px",border:"1.5px solid #bbf7d0",minWidth:120}}>
           <div style={{fontSize:22,marginBottom:8}}>⚡</div>
-          <div style={{fontSize:11,color:"#15803d",fontWeight:800,letterSpacing:1,fontFamily:"Inter,sans-serif",marginBottom:6}}>AFTER MCP</div>
-          <div style={{fontSize:13,color:"#374151",fontFamily:"Inter,sans-serif",lineHeight:1.5}}>One standard plug. Any MCP-compatible tool connects instantly.</div>
+          <div style={{fontSize:13,color:"#15803d",fontWeight:800,letterSpacing:1,fontFamily:"Inter,sans-serif",marginBottom:6}}>AFTER MCP</div>
+          <div style={{fontSize:13,color:"#374151",fontFamily:"Inter,sans-serif",lineHeight:1.7}}>One standard plug. Any MCP-compatible tool connects instantly.</div>
         </div>
       </div>
       <p style={{fontSize:17,color:"#4c1d95",lineHeight:1.8,fontStyle:"italic",fontFamily:"'Playfair Display',serif",position:"relative",zIndex:1,borderTop:"1px solid #ddd6fe",paddingTop:16}}>{step.body}</p>
@@ -122,11 +123,11 @@ function AnalogyCard({step,cm}){
   return(
     <div style={{background:`linear-gradient(135deg,${cm.color}ee 0%,${cm.color}bb 100%)`,borderRadius:20,padding:"32px 28px",overflow:"hidden",position:"relative",minHeight:160}}>
       {/* Large decorative quote mark */}
-      <div style={{position:"absolute",top:-10,left:16,fontSize:120,color:"rgba(255,255,255,0.12)",fontFamily:"'Playfair Display',serif",lineHeight:1,pointerEvents:"none",userSelect:"none"}}>"</div>
-      <div style={{position:"absolute",bottom:-20,right:16,fontSize:120,color:"rgba(255,255,255,0.08)",fontFamily:"'Playfair Display',serif",lineHeight:1,pointerEvents:"none",userSelect:"none",transform:"rotate(180deg)"}}>"</div>
+      <div style={{position:"absolute",top:-10,left:16,fontSize:140,color:"rgba(255,255,255,0.12)",fontFamily:"'Playfair Display',serif",lineHeight:1,pointerEvents:"none",userSelect:"none"}}>"</div>
+      <div style={{position:"absolute",bottom:-20,right:16,fontSize:140,color:"rgba(255,255,255,0.08)",fontFamily:"'Playfair Display',serif",lineHeight:1,pointerEvents:"none",userSelect:"none",transform:"rotate(180deg)"}}>"</div>
       <div style={{display:"inline-flex",alignItems:"center",gap:6,background:"rgba(255,255,255,0.2)",borderRadius:999,padding:"4px 12px",marginBottom:20}}>
         <span style={{fontSize:13}}>💡</span>
-        <span style={{fontSize:11,color:"rgba(255,255,255,0.9)",fontWeight:700,letterSpacing:1.5,textTransform:"uppercase",fontFamily:"Inter,sans-serif"}}>Analogy</span>
+        <span style={{fontSize:13,color:"rgba(255,255,255,0.9)",fontWeight:700,letterSpacing:1.5,textTransform:"uppercase",fontFamily:"Inter,sans-serif"}}>Analogy</span>
       </div>
       <p style={{fontSize:21,color:"#fff",lineHeight:1.9,fontStyle:"italic",fontWeight:700,fontFamily:"'Playfair Display',serif",position:"relative",zIndex:1,textShadow:"0 1px 4px rgba(0,0,0,0.15)"}}>{step.body}</p>
     </div>
@@ -195,9 +196,9 @@ function BadgeModal({badge,onClose}){
     <div onClick={onClose} style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.5)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:999,backdropFilter:"blur(8px)"}}>
       <div className="vl-pop" onClick={e=>e.stopPropagation()} style={{background:"#fff",borderRadius:28,padding:"44px 40px",textAlign:"center",maxWidth:320,width:"90%",boxShadow:"0 30px 80px rgba(0,0,0,0.22)"}}>
         <div className="vl-float" style={{fontSize:60,marginBottom:16}}>{badge.icon}</div>
-        <div style={{fontSize:11,color:"#6366f1",fontWeight:700,letterSpacing:1.5,textTransform:"uppercase",marginBottom:8,...F}}>Badge Unlocked</div>
+        <div style={{fontSize:13,color:"#6366f1",fontWeight:700,letterSpacing:1.5,textTransform:"uppercase",marginBottom:8,...F}}>Badge Unlocked</div>
         <div style={{fontFamily:"'Playfair Display',serif",fontSize:22,fontWeight:800,color:"#111827",marginBottom:8}}>{badge.label}</div>
-        <div style={{fontSize:14,color:"#6b7280",marginBottom:28,lineHeight:1.6,...F}}>{badge.desc}</div>
+        <div style={{fontSize:14,color:"#6b7280",marginBottom:28,lineHeight:1.7,...F}}>{badge.desc}</div>
         <button onClick={onClose} className="vl-btn" style={{background:"#6366f1",color:"#fff",border:"none",borderRadius:14,padding:"13px 34px",fontSize:15,fontWeight:700,...F}}>Keep going →</button>
       </div>
     </div>
@@ -213,14 +214,14 @@ function IntroCard({onDismiss}){
   ];
   return(
     <div className="vl-slide" style={{background:"#fff",borderRadius:20,padding:"36px 32px 32px",marginBottom:24,border:"2px solid #e0e7ff",boxShadow:"0 4px 24px rgba(99,102,241,0.08)"}}>
-      <div style={{fontSize:12,color:"#6366f1",fontWeight:700,letterSpacing:2,textTransform:"uppercase",marginBottom:12,...F}}>Welcome to VibeLearn</div>
+      <div style={{fontSize:14,color:"#6366f1",fontWeight:700,letterSpacing:2,textTransform:"uppercase",marginBottom:12,...F}}>Welcome to VibeLearn</div>
       <div style={{fontFamily:"'Playfair Display',serif",fontSize:32,fontWeight:800,color:"#111827",marginBottom:10,lineHeight:1.15}}>AI literacy in 5 minutes a topic.</div>
       <div style={{fontSize:16,color:"#6b7280",marginBottom:28,lineHeight:1.7,...F}}>No jargon. No fluff. Just the concepts that actually matter.</div>
       <div style={{display:"flex",flexDirection:"column",gap:12,marginBottom:32}}>
         {steps.map((s,i)=>(
           <div key={i} style={{display:"flex",alignItems:"center",gap:16,padding:"16px 20px",background:"#f9f8f5",borderRadius:14,border:"1px solid #ebe8e0"}}>
             <div style={{width:42,height:42,borderRadius:12,background:"#eef2ff",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,flexShrink:0}}>{s.icon}</div>
-            <span style={{fontSize:16,color:"#111827",fontWeight:500,lineHeight:1.5,...F}}>{s.text}</span>
+            <span style={{fontSize:16,color:"#111827",fontWeight:500,lineHeight:1.7,...F}}>{s.text}</span>
           </div>
         ))}
       </div>
@@ -322,7 +323,7 @@ function LessonView({topic,appState,persist,onBack}){
       {bdg&&<BadgeModal badge={bdg} onClose={()=>setBdg(null)}/>}
       {xpAmt&&<XPToast xp={xpAmt} k={xpKey}/>}
       <div style={{background:"rgba(255,255,255,0.94)",backdropFilter:"blur(12px)",borderBottom:"1px solid #ebe8e0",padding:"13px 20px",position:"sticky",top:0,zIndex:10,display:"flex",alignItems:"center",gap:12}}>
-        <button className="vl-back" onClick={onBack} style={{background:"none",border:"none",color:"#9ca3af",fontSize:14,fontWeight:600,cursor:"pointer",...F,transition:"color 0.15s",padding:0}}>← Back</button>
+        <button className="vl-back" onClick={onBack} style={{background:"none",border:"none",color:"#6b7280",fontSize:14,fontWeight:600,cursor:"pointer",...F,transition:"color 0.15s",padding:0}}>← Back</button>
         <span style={{color:"#e5e7eb"}}>·</span>
         <Chip label={topic.category} color={cm.color} bg={cm.bg}/>
         {done&&<Chip label="✓ Done" color="#16a34a" bg="#f0fdf4"/>}
@@ -332,14 +333,14 @@ function LessonView({topic,appState,persist,onBack}){
         <div style={{textAlign:"center",marginBottom:24}} className="vl-fade">
           <div style={{display:"flex",gap:8,justifyContent:"center",marginBottom:12}}><Chip label={topic.difficulty} color={dc.color} bg={dc.bg}/></div>
           <h1 style={{fontFamily:"'Playfair Display',serif",fontSize:34,fontWeight:800,color:"#111827",lineHeight:1.2,marginBottom:10}}>{topic.title}</h1>
-          <p style={{fontSize:17,color:"#9ca3af",lineHeight:1.6,...F}}>{topic.short}</p>
+          <p style={{fontSize:17,color:"#6b7280",lineHeight:1.7,...F}}>{topic.short}</p>
         </div>
 
         {/* STEPS */}
         {phase==="steps"&&(
           <div className="vl-fi" key={stepIdx}>
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:14}}>
-              <span style={{fontSize:14,color:"#9ca3af",fontWeight:600,...F}}>Step {stepIdx+1} of {topic.steps.length}</span>
+              <span style={{fontSize:14,color:"#6b7280",fontWeight:600,...F}}>Step {stepIdx+1} of {topic.steps.length}</span>
               <div style={{display:"flex",gap:5}}>
                 {topic.steps.map((_,i)=>(<div key={i} style={{width:i===stepIdx?20:7,height:7,borderRadius:999,background:i<stepIdx?"#6366f1":i===stepIdx?"#6366f1":"#e5e2da",opacity:i<stepIdx?0.45:1,transition:"all 0.3s"}}/>))}
               </div>
@@ -349,7 +350,7 @@ function LessonView({topic,appState,persist,onBack}){
                 <div style={{background:"#fff",borderRadius:20,padding:"32px 28px",boxShadow:"0 2px 18px rgba(0,0,0,0.07)",border:"1px solid #ebe8e0"}}>
                   <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:18}}>
                     <div style={{width:3,height:16,borderRadius:2,background:cm.color,flexShrink:0}}/>
-                    <span style={{fontSize:11,color:cm.color,fontWeight:700,letterSpacing:1.5,textTransform:"uppercase",...F}}>{step.heading}</span>
+                    <span style={{fontSize:13,color:cm.color,fontWeight:700,letterSpacing:1.5,textTransform:"uppercase",...F}}>{step.heading}</span>
                   </div>
                   <div style={{background:"#f9f8f5",borderRadius:12,padding:"18px 10px",border:"1px solid #ebe8e0"}}>{Diagrams[step.diagramKey]?.()}</div>
                 </div>
@@ -360,8 +361,8 @@ function LessonView({topic,appState,persist,onBack}){
                 <div style={{background:"linear-gradient(135deg,#fff1f2 0%,#ffe4e6 100%)",borderRadius:20,padding:"32px 28px",border:"1.5px solid #fecdd3",overflow:"hidden",position:"relative"}}>
                   <div style={{position:"absolute",top:-15,right:-15,fontSize:90,opacity:0.06,lineHeight:1,pointerEvents:"none"}}>⚠️</div>
                   <div style={{display:"inline-flex",alignItems:"center",gap:8,background:"#dc2626",borderRadius:999,padding:"5px 14px",marginBottom:18}}>
-                    <span style={{fontSize:12}}>⚠️</span>
-                    <span style={{fontSize:11,color:"#fff",fontWeight:800,letterSpacing:1.5,textTransform:"uppercase",...F}}>Common Misconception</span>
+                    <span style={{fontSize:14}}>⚠️</span>
+                    <span style={{fontSize:13,color:"#fff",fontWeight:800,letterSpacing:1.5,textTransform:"uppercase",...F}}>Common Misconception</span>
                   </div>
                   <p style={{fontFamily:"'Playfair Display',serif",fontSize:22,fontWeight:800,color:"#9f1239",lineHeight:1.3,marginBottom:16}}>{step.heading}</p>
                   <p style={{fontSize:20,color:"#374151",lineHeight:2.0,...F}}>{step.body}</p>
@@ -371,8 +372,8 @@ function LessonView({topic,appState,persist,onBack}){
                 <div style={{background:"linear-gradient(135deg,#f0fdf4 0%,#dcfce7 100%)",borderRadius:20,padding:"32px 28px",border:"1.5px solid #bbf7d0",overflow:"hidden",position:"relative"}}>
                   <div style={{position:"absolute",top:-15,right:-15,fontSize:90,opacity:0.07,lineHeight:1,pointerEvents:"none"}}>🌍</div>
                   <div style={{display:"inline-flex",alignItems:"center",gap:8,background:"#16a34a",borderRadius:999,padding:"5px 14px",marginBottom:18}}>
-                    <span style={{fontSize:12}}>🌍</span>
-                    <span style={{fontSize:11,color:"#fff",fontWeight:800,letterSpacing:1.5,textTransform:"uppercase",...F}}>In the Real World</span>
+                    <span style={{fontSize:14}}>🌍</span>
+                    <span style={{fontSize:13,color:"#fff",fontWeight:800,letterSpacing:1.5,textTransform:"uppercase",...F}}>In the Real World</span>
                   </div>
                   <p style={{fontFamily:"'Playfair Display',serif",fontSize:22,fontWeight:800,color:"#14532d",lineHeight:1.3,marginBottom:16}}>{step.heading}</p>
                   <p style={{fontSize:20,color:"#374151",lineHeight:2.0,...F}}>{step.body}</p>
@@ -382,8 +383,8 @@ function LessonView({topic,appState,persist,onBack}){
                 <div style={{background:"linear-gradient(135deg,#fffbeb 0%,#fef9c3 100%)",borderRadius:20,padding:"32px 28px",border:"1.5px solid #fde68a",overflow:"hidden",position:"relative"}}>
                   <div style={{position:"absolute",top:-15,right:-15,fontSize:90,opacity:0.07,lineHeight:1,pointerEvents:"none"}}>💼</div>
                   <div style={{display:"inline-flex",alignItems:"center",gap:8,background:"#d97706",borderRadius:999,padding:"5px 14px",marginBottom:18}}>
-                    <span style={{fontSize:12}}>💼</span>
-                    <span style={{fontSize:11,color:"#fff",fontWeight:800,letterSpacing:1.5,textTransform:"uppercase",...F}}>You'd Use This When…</span>
+                    <span style={{fontSize:14}}>💼</span>
+                    <span style={{fontSize:13,color:"#fff",fontWeight:800,letterSpacing:1.5,textTransform:"uppercase",...F}}>You'd Use This When…</span>
                   </div>
                   <p style={{fontFamily:"'Playfair Display',serif",fontSize:22,fontWeight:800,color:"#78350f",lineHeight:1.3,marginBottom:16}}>{step.heading}</p>
                   <p style={{fontSize:20,color:"#374151",lineHeight:2.0,...F}}>{step.body}</p>
@@ -393,8 +394,8 @@ function LessonView({topic,appState,persist,onBack}){
                 <div style={{background:"linear-gradient(135deg,#f5f3ff 0%,#ede9fe 100%)",borderRadius:20,padding:"32px 28px",border:"1.5px solid #ddd6fe",overflow:"hidden",position:"relative"}}>
                   <div style={{position:"absolute",top:-15,right:-15,fontSize:90,opacity:0.07,lineHeight:1,pointerEvents:"none"}}>🔗</div>
                   <div style={{display:"inline-flex",alignItems:"center",gap:8,background:"#7c3aed",borderRadius:999,padding:"5px 14px",marginBottom:18}}>
-                    <span style={{fontSize:12}}>🔗</span>
-                    <span style={{fontSize:11,color:"#fff",fontWeight:800,letterSpacing:1.5,textTransform:"uppercase",...F}}>Connect the Dots</span>
+                    <span style={{fontSize:14}}>🔗</span>
+                    <span style={{fontSize:13,color:"#fff",fontWeight:800,letterSpacing:1.5,textTransform:"uppercase",...F}}>Connect the Dots</span>
                   </div>
                   <p style={{fontFamily:"'Playfair Display',serif",fontSize:22,fontWeight:800,color:"#4c1d95",lineHeight:1.3,marginBottom:16}}>{step.heading}</p>
                   <p style={{fontSize:20,color:"#374151",lineHeight:2.0,...F}}>{step.body}</p>
@@ -404,7 +405,7 @@ function LessonView({topic,appState,persist,onBack}){
                 <div style={{background:"#fff",borderRadius:20,padding:"32px 28px",boxShadow:"0 2px 18px rgba(0,0,0,0.07)",border:"1px solid #ebe8e0"}}>
                   <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:16}}>
                     <div style={{width:3,height:16,borderRadius:2,background:cm.color,flexShrink:0}}/>
-                    <span style={{fontSize:11,color:cm.color,fontWeight:700,letterSpacing:1.5,textTransform:"uppercase",...F}}>{stepLabel(step.type)}</span>
+                    <span style={{fontSize:13,color:cm.color,fontWeight:700,letterSpacing:1.5,textTransform:"uppercase",...F}}>{stepLabel(step.type)}</span>
                   </div>
                   <p style={{fontFamily:"'Playfair Display',serif",fontSize:22,fontWeight:700,color:"#111827",lineHeight:1.3,marginBottom:16}}>{step.heading}</p>
                   <p style={{fontSize:20,color:"#374151",lineHeight:2.0,...F}}>{step.body}</p>
@@ -412,7 +413,7 @@ function LessonView({topic,appState,persist,onBack}){
               )}
             </div>
             <div style={{display:"flex",gap:10,justifyContent:"space-between",alignItems:"center"}}>
-              <button onClick={()=>setStepIdx(s=>s-1)} disabled={stepIdx===0} className="vl-btn" style={{background:"#fff",border:"1.5px solid #e5e2da",color:"#9ca3af",borderRadius:12,padding:"11px 20px",fontSize:14,fontWeight:600,...F,opacity:stepIdx===0?0.3:1}}>←</button>
+              <button onClick={()=>setStepIdx(s=>s-1)} disabled={stepIdx===0} className="vl-btn" style={{background:"#fff",border:"1.5px solid #e5e2da",color:"#6b7280",borderRadius:12,padding:"11px 20px",fontSize:14,fontWeight:600,...F,opacity:stepIdx===0?0.3:1}}>←</button>
               <button onClick={nextStep} className="vl-btn" style={{background:"#6366f1",color:"#fff",border:"none",borderRadius:12,padding:"11px 28px",fontSize:14,fontWeight:700,...F,flex:1,maxWidth:220}}>
                 {stepIdx<topic.steps.length-1?"Continue →":"Take the Quiz →"}
               </button>
@@ -424,10 +425,10 @@ function LessonView({topic,appState,persist,onBack}){
         {phase==="quiz"&&(
           <div className="vl-fi" key={`q${quizIdx}`}>
             <div style={{textAlign:"center",marginBottom:18}}>
-              <div style={{fontSize:11,color:"#6366f1",fontWeight:700,letterSpacing:1.5,textTransform:"uppercase",marginBottom:8,...F}}>Knowledge Check</div>
+              <div style={{fontSize:13,color:"#6366f1",fontWeight:700,letterSpacing:1.5,textTransform:"uppercase",marginBottom:8,...F}}>Knowledge Check</div>
               <div style={{display:"flex",gap:8,justifyContent:"center"}}>
                 {topic.quiz.map((_,i)=>(
-                  <div key={i} style={{width:28,height:28,borderRadius:999,background:i<quizIdx?"#6366f1":i===quizIdx?"#eef2ff":"#f3f4f6",border:i===quizIdx?"2px solid #6366f1":"2px solid transparent",display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,fontWeight:700,color:i<quizIdx?"#fff":i===quizIdx?"#6366f1":"#9ca3af",...F,transition:"all 0.2s"}}>
+                  <div key={i} style={{width:28,height:28,borderRadius:999,background:i<quizIdx?"#6366f1":i===quizIdx?"#eef2ff":"#f3f4f6",border:i===quizIdx?"2px solid #6366f1":"2px solid transparent",display:"flex",alignItems:"center",justifyContent:"center",fontSize:13,fontWeight:700,color:i<quizIdx?"#fff":i===quizIdx?"#6366f1":"#9ca3af",...F,transition:"all 0.2s"}}>
                     {i<quizIdx?"✓":i+1}
                   </div>
                 ))}
@@ -447,7 +448,7 @@ function LessonView({topic,appState,persist,onBack}){
                       <span style={{width:30,height:30,borderRadius:999,
                         background:qResult&&selected===i&&qResult==="correct"?"#22c55e":qResult&&selected===i&&qResult==="wrong"?"#ef4444":qResult&&i===q.answer?"#22c55e":"#e5e2da",
                         color:qResult&&(selected===i||i===q.answer)?"#fff":"#9ca3af",
-                        display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,fontWeight:800,flexShrink:0,transition:"all 0.2s"}}>{icon}</span>
+                        display:"flex",alignItems:"center",justifyContent:"center",fontSize:14,fontWeight:800,flexShrink:0,transition:"all 0.2s"}}>{icon}</span>
                       <span style={{flex:1}}>{opt}</span>
                     </button>
                   );
@@ -476,10 +477,10 @@ function LessonView({topic,appState,persist,onBack}){
                         <div style={{padding:"16px 18px",background:"#fff",borderLeft:"1.5px solid #fca5a5",borderRight:"1.5px solid #fca5a5",borderBottom:"1.5px solid #fca5a5",borderRadius:"0 0 14px 14px"}}>
                           <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:10}}>
                             <div style={{width:3,height:14,borderRadius:2,background:"#6366f1",flexShrink:0}}/>
-                            <span style={{fontSize:11,color:"#6366f1",fontWeight:700,letterSpacing:1.2,textTransform:"uppercase",...F}}>Why was I wrong?</span>
+                            <span style={{fontSize:13,color:"#6366f1",fontWeight:700,letterSpacing:1.2,textTransform:"uppercase",...F}}>Why was I wrong?</span>
                           </div>
                           {whyLoad
-                            ?<div style={{fontSize:13,color:"#9ca3af",...F,display:"flex",alignItems:"center",gap:8}}><span className="vl-pulse" style={{display:"inline-block"}}>●</span> Explaining…</div>
+                            ?<div style={{fontSize:13,color:"#6b7280",...F,display:"flex",alignItems:"center",gap:8}}><span className="vl-pulse" style={{display:"inline-block"}}>●</span> Explaining…</div>
                             :<p style={{fontSize:19,color:"#374151",lineHeight:1.85,...F}}>{whyText}</p>
                           }
                         </div>
@@ -501,7 +502,7 @@ function LessonView({topic,appState,persist,onBack}){
         {phase==="retry"&&(
           <div className="vl-fi" style={{textAlign:"center",padding:"16px 0"}}>
             <div style={{fontFamily:"'Playfair Display',serif",fontSize:22,fontWeight:800,color:"#111827",marginBottom:8}}>Almost there!</div>
-            <p style={{fontSize:14,color:"#6b7280",marginBottom:28,lineHeight:1.6,...F}}>You got {fs}/{topic.quiz.length}. Review the lesson and try again.</p>
+            <p style={{fontSize:14,color:"#6b7280",marginBottom:28,lineHeight:1.7,...F}}>You got {fs}/{topic.quiz.length}. Review the lesson and try again.</p>
             <div style={{display:"flex",gap:10,justifyContent:"center",flexWrap:"wrap"}}>
               <button onClick={()=>{setPhase("steps");setStepIdx(0);}} className="vl-btn" style={{background:"#fff",border:"1.5px solid #e5e2da",color:"#374151",borderRadius:12,padding:"11px 22px",fontSize:14,fontWeight:600,...F}}>← Review</button>
               <button onClick={()=>{setPhase("quiz");setQuizIdx(0);setScore(0);setSelected(null);setQResult(null);setWhyText("");}} className="vl-btn" style={{background:"#6366f1",color:"#fff",border:"none",borderRadius:12,padding:"11px 22px",fontSize:14,fontWeight:700,...F}}>Retry →</button>
@@ -514,7 +515,7 @@ function LessonView({topic,appState,persist,onBack}){
           <div className="vl-fi">
             <div style={{background:"#6366f1",borderRadius:20,padding:"28px 24px",marginBottom:18,textAlign:"center",boxShadow:"0 8px 32px rgba(99,102,241,0.28)"}}>
               <div style={{fontFamily:"'Playfair Display',serif",fontSize:24,fontWeight:800,color:"#fff",marginBottom:6}}>{done?"Already mastered this one":"Lesson complete."}</div>
-              <p style={{fontSize:14,color:"#c7d2fe",lineHeight:1.5,...F,marginBottom:20}}>{fs}/{topic.quiz.length} correct{!done?" · +50 XP earned":""}</p>
+              <p style={{fontSize:14,color:"#e0e7ff",lineHeight:1.7,...F,marginBottom:20}}>{fs}/{topic.quiz.length} correct{!done?" · +50 XP earned":""}</p>
               <div style={{display:"flex",gap:10,justifyContent:"center",flexWrap:"wrap"}}>
                 <button onClick={()=>{const text=`Just completed "${topic.title}" on VibeLearn: AI literacy that actually sticks. 🧠`;navigator.share?navigator.share({text}):navigator.clipboard?.writeText(text);}} className="vl-btn" style={{background:"rgba(255,255,255,0.15)",color:"#fff",border:"1px solid rgba(255,255,255,0.25)",borderRadius:10,padding:"10px 18px",fontSize:13,fontWeight:600,...F}}>Share this lesson</button>
                 <button onClick={onBack} className="vl-btn" style={{background:"rgba(255,255,255,0.15)",color:"#fff",border:"1px solid rgba(255,255,255,0.25)",borderRadius:10,padding:"10px 18px",fontSize:13,fontWeight:600,...F}}>Back to topics</button>
@@ -523,10 +524,10 @@ function LessonView({topic,appState,persist,onBack}){
             <div style={{background:"#fff",borderRadius:20,padding:"24px 22px",boxShadow:"0 2px 18px rgba(0,0,0,0.07)",border:"1px solid #ebe8e0",marginBottom:14}}>
               <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:6}}>
                 <div style={{width:3,height:16,borderRadius:2,background:"#6366f1",flexShrink:0}}/>
-                <span style={{fontSize:11,color:"#6366f1",fontWeight:700,letterSpacing:1.5,textTransform:"uppercase",...F}}>Try It Live</span>
-                <span style={{fontSize:11,color:"#d1d5db",marginLeft:"auto",...F}}>+10 XP · max 3/day</span>
+                <span style={{fontSize:13,color:"#6366f1",fontWeight:700,letterSpacing:1.5,textTransform:"uppercase",...F}}>Try It Live</span>
+                <span style={{fontSize:13,color:"#6b7280",marginLeft:"auto",...F}}>+10 XP · max 3/day</span>
               </div>
-              <p style={{fontSize:15,color:"#9ca3af",marginBottom:14,lineHeight:1.5,...F}}>Edit this prompt and hit Run for a real AI response.</p>
+              <p style={{fontSize:15,color:"#6b7280",marginBottom:14,lineHeight:1.7,...F}}>Edit this prompt and hit Run for a real AI response.</p>
               <textarea value={editPrompt} onChange={e=>setEditPrompt(e.target.value)} style={{...F,width:"100%",background:"#f9f8f5",border:"1.5px solid #e5e2da",borderRadius:12,padding:"13px 14px",fontSize:14,color:"#374151",lineHeight:1.75,resize:"vertical",minHeight:90,transition:"all 0.15s"}}/>
               <button onClick={runEx} disabled={aiLoad} className="vl-btn" style={{background:"#6366f1",color:"#fff",border:"none",borderRadius:12,padding:"11px 26px",fontSize:14,fontWeight:700,...F,marginTop:10,opacity:aiLoad?0.7:1}}>
                 {aiLoad?"Running…":"▶  Run"}
@@ -535,7 +536,7 @@ function LessonView({topic,appState,persist,onBack}){
               {aiOut&&<div style={{background:"#f9f8f5",border:"1px solid #e5e2da",borderRadius:12,padding:"16px",marginTop:12}}>
                 <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:10}}>
                   <div style={{width:3,height:14,borderRadius:2,background:"#059669",flexShrink:0}}/>
-                  <span style={{fontSize:11,color:"#059669",fontWeight:700,letterSpacing:1,textTransform:"uppercase",...F}}>AI Response</span>
+                  <span style={{fontSize:13,color:"#059669",fontWeight:700,letterSpacing:1,textTransform:"uppercase",...F}}>AI Response</span>
                 </div>
                 <div style={{fontSize:14,color:"#374151",lineHeight:1.85,whiteSpace:"pre-wrap",wordBreak:"break-word",...F}}>{aiOut}</div>
               </div>}
@@ -557,11 +558,11 @@ function TopicGroup({label,emoji,topics,completed,onOpen,locked,xpNeeded,userXP,
         <span style={{fontSize:22,flexShrink:0}}>{locked?"🔒":emoji}</span>
         <div style={{flex:1,minWidth:0}}>
           <div style={{fontSize:15,fontWeight:700,color:locked?"#9ca3af":"#111827",...F,marginBottom:2}}>{label}</div>
-          {locked?<div style={{fontSize:12,color:"#9ca3af",...F}}>Unlock at {xpNeeded} XP · you have {userXP} XP</div>:<div style={{fontSize:12,color:"#9ca3af",...F}}>{doneCount}/{topics.length} complete</div>}
+          {locked?<div style={{fontSize:14,color:"#6b7280",...F}}>Unlock at {xpNeeded} XP · you have {userXP} XP</div>:<div style={{fontSize:14,color:"#6b7280",...F}}>{doneCount}/{topics.length} complete</div>}
         </div>
         {!locked&&<div style={{display:"flex",alignItems:"center",gap:10}}>
-          {doneCount>0&&<div style={{background:"#f0fdf4",color:"#16a34a",borderRadius:999,padding:"3px 10px",fontSize:11,fontWeight:700,...F}}>{doneCount}/{topics.length}</div>}
-          <span style={{color:"#d1d5db",fontSize:16,transition:"transform 0.2s",transform:open?"rotate(180deg)":"rotate(0deg)"}}>▾</span>
+          {doneCount>0&&<div style={{background:"#f0fdf4",color:"#16a34a",borderRadius:999,padding:"3px 10px",fontSize:13,fontWeight:700,...F}}>{doneCount}/{topics.length}</div>}
+          <span style={{color:"#6b7280",fontSize:16,transition:"transform 0.2s",transform:open?"rotate(180deg)":"rotate(0deg)"}}>▾</span>
         </div>}
       </button>
       {open&&!locked&&(
@@ -581,10 +582,10 @@ function TopicGroup({label,emoji,topics,completed,onOpen,locked,xpNeeded,userXP,
                     {hasDiagram&&!done&&<Chip label="📊 Visual" color="#7c3aed" bg="#f5f3ff" small/>}
                   </div>
                   <div style={{fontFamily:"'Playfair Display',serif",fontSize:19,fontWeight:700,color:"#111827",marginBottom:4,lineHeight:1.3}}>{t.title}</div>
-                  <div style={{fontSize:16,color:"#6b7280",lineHeight:1.6,...F,marginBottom:4}}>{t.short}</div>
-                  <div style={{fontSize:11,color:"#b0a898",fontWeight:600,...F}}>~{t.steps.length+1} min</div>
+                  <div style={{fontSize:16,color:"#6b7280",lineHeight:1.7,...F,marginBottom:4}}>{t.short}</div>
+                  <div style={{fontSize:13,color:"#b0a898",fontWeight:600,...F}}>~{t.steps.length+1} min</div>
                 </div>
-                <div style={{color:"#d1d5db",fontSize:18,flexShrink:0}}>→</div>
+                <div style={{color:"#6b7280",fontSize:18,flexShrink:0}}>→</div>
               </div>
             );
           })}
@@ -602,9 +603,9 @@ function BadgesPanel({earned}){
         <div style={{display:"flex",alignItems:"center",gap:10}}>
           <span style={{fontSize:16}}>🏆</span>
           <span style={{fontSize:14,fontWeight:700,color:"#374151",...F}}>Achievements</span>
-          <span style={{background:"#eef2ff",color:"#6366f1",borderRadius:999,padding:"2px 10px",fontSize:12,fontWeight:700,...F}}>{earned.length}/{BADGES.length}</span>
+          <span style={{background:"#eef2ff",color:"#6366f1",borderRadius:999,padding:"2px 10px",fontSize:14,fontWeight:700,...F}}>{earned.length}/{BADGES.length}</span>
         </div>
-        <span style={{color:"#d1d5db",fontSize:16,transition:"transform 0.2s",transform:open?"rotate(180deg)":"rotate(0deg)"}}>▾</span>
+        <span style={{color:"#6b7280",fontSize:16,transition:"transform 0.2s",transform:open?"rotate(180deg)":"rotate(0deg)"}}>▾</span>
       </button>
       {open&&(
         <div className="vl-slide" style={{background:"#fff",border:"1.5px solid #ebe8e0",borderTop:"none",borderRadius:"0 0 14px 14px",padding:"14px 16px",display:"flex",gap:8,flexWrap:"wrap"}}>
@@ -613,7 +614,7 @@ function BadgesPanel({earned}){
             return(
               <div key={b.id} title={b.desc} style={{background:e?"#eef2ff":"#f5f4f0",border:`1.5px solid ${e?"#c7d2fe":"#e5e2da"}`,borderRadius:12,padding:"8px 12px",display:"flex",alignItems:"center",gap:8,opacity:e?1:0.5,filter:e?"none":"grayscale(0.6)",transition:"all 0.2s"}}>
                 <span style={{fontSize:18}}>{e?b.icon:"🔒"}</span>
-                <div><div style={{fontSize:11,fontWeight:700,color:e?"#374151":"#9ca3af",...F}}>{b.label}</div><div style={{fontSize:10,color:"#9ca3af",...F}}>{b.desc}</div></div>
+                <div><div style={{fontSize:13,fontWeight:700,color:e?"#374151":"#9ca3af",...F}}>{b.label}</div><div style={{fontSize:13,color:"#6b7280",...F}}>{b.desc}</div></div>
               </div>
             );
           })}
@@ -637,7 +638,7 @@ export default function VibeLearn(){
 
   if(!ready||!st)return(
     <div style={{background:"#f5f4f0",minHeight:"100vh",display:"flex",alignItems:"center",justifyContent:"center",...F}}>
-      <div style={{textAlign:"center"}}><div className="vl-pulse" style={{fontSize:44,marginBottom:16}}>✦</div><div style={{color:"#9ca3af",fontSize:15,fontWeight:500}}>Loading…</div></div>
+      <div style={{textAlign:"center"}}><div className="vl-pulse" style={{fontSize:44,marginBottom:16}}>✦</div><div style={{color:"#6b7280",fontSize:15,fontWeight:500}}>Loading…</div></div>
     </div>
   );
 
@@ -661,7 +662,7 @@ export default function VibeLearn(){
         <div style={{maxWidth:880,margin:"0 auto",display:"flex",alignItems:"center",justifyContent:"space-between",gap:16,flexWrap:"wrap"}}>
           <div>
             <div style={{fontFamily:"'Playfair Display',serif",fontSize:28,fontWeight:800,color:"#111827",letterSpacing:-0.5,lineHeight:1}}>Vibe<span style={{color:"#6366f1"}}>Learn</span></div>
-            <div style={{fontSize:13,color:"#9ca3af",marginTop:4,fontWeight:500}}>AI literacy for everyone</div>
+            <div style={{fontSize:13,color:"#6b7280",marginTop:4,fontWeight:500}}>AI literacy for everyone</div>
           </div>
           <div style={{display:"flex",alignItems:"center",gap:12,flexWrap:"wrap"}}>
             <span style={{background:"#eef2ff",color:"#6366f1",borderRadius:999,padding:"6px 16px",fontSize:14,fontWeight:700}}>{level.label}</span>
@@ -670,7 +671,7 @@ export default function VibeLearn(){
               <div style={{background:"#f3f4f6",borderRadius:999,height:7,width:120,overflow:"hidden"}}>
                 <div className="vl-xp" style={{background:"linear-gradient(90deg,#6366f1,#818cf8)",height:"100%",width:`${lvlPct}%`,borderRadius:999}}/>
               </div>
-              <span style={{fontSize:12,color:"#9ca3af",fontWeight:600}}>{st.xp}{nextLvl?`/${nextLvl.min}`:""} XP</span>
+              <span style={{fontSize:14,color:"#6b7280",fontWeight:600}}>{st.xp}{nextLvl?`/${nextLvl.min}`:""} XP</span>
             </div>
           </div>
         </div>
@@ -681,14 +682,14 @@ export default function VibeLearn(){
 
         {recommended&&st.seenIntro&&(
           <div style={{marginBottom:18}} className="vl-fade">
-            <div style={{fontSize:11,color:"#9ca3af",fontWeight:700,letterSpacing:1.5,textTransform:"uppercase",marginBottom:10}}>⭐ Start Here</div>
+            <div style={{fontSize:13,color:"#6b7280",fontWeight:700,letterSpacing:1.5,textTransform:"uppercase",marginBottom:10}}>⭐ Start Here</div>
             {(()=>{const t=recommended;const cm=CAT[t.category]||{color:"#6366f1",bg:"#eef2ff"};return(
               <div className="vl-hover" onClick={()=>openTopic(t)} style={{background:"linear-gradient(135deg,#6366f1 0%,#818cf8 100%)",borderRadius:18,padding:"20px 22px",boxShadow:"0 6px 24px rgba(99,102,241,0.28)",cursor:"pointer",display:"flex",alignItems:"center",gap:16}}>
                 <div style={{fontSize:36,flexShrink:0}}>{t.emoji}</div>
                 <div style={{flex:1,minWidth:0}}>
-                  <div style={{fontSize:11,color:"#c7d2fe",fontWeight:700,letterSpacing:1,textTransform:"uppercase",marginBottom:4}}>Recommended Next</div>
+                  <div style={{fontSize:13,color:"#e0e7ff",fontWeight:700,letterSpacing:1,textTransform:"uppercase",marginBottom:4}}>Recommended Next</div>
                   <div style={{fontFamily:"'Playfair Display',serif",fontSize:18,fontWeight:800,color:"#fff",lineHeight:1.2,marginBottom:4}}>{t.title}</div>
-                  <div style={{fontSize:13,color:"#c7d2fe",lineHeight:1.4}}>{t.short}</div>
+                  <div style={{fontSize:13,color:"#e0e7ff",lineHeight:1.7}}>{t.short}</div>
                 </div>
                 <div style={{color:"rgba(255,255,255,0.5)",fontSize:20,flexShrink:0}}>→</div>
               </div>
@@ -701,7 +702,7 @@ export default function VibeLearn(){
             {[{label:"Done",value:`${st.completed.length}/${TOPICS.length}`},{label:"Badges",value:`${st.badges.length}/${BADGES.length}`},{label:"Best Streak",value:`${st.longestStreak}d`}].map((s,i)=>(
               <div key={i} style={{flex:1,background:"#fff",borderRadius:12,padding:"12px 14px",border:"1px solid #ebe8e0",textAlign:"center",boxShadow:"0 1px 6px rgba(0,0,0,0.04)"}}>
                 <div style={{fontSize:16,fontWeight:800,color:"#111827",fontFamily:"'Playfair Display',serif"}}>{s.value}</div>
-                <div style={{fontSize:11,color:"#9ca3af",fontWeight:600,marginTop:2}}>{s.label}</div>
+                <div style={{fontSize:13,color:"#6b7280",fontWeight:600,marginTop:2}}>{s.label}</div>
               </div>
             ))}
           </div>
@@ -709,7 +710,7 @@ export default function VibeLearn(){
 
         {st.seenIntro&&st.completed.length>0&&<BadgesPanel earned={st.badges}/>}
 
-        <div style={{fontSize:11,color:"#9ca3af",fontWeight:700,letterSpacing:1.5,textTransform:"uppercase",marginBottom:12}}>All Topics</div>
+        <div style={{fontSize:13,color:"#6b7280",fontWeight:700,letterSpacing:1.5,textTransform:"uppercase",marginBottom:12}}>All Topics</div>
         <TopicGroup label="Beginner" emoji="🟢" topics={beginnerTopics} completed={st.completed} onOpen={openTopic} locked={false} defaultOpen={true}/>
         <TopicGroup label="Intermediate" emoji="🟡" topics={intermediateTopics} completed={st.completed} onOpen={openTopic} locked={false} defaultOpen={st.completed.length>0}/>
         <TopicGroup label="Advanced" emoji="🔴" topics={advancedTopics} completed={st.completed} onOpen={openTopic} locked={advancedLocked} xpNeeded={ADVANCED_XP_GATE} userXP={st.xp} defaultOpen={false}/>
