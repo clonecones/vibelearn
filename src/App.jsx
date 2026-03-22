@@ -128,7 +128,7 @@ function AnalogyCard({step,cm}){
         <span style={{fontSize:13}}>💡</span>
         <span style={{fontSize:11,color:"rgba(255,255,255,0.9)",fontWeight:700,letterSpacing:1.5,textTransform:"uppercase",fontFamily:"Inter,sans-serif"}}>Analogy</span>
       </div>
-      <p style={{fontSize:20,color:"#fff",lineHeight:1.85,fontStyle:"italic",fontWeight:700,fontFamily:"'Playfair Display',serif",position:"relative",zIndex:1,textShadow:"0 1px 4px rgba(0,0,0,0.15)"}}>{step.body}</p>
+      <p style={{fontSize:21,color:"#fff",lineHeight:1.9,fontStyle:"italic",fontWeight:700,fontFamily:"'Playfair Display',serif",position:"relative",zIndex:1,textShadow:"0 1px 4px rgba(0,0,0,0.15)"}}>{step.body}</p>
     </div>
   );
 }
@@ -176,12 +176,7 @@ function updateStreak(s){
   return{...s,streak:ns,longestStreak:Math.max(ns,s.longestStreak),lastCompletedDate:today};
 }
 async function callClaude(p){
-  const apiKey = typeof import.meta !== 'undefined' && import.meta.env
-    ? import.meta.env.VITE_ANTHROPIC_KEY
-    : '';
-  const headers = {"Content-Type":"application/json"};
-  if(apiKey) headers["x-api-key"] = apiKey;
-  const r=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers,body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,messages:[{role:"user",content:p}]})});
+  const r=await fetch("/api/claude",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({prompt:p})});
   if(!r.ok)throw new Error(r.status);
   const d=await r.json();return d.content?.[0]?.text||"";
 }
@@ -330,15 +325,15 @@ function LessonView({topic,appState,persist,onBack}){
       <div style={{maxWidth:880,margin:"0 auto",padding:"32px 24px"}}>
         <div style={{textAlign:"center",marginBottom:24}} className="vl-fade">
           <div style={{display:"flex",gap:8,justifyContent:"center",marginBottom:12}}><Chip label={topic.difficulty} color={dc.color} bg={dc.bg}/></div>
-          <h1 style={{fontFamily:"'Playfair Display',serif",fontSize:32,fontWeight:800,color:"#111827",lineHeight:1.2,marginBottom:10}}>{topic.title}</h1>
-          <p style={{fontSize:15,color:"#9ca3af",lineHeight:1.6,...F}}>{topic.short}</p>
+          <h1 style={{fontFamily:"'Playfair Display',serif",fontSize:34,fontWeight:800,color:"#111827",lineHeight:1.2,marginBottom:10}}>{topic.title}</h1>
+          <p style={{fontSize:17,color:"#9ca3af",lineHeight:1.6,...F}}>{topic.short}</p>
         </div>
 
         {/* STEPS */}
         {phase==="steps"&&(
           <div className="vl-fi" key={stepIdx}>
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:14}}>
-              <span style={{fontSize:12,color:"#9ca3af",fontWeight:600,...F}}>Step {stepIdx+1} of {topic.steps.length}</span>
+              <span style={{fontSize:14,color:"#9ca3af",fontWeight:600,...F}}>Step {stepIdx+1} of {topic.steps.length}</span>
               <div style={{display:"flex",gap:5}}>
                 {topic.steps.map((_,i)=>(<div key={i} style={{width:i===stepIdx?20:7,height:7,borderRadius:999,background:i<stepIdx?"#6366f1":i===stepIdx?"#6366f1":"#e5e2da",opacity:i<stepIdx?0.45:1,transition:"all 0.3s"}}/>))}
               </div>
@@ -362,8 +357,8 @@ function LessonView({topic,appState,persist,onBack}){
                     <span style={{fontSize:12}}>⚠️</span>
                     <span style={{fontSize:11,color:"#fff",fontWeight:800,letterSpacing:1.5,textTransform:"uppercase",...F}}>Common Misconception</span>
                   </div>
-                  <p style={{fontFamily:"'Playfair Display',serif",fontSize:21,fontWeight:800,color:"#9f1239",lineHeight:1.3,marginBottom:16}}>{step.heading}</p>
-                  <p style={{fontSize:19,color:"#374151",lineHeight:2.0,...F}}>{step.body}</p>
+                  <p style={{fontFamily:"'Playfair Display',serif",fontSize:22,fontWeight:800,color:"#9f1239",lineHeight:1.3,marginBottom:16}}>{step.heading}</p>
+                  <p style={{fontSize:20,color:"#374151",lineHeight:2.0,...F}}>{step.body}</p>
                 </div>
               ):step.type==="realworld"?(
                 /* GREEN SPOTLIGHT CARD */
@@ -373,8 +368,8 @@ function LessonView({topic,appState,persist,onBack}){
                     <span style={{fontSize:12}}>🌍</span>
                     <span style={{fontSize:11,color:"#fff",fontWeight:800,letterSpacing:1.5,textTransform:"uppercase",...F}}>In the Real World</span>
                   </div>
-                  <p style={{fontFamily:"'Playfair Display',serif",fontSize:21,fontWeight:800,color:"#14532d",lineHeight:1.3,marginBottom:16}}>{step.heading}</p>
-                  <p style={{fontSize:19,color:"#374151",lineHeight:2.0,...F}}>{step.body}</p>
+                  <p style={{fontFamily:"'Playfair Display',serif",fontSize:22,fontWeight:800,color:"#14532d",lineHeight:1.3,marginBottom:16}}>{step.heading}</p>
+                  <p style={{fontSize:20,color:"#374151",lineHeight:2.0,...F}}>{step.body}</p>
                 </div>
               ):step.type==="scenario"?(
                 /* AMBER SCENARIO CARD */
@@ -384,8 +379,8 @@ function LessonView({topic,appState,persist,onBack}){
                     <span style={{fontSize:12}}>💼</span>
                     <span style={{fontSize:11,color:"#fff",fontWeight:800,letterSpacing:1.5,textTransform:"uppercase",...F}}>You'd Use This When…</span>
                   </div>
-                  <p style={{fontFamily:"'Playfair Display',serif",fontSize:21,fontWeight:800,color:"#78350f",lineHeight:1.3,marginBottom:16}}>{step.heading}</p>
-                  <p style={{fontSize:19,color:"#374151",lineHeight:2.0,...F}}>{step.body}</p>
+                  <p style={{fontFamily:"'Playfair Display',serif",fontSize:22,fontWeight:800,color:"#78350f",lineHeight:1.3,marginBottom:16}}>{step.heading}</p>
+                  <p style={{fontSize:20,color:"#374151",lineHeight:2.0,...F}}>{step.body}</p>
                 </div>
               ):step.type==="connect"?(
                 /* PURPLE CONNECT CARD */
@@ -395,8 +390,8 @@ function LessonView({topic,appState,persist,onBack}){
                     <span style={{fontSize:12}}>🔗</span>
                     <span style={{fontSize:11,color:"#fff",fontWeight:800,letterSpacing:1.5,textTransform:"uppercase",...F}}>Connect the Dots</span>
                   </div>
-                  <p style={{fontFamily:"'Playfair Display',serif",fontSize:21,fontWeight:800,color:"#4c1d95",lineHeight:1.3,marginBottom:16}}>{step.heading}</p>
-                  <p style={{fontSize:19,color:"#374151",lineHeight:2.0,...F}}>{step.body}</p>
+                  <p style={{fontFamily:"'Playfair Display',serif",fontSize:22,fontWeight:800,color:"#4c1d95",lineHeight:1.3,marginBottom:16}}>{step.heading}</p>
+                  <p style={{fontSize:20,color:"#374151",lineHeight:2.0,...F}}>{step.body}</p>
                 </div>
               ):(
                 /* DEFAULT: explain / detail */
@@ -405,8 +400,8 @@ function LessonView({topic,appState,persist,onBack}){
                     <div style={{width:3,height:16,borderRadius:2,background:cm.color,flexShrink:0}}/>
                     <span style={{fontSize:11,color:cm.color,fontWeight:700,letterSpacing:1.5,textTransform:"uppercase",...F}}>{stepLabel(step.type)}</span>
                   </div>
-                  <p style={{fontFamily:"'Playfair Display',serif",fontSize:21,fontWeight:700,color:"#111827",lineHeight:1.3,marginBottom:16}}>{step.heading}</p>
-                  <p style={{fontSize:19,color:"#374151",lineHeight:2.0,...F}}>{step.body}</p>
+                  <p style={{fontFamily:"'Playfair Display',serif",fontSize:22,fontWeight:700,color:"#111827",lineHeight:1.3,marginBottom:16}}>{step.heading}</p>
+                  <p style={{fontSize:20,color:"#374151",lineHeight:2.0,...F}}>{step.body}</p>
                 </div>
               )}
             </div>
@@ -433,7 +428,7 @@ function LessonView({topic,appState,persist,onBack}){
               </div>
             </div>
             <div style={{background:"#fff",borderRadius:20,padding:"28px 24px",boxShadow:"0 2px 18px rgba(0,0,0,0.07)",border:"1px solid #ebe8e0",marginBottom:14}}>
-              <p style={{fontSize:23,fontWeight:800,color:"#111827",lineHeight:1.35,marginBottom:24,fontFamily:"'Playfair Display',serif"}}>{q.q}</p>
+              <p style={{fontSize:24,fontWeight:800,color:"#111827",lineHeight:1.35,marginBottom:24,fontFamily:"'Playfair Display',serif"}}>{q.q}</p>
               <div style={{display:"flex",flexDirection:"column",gap:10}}>
                 {q.opts.map((opt,i)=>{
                   let bg="#f9f8f5",border="1.5px solid #e5e2da",color="#374151",icon=String.fromCharCode(65+i),shadow="none";
@@ -442,7 +437,7 @@ function LessonView({topic,appState,persist,onBack}){
                   else if(qResult&&i===q.answer){bg="#f0fdf4";border="2px solid #22c55e";color="#15803d";icon="✓";}
                   return(
                     <button key={i} onClick={()=>pickAnswer(i)} disabled={!!qResult} className="vl-opt vl-btn"
-                      style={{background:bg,border,color,borderRadius:14,padding:"16px 20px",fontSize:17,fontWeight:600,textAlign:"left",...F,display:"flex",alignItems:"center",gap:12,boxShadow:shadow,transition:"all 0.18s"}}>
+                      style={{background:bg,border,color,borderRadius:14,padding:"16px 20px",fontSize:18,fontWeight:600,textAlign:"left",...F,display:"flex",alignItems:"center",gap:12,boxShadow:shadow,transition:"all 0.18s"}}>
                       <span style={{width:30,height:30,borderRadius:999,
                         background:qResult&&selected===i&&qResult==="correct"?"#22c55e":qResult&&selected===i&&qResult==="wrong"?"#ef4444":qResult&&i===q.answer?"#22c55e":"#e5e2da",
                         color:qResult&&(selected===i||i===q.answer)?"#fff":"#9ca3af",
@@ -458,7 +453,7 @@ function LessonView({topic,appState,persist,onBack}){
                     <div style={{padding:"14px 18px",borderRadius:12,background:"linear-gradient(135deg,#f0fdf4,#dcfce7)",border:"1.5px solid #86efac",display:"flex",alignItems:"center",gap:12}}>
                       <div style={{width:36,height:36,borderRadius:999,background:"#22c55e",display:"flex",alignItems:"center",justifyContent:"center",fontSize:18,flexShrink:0}}>✓</div>
                       <div>
-                        <div style={{fontSize:15,fontWeight:800,color:"#15803d",...F}}>Correct!</div>
+                        <div style={{fontSize:17,fontWeight:800,color:"#15803d",...F}}>Correct!</div>
                         <div style={{fontSize:13,color:"#16a34a",...F}}>Well done: keep going.</div>
                       </div>
                     </div>
@@ -467,7 +462,7 @@ function LessonView({topic,appState,persist,onBack}){
                       <div style={{padding:"14px 18px",background:"linear-gradient(135deg,#fef2f2,#ffe4e6)",border:"1.5px solid #fca5a5",display:"flex",alignItems:"center",gap:12}}>
                         <div style={{width:36,height:36,borderRadius:999,background:"#ef4444",display:"flex",alignItems:"center",justifyContent:"center",fontSize:18,flexShrink:0,color:"#fff"}}>✗</div>
                         <div>
-                          <div style={{fontSize:15,fontWeight:800,color:"#dc2626",...F}}>Not quite</div>
+                          <div style={{fontSize:17,fontWeight:800,color:"#dc2626",...F}}>Not quite</div>
                           <div style={{fontSize:13,color:"#ef4444",...F}}>Correct answer highlighted above.</div>
                         </div>
                       </div>
@@ -479,7 +474,7 @@ function LessonView({topic,appState,persist,onBack}){
                           </div>
                           {whyLoad
                             ?<div style={{fontSize:13,color:"#9ca3af",...F,display:"flex",alignItems:"center",gap:8}}><span className="vl-pulse" style={{display:"inline-block"}}>●</span> Explaining…</div>
-                            :<p style={{fontSize:18,color:"#374151",lineHeight:1.85,...F}}>{whyText}</p>
+                            :<p style={{fontSize:19,color:"#374151",lineHeight:1.85,...F}}>{whyText}</p>
                           }
                         </div>
                       )}
@@ -525,7 +520,7 @@ function LessonView({topic,appState,persist,onBack}){
                 <span style={{fontSize:11,color:"#6366f1",fontWeight:700,letterSpacing:1.5,textTransform:"uppercase",...F}}>Try It Live</span>
                 <span style={{fontSize:11,color:"#d1d5db",marginLeft:"auto",...F}}>+10 XP · max 3/day</span>
               </div>
-              <p style={{fontSize:13,color:"#9ca3af",marginBottom:14,lineHeight:1.5,...F}}>Edit this prompt and hit Run for a real AI response.</p>
+              <p style={{fontSize:15,color:"#9ca3af",marginBottom:14,lineHeight:1.5,...F}}>Edit this prompt and hit Run for a real AI response.</p>
               <textarea value={editPrompt} onChange={e=>setEditPrompt(e.target.value)} style={{...F,width:"100%",background:"#f9f8f5",border:"1.5px solid #e5e2da",borderRadius:12,padding:"13px 14px",fontSize:14,color:"#374151",lineHeight:1.75,resize:"vertical",minHeight:90,transition:"all 0.15s"}}/>
               <button onClick={runEx} disabled={aiLoad} className="vl-btn" style={{background:"#6366f1",color:"#fff",border:"none",borderRadius:12,padding:"11px 26px",fontSize:14,fontWeight:700,...F,marginTop:10,opacity:aiLoad?0.7:1}}>
                 {aiLoad?"Running…":"▶  Run"}
@@ -579,8 +574,8 @@ function TopicGroup({label,emoji,topics,completed,onOpen,locked,xpNeeded,userXP,
                     {done&&<Chip label="✓ Done" color="#16a34a" bg="#f0fdf4" small/>}
                     {hasDiagram&&!done&&<Chip label="📊 Visual" color="#7c3aed" bg="#f5f3ff" small/>}
                   </div>
-                  <div style={{fontFamily:"'Playfair Display',serif",fontSize:18,fontWeight:700,color:"#111827",marginBottom:4,lineHeight:1.3}}>{t.title}</div>
-                  <div style={{fontSize:15,color:"#6b7280",lineHeight:1.6,...F,marginBottom:4}}>{t.short}</div>
+                  <div style={{fontFamily:"'Playfair Display',serif",fontSize:19,fontWeight:700,color:"#111827",marginBottom:4,lineHeight:1.3}}>{t.title}</div>
+                  <div style={{fontSize:16,color:"#6b7280",lineHeight:1.6,...F,marginBottom:4}}>{t.short}</div>
                   <div style={{fontSize:11,color:"#b0a898",fontWeight:600,...F}}>~{t.steps.length+1} min</div>
                 </div>
                 <div style={{color:"#d1d5db",fontSize:18,flexShrink:0}}>→</div>
