@@ -2,7 +2,7 @@ import React from "react";
 
 const Diagrams = {
   llmPrediction: () => (
-    <svg viewBox="0 0 460 230" style={{width:"100%",maxWidth:700,display:"block",margin:"0 auto"}}>
+    <svg viewBox="0 0 460 250" style={{width:"100%",maxWidth:700,display:"block",margin:"0 auto"}}>
       <text x="230" y="18" textAnchor="middle" fontSize="15" fill="#374151" fontFamily="Inter,sans-serif" fontWeight="700">How an LLM Generates Text</text>
       <text x="230" y="36" textAnchor="middle" fontSize="15" fill="#4b5563" fontFamily="Inter,sans-serif">It predicts the most likely next word, one at a time</text>
       <rect x="10" y="46" width="290" height="34" rx="8" fill="#eef2ff" stroke="#6366f1" strokeWidth="1.5"/>
@@ -23,7 +23,7 @@ const Diagrams = {
     </svg>
   ),
   llmCapabilities: () => (
-    <svg viewBox="0 0 460 230" style={{width:"100%",maxWidth:700,display:"block",margin:"0 auto"}}>
+    <svg viewBox="0 0 460 250" style={{width:"100%",maxWidth:700,display:"block",margin:"0 auto"}}>
       <text x="230" y="18" textAnchor="middle" fontSize="15" fill="#374151" fontFamily="Inter,sans-serif" fontWeight="700">What LLMs Do Well vs. Where They Fail</text>
       <rect x="10" y="28" width="213" height="30" rx="10" fill="#16a34a"/>
       <text x="116" y="48" textAnchor="middle" fontSize="15" fill="#fff" fontWeight="800" fontFamily="Inter,sans-serif">Reliable</text>
@@ -61,7 +61,7 @@ const Diagrams = {
     </svg>
   ),
   contextWindowSize: () => (
-    <svg viewBox="0 0 460 240" style={{width:"100%",maxWidth:700,display:"block",margin:"0 auto"}}>
+    <svg viewBox="0 0 460 260" style={{width:"100%",maxWidth:700,display:"block",margin:"0 auto"}}>
       <text x="230" y="18" textAnchor="middle" fontSize="15" fill="#374151" fontFamily="Inter,sans-serif" fontWeight="700">Context Windows Have Grown Dramatically</text>
       <text x="230" y="36" textAnchor="middle" fontSize="15" fill="#4b5563" fontFamily="Inter,sans-serif">Bigger window = more the AI can work with at once</text>
       {[
@@ -102,7 +102,7 @@ const Diagrams = {
     </svg>
   ),
   mcp: () => (
-    <svg viewBox="0 0 460 215" style={{width:"100%",maxWidth:700,display:"block",margin:"0 auto"}}>
+    <svg viewBox="0 0 460 232" style={{width:"100%",maxWidth:700,display:"block",margin:"0 auto"}}>
       <text x="230" y="20" textAnchor="middle" fontSize="15" fill="#374151" fontFamily="Inter,sans-serif" fontWeight="700">MCP: One Standard Connector</text>
       <rect x="180" y="74" width="100" height="72" rx="14" fill="#6366f1"/>
       <rect x="206" y="88" width="48" height="30" rx="8" fill="rgba(255,255,255,0.2)"/>
@@ -167,7 +167,7 @@ const Diagrams = {
     </svg>
   ),
   systemPrompt: () => (
-    <svg viewBox="0 0 460 255" style={{width:"100%",maxWidth:700,display:"block",margin:"0 auto"}}>
+    <svg viewBox="0 0 460 270" style={{width:"100%",maxWidth:700,display:"block",margin:"0 auto"}}>
       <text x="230" y="20" textAnchor="middle" fontSize="15" fill="#374151" fontFamily="Inter,sans-serif" fontWeight="700">What Happens Before You Type Anything</text>
       <rect x="20" y="34" width="420" height="64" rx="12" fill="#1e1b4b" stroke="#4338ca" strokeWidth="2"/>
       <text x="38" y="56" fontSize="15" fill="#a5b4fc" fontFamily="Inter,sans-serif" fontWeight="700">LAYER 1: SYSTEM PROMPT (you never see this)</text>
@@ -190,7 +190,7 @@ const Diagrams = {
     </svg>
   ),
   sycophancy: () => (
-    <svg viewBox="0 0 460 240" style={{width:"100%",maxWidth:700,display:"block",margin:"0 auto"}}>
+    <svg viewBox="0 0 460 260" style={{width:"100%",maxWidth:700,display:"block",margin:"0 auto"}}>
       <text x="230" y="18" textAnchor="middle" fontSize="15" fill="#374151" fontFamily="Inter,sans-serif" fontWeight="700">Same Question. Very Different Answers.</text>
       <text x="230" y="36" textAnchor="middle" fontSize="15" fill="#4b5563" fontFamily="Inter,sans-serif">"Does my business plan look good?"</text>
       <rect x="10" y="46" width="210" height="170" rx="14" fill="#fffbeb" stroke="#fde68a" strokeWidth="2"/>
@@ -218,7 +218,7 @@ const Diagrams = {
     </svg>
   ),
   inferenceVsTraining: () => (
-    <svg viewBox="0 0 460 230" style={{width:"100%",maxWidth:700,display:"block",margin:"0 auto"}}>
+    <svg viewBox="0 0 460 248" style={{width:"100%",maxWidth:700,display:"block",margin:"0 auto"}}>
       <text x="230" y="18" textAnchor="middle" fontSize="15" fill="#374151" fontFamily="Inter,sans-serif" fontWeight="700">Training vs. Inference</text>
       <text x="10" y="42" fontSize="15" fill="#374151" fontFamily="Inter,sans-serif" fontWeight="700">TRAINING — done once by a handful of labs</text>
       <rect x="10" y="50" width="440" height="46" rx="10" fill="url(#trainGrad)"/>
@@ -239,7 +239,7 @@ const Diagrams = {
     </svg>
   ),
   promptInjection: () => (
-    <svg viewBox="0 0 460 255" style={{width:"100%",maxWidth:700,display:"block",margin:"0 auto"}}>
+    <svg viewBox="0 0 460 275" style={{width:"100%",maxWidth:700,display:"block",margin:"0 auto"}}>
       <text x="230" y="18" textAnchor="middle" fontSize="15" fill="#374151" fontFamily="Inter,sans-serif" fontWeight="700">How a Prompt Injection Attack Works</text>
       <rect x="20" y="32" width="180" height="52" rx="10" fill="#eef2ff" stroke="#6366f1" strokeWidth="2"/>
       <text x="110" y="54" textAnchor="middle" fontSize="15" fill="#4338ca" fontWeight="700" fontFamily="Inter,sans-serif">REAL INSTRUCTIONS</text>
@@ -291,7 +291,7 @@ const Diagrams = {
     </svg>
   ),
   embeddingMap: () => (
-    <svg viewBox="0 0 460 255" style={{width:"100%",maxWidth:700,display:"block",margin:"0 auto"}}>
+    <svg viewBox="0 0 460 272" style={{width:"100%",maxWidth:700,display:"block",margin:"0 auto"}}>
       <text x="230" y="16" textAnchor="middle" fontSize="15" fill="#374151" fontFamily="Inter,sans-serif" fontWeight="700">Similar Meaning = Similar Numbers</text>
       <text x="230" y="34" textAnchor="middle" fontSize="15" fill="#4b5563" fontFamily="Inter,sans-serif">Words cluster by meaning in embedding space</text>
       {[0,1,2,3,4].map(i=><line key={"h"+i} x1="20" y1={50+i*38} x2="440" y2={50+i*38} stroke="#f3f4f6" strokeWidth="1"/>)}
@@ -381,7 +381,7 @@ const Diagrams = {
     </svg>
   ),
   governancePillars: () => (
-    <svg viewBox="0 0 460 245" style={{width:"100%",maxWidth:700,display:"block",margin:"0 auto"}}>
+    <svg viewBox="0 0 460 265" style={{width:"100%",maxWidth:700,display:"block",margin:"0 auto"}}>
       <text x="230" y="18" textAnchor="middle" fontSize="15" fill="#374151" fontFamily="Inter,sans-serif" fontWeight="700">The 5 Pillars of AI Governance</text>
       {[
         {n:"1",label:"INVENTORY",desc:"Know every AI tool",color:"#6366f1",bg:"#eef2ff",x:10},
@@ -406,7 +406,7 @@ const Diagrams = {
     </svg>
   ),
   observabilityStack: () => (
-    <svg viewBox="0 0 460 246" style={{width:"100%",maxWidth:700,display:"block",margin:"0 auto"}}>
+    <svg viewBox="0 0 460 290" style={{width:"100%",maxWidth:700,display:"block",margin:"0 auto"}}>
       <text x="230" y="18" textAnchor="middle" fontSize="15" fill="#374151" fontFamily="Inter,sans-serif" fontWeight="700">Minimum Viable AI Observability</text>
       <text x="230" y="36" textAnchor="middle" fontSize="15" fill="#4b5563" fontFamily="Inter,sans-serif">What you need before any AI system goes to production</text>
       {[
@@ -430,7 +430,7 @@ const Diagrams = {
     </svg>
   ),
   multimodalInputs: () => (
-    <svg viewBox="0 0 460 218" style={{width:"100%",maxWidth:700,display:"block",margin:"0 auto"}}>
+    <svg viewBox="0 0 460 238" style={{width:"100%",maxWidth:700,display:"block",margin:"0 auto"}}>
       <text x="230" y="18" textAnchor="middle" fontSize="15" fill="#374151" fontFamily="Inter,sans-serif" fontWeight="700">What Multimodal AI Can Process</text>
       {[
         {label:"Text",examples:"Prompts, docs, code",color:"#6366f1",bg:"#eef2ff",x:10,y:30},
@@ -500,7 +500,7 @@ const Diagrams = {
     </svg>
   ),
   foundationModelStack: () => (
-    <svg viewBox="0 0 460 220" style={{width:"100%",maxWidth:700,display:"block",margin:"0 auto"}}>
+    <svg viewBox="0 0 460 238" style={{width:"100%",maxWidth:700,display:"block",margin:"0 auto"}}>
       <text x="230" y="18" textAnchor="middle" fontSize="15" fill="#374151" fontFamily="Inter,sans-serif" fontWeight="700">Foundation Model vs. Application</text>
       <text x="230" y="36" textAnchor="middle" fontSize="15" fill="#4b5563" fontFamily="Inter,sans-serif">Same engine, very different products</text>
       <rect x="20" y="48" width="420" height="52" rx="12" fill="#1e1b4b" stroke="#4338ca" strokeWidth="2"/>
@@ -581,7 +581,7 @@ const Diagrams = {
     </svg>
   ),
   markdownSyntax: () => (
-    <svg viewBox="0 0 460 248" style={{width:"100%",maxWidth:700,display:"block",margin:"0 auto"}}>
+    <svg viewBox="0 0 460 268" style={{width:"100%",maxWidth:700,display:"block",margin:"0 auto"}}>
       <text x="230" y="18" textAnchor="middle" fontSize="15" fill="#374151" fontFamily="Inter,sans-serif" fontWeight="700">Markdown: What You Type vs. How It Looks</text>
       <rect x="10" y="32" width="200" height="32" rx="7" fill="#1e1b4b"/>
       <text x="22" y="52" fontSize="15" fill="#a5b4fc" fontFamily="monospace">{"# Heading"}</text>
@@ -687,7 +687,7 @@ const Diagrams = {
     </svg>
   ),
   vectorSearchVsKeyword: () => (
-    <svg viewBox="0 0 460 225" style={{width:"100%",maxWidth:700,display:"block",margin:"0 auto"}}>
+    <svg viewBox="0 0 460 245" style={{width:"100%",maxWidth:700,display:"block",margin:"0 auto"}}>
       <text x="230" y="18" textAnchor="middle" fontSize="15" fill="#374151" fontFamily="Inter,sans-serif" fontWeight="700">Keyword vs. Vector Search</text>
       <text x="230" y="36" textAnchor="middle" fontSize="15" fill="#4b5563" fontFamily="Inter,sans-serif">Search: "things to do when you cannot sleep"</text>
       <rect x="10" y="46" width="210" height="30" rx="8" fill="#ef4444"/>
@@ -711,7 +711,7 @@ const Diagrams = {
     </svg>
   ),
   agentVsChatbot: () => (
-    <svg viewBox="0 0 460 220" style={{width:"100%",maxWidth:700,display:"block",margin:"0 auto"}}>
+    <svg viewBox="0 0 460 240" style={{width:"100%",maxWidth:700,display:"block",margin:"0 auto"}}>
       <text x="230" y="18" textAnchor="middle" fontSize="15" fill="#374151" fontFamily="Inter,sans-serif" fontWeight="700">Chatbot vs. AI Agent</text>
       <rect x="10" y="28" width="210" height="30" rx="8" fill="#4b5563"/>
       <text x="115" y="48" textAnchor="middle" fontSize="15" fill="#fff" fontWeight="800" fontFamily="Inter,sans-serif">Chatbot</text>
@@ -770,7 +770,7 @@ const Diagrams = {
     </svg>
   ),
   sycophancyMeter: () => (
-    <svg viewBox="0 0 460 206" style={{width:"100%",maxWidth:700,display:"block",margin:"0 auto"}}>
+    <svg viewBox="0 0 460 225" style={{width:"100%",maxWidth:700,display:"block",margin:"0 auto"}}>
       <text x="230" y="18" textAnchor="middle" fontSize="15" fill="#374151" fontFamily="Inter,sans-serif" fontWeight="700">How to Spot Sycophancy</text>
       {[
         {signal:"AI agrees with everything you say",risk:"HIGH",color:"#dc2626",bg:"#fef2f2"},
