@@ -413,7 +413,7 @@ function DiagnosticQuiz({onComplete}){
       <div style={{maxWidth:600,margin:"0 auto",padding:"32px 16px"}}>
         {/* Progress */}
         <div style={{background:"#f3f4f6",borderRadius:999,height:6,marginBottom:32,overflow:"hidden"}}>
-          <div style={{background:"linear-gradient(90deg,#6366f1,#818cf8)",height:"100%",width:`${(idx/DIAGNOSTIC.length)*100}%`,borderRadius:999,transition:"width 0.4s ease"}}/>
+          <div style={{background:"linear-gradient(90deg,#6366f1,#818cf8)",height:"100%",width:`${((idx+0.5)/DIAGNOSTIC.length)*100}%`,borderRadius:999,transition:"width 0.4s ease"}}/>
         </div>
 
         <div className="vl-fi" key={idx}>
@@ -964,7 +964,7 @@ function LessonView({topic,appState,persist,onBack}){
           <div className="vl-fi">
             <div style={{background:"#6366f1",borderRadius:20,padding:"28px 24px",marginBottom:18,textAlign:"center",boxShadow:"0 8px 32px rgba(99,102,241,0.28)"}}>
               <div style={{fontFamily:"'Playfair Display',serif",fontSize:24,fontWeight:800,color:"#fff",marginBottom:6}}>{done?"Already mastered this one":"Topic complete."}</div>
-              <p style={{fontSize:15,color:"#e0e7ff",lineHeight:1.7,...F,marginBottom:20}}>{fs}/{topic.quiz.length} correct · {done?"No new progress recorded":"Added to your profile"}</p>
+              <p style={{fontSize:15,color:"#e0e7ff",lineHeight:1.7,...F,marginBottom:20}}>{fs}/{topic.quiz.length} correct · {done?"Already counted":"Progress saved ✓"}</p>
               <div style={{display:"flex",gap:10,justifyContent:"center",flexWrap:"wrap"}}>
                 <button onClick={()=>{const text=`Just completed "${topic.title}" on VibeLearn — AI literacy that actually sticks. 🧠 vibelearn-pi.vercel.app`;if(navigator.share){navigator.share({text});}else{navigator.clipboard?.writeText(text).then(()=>showToast("Copied to clipboard ✓"));}}} className="vl-btn" style={{background:"rgba(255,255,255,0.15)",color:"#fff",border:"1px solid rgba(255,255,255,0.25)",borderRadius:10,padding:"11px 20px",fontSize:14,fontWeight:600,...F}}>Share this lesson</button>
                 <button onClick={onBack} className="vl-btn" style={{background:"rgba(255,255,255,0.15)",color:"#fff",border:"1px solid rgba(255,255,255,0.25)",borderRadius:10,padding:"11px 20px",fontSize:14,fontWeight:600,...F}}>Back to topics</button>
@@ -998,7 +998,7 @@ function LessonView({topic,appState,persist,onBack}){
 }
 
 // ── TOPIC GROUP ───────────────────────────────────────────────────────────────
-function TopicGroup({label,emoji,topics,completed,onOpen,locked,xpNeeded,userXP,defaultOpen}){
+function TopicGroup({label,emoji,topics,completed,started,onOpen,locked,xpNeeded,userXP,defaultOpen}){
   const[open,setOpen]=useState(defaultOpen);
   const doneCount=topics.filter(t=>completed.includes(t.slug)).length;
   return(
@@ -1029,7 +1029,7 @@ function TopicGroup({label,emoji,topics,completed,onOpen,locked,xpNeeded,userXP,
                   <div style={{display:"flex",gap:6,marginBottom:5,flexWrap:"wrap",alignItems:"center"}}>
                     <Chip label={t.category} color={cm.color} bg={cm.bg} small/>
                     {done&&<Chip label="✓ Done" color="#16a34a" bg="#f0fdf4" small/>}
-                    {!done&&st?.started?.includes(t.slug)&&<Chip label="In Progress" color="#d97706" bg="#fffbeb" small/>}
+                    {!done&&started?.includes(t.slug)&&<Chip label="In Progress" color="#d97706" bg="#fffbeb" small/>}
                   </div>
                   <div className="vl-topic-title" style={{fontFamily:"'Playfair Display',serif",fontSize:18,fontWeight:700,color:"#111827",marginBottom:3,lineHeight:1.3}}>{t.title}</div>
                   <div style={{fontSize:15,color:"#4b5563",lineHeight:1.7,...F}}>{t.short}</div>
@@ -1191,6 +1191,24 @@ export default function VibeLearn(){
           <div className="vl-xp" style={{background:"linear-gradient(90deg,#6366f1,#818cf8)",height:"100%",width:`${Math.round(st.completed.length/TOPICS.length*100)}%`,borderRadius:999}}/>
         </div>
 
+        {/* All complete banner */}
+        {!recommended&&st.completed.length===TOPICS.length&&(
+          <div className="vl-fade" style={{background:"linear-gradient(135deg,#6366f1,#818cf8)",borderRadius:18,padding:"24px",marginBottom:20,textAlign:"center",boxShadow:"0 6px 24px rgba(99,102,241,0.28)"}}>
+            <div style={{fontSize:32,marginBottom:8}}>🎓</div>
+            <div style={{fontFamily:"'Playfair Display',serif",fontSize:20,fontWeight:800,color:"#fff",marginBottom:6}}>You've completed all 27 topics!</div>
+            <div style={{fontSize:15,color:"#e0e7ff",...F}}>Your AI Literacy Score is 100/100. Share it.</div>
+          </div>
+        )}
+
+        {/* All complete banner */}
+        {!recommended&&st.completed.length===TOPICS.length&&(
+          <div className="vl-fade" style={{background:"linear-gradient(135deg,#6366f1,#818cf8)",borderRadius:18,padding:"24px",marginBottom:20,textAlign:"center",boxShadow:"0 6px 24px rgba(99,102,241,0.28)"}}>
+            <div style={{fontSize:32,marginBottom:8}}>🎓</div>
+            <div style={{fontFamily:"'Playfair Display',serif",fontSize:20,fontWeight:800,color:"#fff",marginBottom:6}}>You've completed all 27 topics!</div>
+            <div style={{fontSize:15,color:"#e0e7ff",...F}}>Your AI Literacy Score is 100/100. Share it.</div>
+          </div>
+        )}
+
         {/* Recommended next */}
         {recommended&&(
           <div style={{marginBottom:20}} className="vl-fade">
@@ -1234,9 +1252,9 @@ export default function VibeLearn(){
 
         {/* All topics */}
         <div style={{fontSize:13,color:"#6b7280",fontWeight:700,letterSpacing:1.5,textTransform:"uppercase",marginBottom:12,...F}}>All Topics</div>
-        <TopicGroup label="Beginner" emoji="🟢" topics={beginnerTopics} completed={st.completed} onOpen={openTopic} locked={false} defaultOpen={true}/>
-        <TopicGroup label="Intermediate" emoji="🟡" topics={intermediateTopics} completed={st.completed} onOpen={openTopic} locked={false} defaultOpen={st.completed.length>0}/>
-        <TopicGroup label="Advanced" emoji="🔴" topics={advancedTopics} completed={st.completed} onOpen={openTopic} locked={advancedLocked} xpNeeded={ADVANCED_XP_GATE} userXP={st.xp} defaultOpen={false}/>
+        <TopicGroup label="Beginner" emoji="🟢" topics={beginnerTopics} completed={st.completed} started={st.started||[]} onOpen={openTopic} locked={false} defaultOpen={true}/>
+        <TopicGroup label="Intermediate" emoji="🟡" topics={intermediateTopics} completed={st.completed} started={st.started||[]} onOpen={openTopic} locked={false} defaultOpen={st.completed.length>0}/>
+        <TopicGroup label="Advanced" emoji="🔴" topics={advancedTopics} completed={st.completed} started={st.started||[]} onOpen={openTopic} locked={advancedLocked} xpNeeded={ADVANCED_XP_GATE} userXP={st.xp} defaultOpen={false}/>
       </div>
     </div>
   );
