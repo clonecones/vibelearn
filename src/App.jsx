@@ -273,7 +273,7 @@ function getScoreLabel(score){
 const SK="vibelearn-v7";
 async function loadState(){try{const v=localStorage.getItem(SK);if(v)return JSON.parse(v);}catch{}return null;}
 async function saveState(s){try{localStorage.setItem(SK,JSON.stringify(s));}catch{}}
-function defaultState(){return{xp:0,completed:[],badges:[],streak:0,longestStreak:0,lastCompletedDate:null,exerciseRunsToday:{},seenIntro:false,diagnosticDone:false,diagnosticTrack:null};}
+function defaultState(){return{xp:0,completed:[],badges:[],streak:0,longestStreak:0,lastCompletedDate:null,exerciseRunsToday:{},seenIntro:false,diagnosticDone:false,diagnosticTrack:null,started:[]};}
 
 function checkBadges(s){
   const e=[...s.badges];const add=id=>{if(!e.includes(id))e.push(id);};
@@ -543,7 +543,15 @@ function TracksView({completed,onOpenTopic,onBack,activeTrack}){
       <div style={{maxWidth:880,margin:"0 auto",padding:"24px 16px"}}>
         {!selected?(
           <>
-            <div style={{fontSize:17,color:"#374151",lineHeight:1.7,marginBottom:24,...F}}>Choose a track to follow a curated learning path. Complete all topics in a track to earn a credential.</div>
+            <div style={{fontSize:17,color:"#374151",lineHeight:1.7,marginBottom:8,...F}}>Choose a track to follow a curated learning path.</div>
+            <div style={{fontSize:15,color:"#6b7280",lineHeight:1.6,marginBottom:24,...F}}>Complete all topics in a track to earn a shareable credential.</div>
+            {completed.length===0&&(
+              <div style={{background:"#fff",borderRadius:16,padding:"24px",border:"1.5px dashed #d1d5db",textAlign:"center",marginBottom:20}}>
+                <div style={{fontSize:36,marginBottom:12}}>🗺️</div>
+                <div style={{fontFamily:"'Playfair Display',serif",fontSize:18,fontWeight:800,color:"#111827",marginBottom:8}}>Start any topic to begin a track</div>
+                <div style={{fontSize:15,color:"#6b7280",lineHeight:1.6,...F}}>Your progress across all tracks will show here as you complete topics. Pick any track below to see what's inside.</div>
+              </div>
+            )}
             <div style={{display:"flex",flexDirection:"column",gap:14}}>
               {TRACKS.map(track=>{
                 const done=track.slugs.filter(s=>completed.includes(s)).length;
@@ -586,10 +594,11 @@ function TrackDetail({track,completed,onOpenTopic,onBack}){
   const complete=done===trackTopics.length;
   const pct=Math.round((done/trackTopics.length)*100);
 
+  const[credCopied,setCredCopied]=useState(false);
   function shareCredential(){
     const text=`I completed the "${track.label}" track on VibeLearn — AI literacy that actually sticks. 🎓 vibelearn-pi.vercel.app`;
-    if(navigator.share){navigator.share({text});}
-    else{navigator.clipboard?.writeText(text).then(()=>alert("Copied to clipboard!"));}
+    if(navigator.share){navigator.share({text}).catch(()=>{});}
+    else{navigator.clipboard?.writeText(text).then(()=>{setCredCopied(true);setTimeout(()=>setCredCopied(false),2500);});}
   }
 
   return(
@@ -613,7 +622,7 @@ function TrackDetail({track,completed,onOpenTopic,onBack}){
         </div>
         {complete&&(
           <button onClick={shareCredential} className="vl-btn" style={{background:"rgba(255,255,255,0.2)",color:"#fff",border:"1.5px solid rgba(255,255,255,0.4)",borderRadius:12,padding:"12px 20px",fontSize:14,fontWeight:700,...F,width:"100%"}}>
-            🎓 Share My Credential
+{credCopied?"✓ Copied!":"🎓 Share My Credential"}
           </button>
         )}
       </div>
@@ -877,7 +886,7 @@ function LessonView({topic,appState,persist,onBack}){
                 ))}
               </div>
             </div>
-            <div style={{background:"#fff",borderRadius:20,padding:"28px 24px",boxShadow:"0 2px 18px rgba(0,0,0,0.07)",border:"1px solid #ebe8e0",marginBottom:14}}>
+            <div key={`quiz-card-${quizIdx}`} style={{background:"#fff",borderRadius:20,padding:"28px 24px",boxShadow:"0 2px 18px rgba(0,0,0,0.07)",border:"1px solid #ebe8e0",marginBottom:14}}>
               <p style={{fontSize:22,fontWeight:800,color:"#111827",lineHeight:1.35,marginBottom:24,fontFamily:"'Playfair Display',serif"}}>{q.q}</p>
               <div style={{display:"flex",flexDirection:"column",gap:10}}>
                 {q.opts.map((opt,i)=>{
@@ -1020,6 +1029,7 @@ function TopicGroup({label,emoji,topics,completed,onOpen,locked,xpNeeded,userXP,
                   <div style={{display:"flex",gap:6,marginBottom:5,flexWrap:"wrap",alignItems:"center"}}>
                     <Chip label={t.category} color={cm.color} bg={cm.bg} small/>
                     {done&&<Chip label="✓ Done" color="#16a34a" bg="#f0fdf4" small/>}
+                    {!done&&st?.started?.includes(t.slug)&&<Chip label="In Progress" color="#d97706" bg="#fffbeb" small/>}
                   </div>
                   <div className="vl-topic-title" style={{fontFamily:"'Playfair Display',serif",fontSize:18,fontWeight:700,color:"#111827",marginBottom:3,lineHeight:1.3}}>{t.title}</div>
                   <div style={{fontSize:15,color:"#4b5563",lineHeight:1.7,...F}}>{t.short}</div>
@@ -1047,7 +1057,14 @@ export default function VibeLearn(){
   useEffect(()=>{loadState().then(s=>{setSt(s||defaultState());setReady(true);});},[]);
   const persist=useCallback((s)=>{setSt(s);saveState(s);},[]);
 
-  const openTopic=t=>{setTopic(t);setView("topic");setTimeout(()=>window.scrollTo({top:0,behavior:"smooth"}),40);};
+  const openTopic=t=>{
+    setTopic(t);setView("topic");
+    setTimeout(()=>window.scrollTo({top:0,behavior:"smooth"}),40);
+    if(!st.started?.includes(t.slug)&&!st.completed.includes(t.slug)){
+      const s={...st,started:[...(st.started||[]),t.slug]};
+      persist(s);
+    }
+  };
 
   if(!ready||!st)return(
     <div style={{background:"#f5f4f0",minHeight:"100vh",display:"flex",alignItems:"center",justifyContent:"center",...F}}>
