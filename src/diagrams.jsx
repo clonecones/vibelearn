@@ -19,7 +19,7 @@ const Diagrams = {
         </g>
       ))}
       <rect x="10" y="192" width="440" height="22" rx="8" fill="#f0fdf4" stroke="#86efac" strokeWidth="1.5"/>
-      <text x="230" y="207" textAnchor="middle" fontSize="12" fill="#15803d" fontFamily="Inter,sans-serif" fontWeight="700">Picks "Paris" {"—"} then repeats this process for every single word in the response</text>
+      <text x="230" y="207" textAnchor="middle" fontSize="12" fill="#15803d" fontFamily="Inter,sans-serif" fontWeight="700">Picks "Paris" then repeats for every word in the response</text>
     </svg>
   ),
 
@@ -79,7 +79,7 @@ const Diagrams = {
         </g>
       ))}
       <rect x="10" y="208" width="440" height="18" rx="8" fill="#fef9c3" stroke="#fde68a" strokeWidth="1"/>
-      <text x="230" y="221" textAnchor="middle" fontSize="11" fill="#92400e" fontFamily="Inter,sans-serif" fontWeight="700">When the window is full, the oldest content is dropped {"—"} the AI literally forgets it</text>
+      <text x="230" y="221" textAnchor="middle" fontSize="11" fill="#92400e" fontFamily="Inter,sans-serif" fontWeight="700">When full, oldest content is dropped {"—"} the AI forgets it</text>
     </svg>
   ),
   rag: () => (
@@ -215,21 +215,22 @@ const Diagrams = {
   ),
 
   systemPrompt: () => (
-    <svg viewBox="0 0 460 240" style={{width:"100%",maxWidth:600,display:"block",margin:"0 auto"}}>
+    <svg viewBox="0 0 460 245" style={{width:"100%",maxWidth:600,display:"block",margin:"0 auto"}}>
       <text x="230" y="20" textAnchor="middle" fontSize="13" fill="#374151" fontFamily="Inter,sans-serif" fontWeight="700">What Happens Before You Type Anything</text>
-      <rect x="30" y="34" width="400" height="56" rx="12" fill="#1e1b4b" stroke="#4338ca" strokeWidth="2"/>
-      <text x="50" y="55" fontSize="11" fill="#a5b4fc" fontFamily="Inter,sans-serif" fontWeight="700">LAYER 1: SYSTEM PROMPT (hidden from you)</text>
-      <text x="50" y="74" fontSize="12" fill="#c7d2fe" fontFamily="Inter,sans-serif">"You are a vendor risk assistant. Never discuss competitors. Cite sources."</text>
-      <rect x="376" y="42" width="44" height="16" rx="4" fill="#4338ca"/>
-      <text x="398" y="54" textAnchor="middle" fontSize="10" fill="#fff" fontFamily="Inter,sans-serif" fontWeight="700">HIDDEN</text>
-      <path d="M230 92 L230 108" stroke="#6366f1" strokeWidth="2.5" markerEnd="url(#sp1)"/>
-      <rect x="30" y="110" width="400" height="44" rx="12" fill="#eef2ff" stroke="#6366f1" strokeWidth="2"/>
-      <text x="50" y="128" fontSize="11" fill="#4338ca" fontFamily="Inter,sans-serif" fontWeight="700">LAYER 2: YOUR MESSAGE (visible)</text>
-      <text x="50" y="146" fontSize="12" fill="#374151" fontFamily="Inter,sans-serif">"Summarize this vendor security posture."</text>
-      <path d="M230 156 L230 172" stroke="#6366f1" strokeWidth="2.5" markerEnd="url(#sp2)"/>
-      <rect x="30" y="174" width="400" height="44" rx="12" fill="#f0fdf4" stroke="#22c55e" strokeWidth="2"/>
-      <text x="50" y="192" fontSize="11" fill="#15803d" fontFamily="Inter,sans-serif" fontWeight="700">LAYER 3: AI RESPONSE (shaped by both layers)</text>
-      <text x="50" y="210" fontSize="12" fill="#374151" fontFamily="Inter,sans-serif">"Based on available sources, this vendor security posture..."</text>
+      <rect x="20" y="34" width="420" height="62" rx="12" fill="#1e1b4b" stroke="#4338ca" strokeWidth="2"/>
+      <text x="38" y="55" fontSize="11" fill="#a5b4fc" fontFamily="Inter,sans-serif" fontWeight="700">LAYER 1: SYSTEM PROMPT (you never see this)</text>
+      <text x="38" y="72" fontSize="11" fill="#c7d2fe" fontFamily="Inter,sans-serif">"You are a helpful cooking assistant.</text>
+      <text x="38" y="87" fontSize="11" fill="#c7d2fe" fontFamily="Inter,sans-serif">Only discuss food. Never give medical advice."</text>
+      <rect x="366" y="40" width="64" height="18" rx="5" fill="#4338ca"/>
+      <text x="398" y="53" textAnchor="middle" fontSize="10" fill="#fff" fontFamily="Inter,sans-serif" fontWeight="700">HIDDEN</text>
+      <path d="M230 98 L230 114" stroke="#6366f1" strokeWidth="2.5" markerEnd="url(#sp1)"/>
+      <rect x="20" y="116" width="420" height="48" rx="12" fill="#eef2ff" stroke="#6366f1" strokeWidth="2"/>
+      <text x="38" y="136" fontSize="11" fill="#4338ca" fontFamily="Inter,sans-serif" fontWeight="700">LAYER 2: YOUR MESSAGE (this is what you type)</text>
+      <text x="38" y="154" fontSize="12" fill="#374151" fontFamily="Inter,sans-serif">"What should I make for dinner tonight?"</text>
+      <path d="M230 166 L230 182" stroke="#6366f1" strokeWidth="2.5" markerEnd="url(#sp2)"/>
+      <rect x="20" y="184" width="420" height="48" rx="12" fill="#f0fdf4" stroke="#22c55e" strokeWidth="2"/>
+      <text x="38" y="204" fontSize="11" fill="#15803d" fontFamily="Inter,sans-serif" fontWeight="700">LAYER 3: AI RESPONSE (shaped by both layers above)</text>
+      <text x="38" y="222" fontSize="12" fill="#374151" fontFamily="Inter,sans-serif">"How about a 30-minute pasta? Here is what you need..."</text>
       <defs>
         <marker id="sp1" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,0 L0,8 L8,4 z" fill="#6366f1"/></marker>
         <marker id="sp2" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,0 L0,8 L8,4 z" fill="#6366f1"/></marker>
@@ -490,7 +491,7 @@ const Diagrams = {
         </g>
       ))}
       <rect x="10" y="200" width="440" height="20" rx="6" fill="#fef3c7" stroke="#fde68a" strokeWidth="1"/>
-      <text x="230" y="214" textAnchor="middle" fontSize="11" fill="#92400e" fontFamily="Inter,sans-serif" fontWeight="700">Most firms start with: Inventory. You cannot govern what you do not know about.</text>
+      <text x="230" y="214" textAnchor="middle" fontSize="11" fill="#92400e" fontFamily="Inter,sans-serif" fontWeight="700">Start here: Inventory. You cannot govern what you do not know about.</text>
     </svg>
   ),
 
@@ -541,7 +542,7 @@ const Diagrams = {
       <text x="230" y="152" textAnchor="middle" fontSize="22">🤖</text>
       <text x="230" y="170" textAnchor="middle" fontSize="11" fill="#fff" fontWeight="700" fontFamily="Inter,sans-serif">MULTIMODAL AI</text>
       <rect x="10" y="192" width="440" height="14" rx="6" fill="#fffbeb" stroke="#fde68a" strokeWidth="1"/>
-      <text x="230" y="203" textAnchor="middle" fontSize="10" fill="#92400e" fontFamily="Inter,sans-serif" fontWeight="700">Limitation: AI can miss details in dense charts, low-res images, or handwriting. Always verify high-stakes visual analysis.</text>
+      <text x="230" y="203" textAnchor="middle" fontSize="10" fill="#92400e" fontFamily="Inter,sans-serif" fontWeight="700">Note: AI can miss details in dense charts or handwriting. Verify important visuals.</text>
     </svg>
   ),
 
@@ -616,7 +617,7 @@ const Diagrams = {
           <text x={app.x+45} y="172" textAnchor="middle" fontSize="10" fill="#6b7280" fontFamily="Inter,sans-serif">{app.sub}</text>
         </g>
       ))}
-      <text x="230" y="204" textAnchor="middle" fontSize="11" fill="#6b7280" fontFamily="Inter,sans-serif">Same model {"—"} completely different experience based on how each product configures it</text>
+      <text x="230" y="204" textAnchor="middle" fontSize="11" fill="#6b7280" fontFamily="Inter,sans-serif">Same model, completely different experience depending on configuration</text>
     </svg>
   ),
 
@@ -654,8 +655,8 @@ const Diagrams = {
       <text x="230" y="148" textAnchor="middle" fontSize="10" fill="#d97706" fontFamily="Inter,sans-serif" fontWeight="700">RESPONSE returned (billed per token)</text>
       {/* Risk note */}
       <rect x="10" y="158" width="440" height="36" rx="8" fill="#fef3c7" stroke="#fde68a" strokeWidth="1.5"/>
-      <text x="230" y="172" textAnchor="middle" fontSize="11" fill="#92400e" fontFamily="Inter,sans-serif" fontWeight="700">Data insight: if your app uses OpenAI API, your text travels through OpenAI servers.</text>
-      <text x="230" y="186" textAnchor="middle" fontSize="11" fill="#92400e" fontFamily="Inter,sans-serif">Their privacy policy applies to your data even if you never signed up with them directly.</text>
+      <text x="230" y="172" textAnchor="middle" fontSize="11" fill="#92400e" fontFamily="Inter,sans-serif" fontWeight="700">Note: if your app uses OpenAI API, your text goes through OpenAI servers.</text>
+      <text x="230" y="186" textAnchor="middle" fontSize="11" fill="#92400e" fontFamily="Inter,sans-serif">Their privacy policy applies to you even without a direct account.</text>
       <defs>
         <marker id="apiR" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#6366f1"/></marker>
         <marker id="apiG" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#059669"/></marker>
@@ -722,7 +723,7 @@ const Diagrams = {
   aiSafetySpectrum: () => (
     <svg viewBox="0 0 460 230" style={{width:"100%",maxWidth:600,display:"block",margin:"0 auto"}}>
       <text x="230" y="18" textAnchor="middle" fontSize="13" fill="#374151" fontFamily="Inter,sans-serif" fontWeight="700">The AI Risk Spectrum</text>
-      <text x="230" y="34" textAnchor="middle" fontSize="11" fill="#9ca3af" fontFamily="Inter,sans-serif">Not all AI risks are equal {"—"} safety research focuses on the serious end</text>
+      <text x="230" y="34" textAnchor="middle" fontSize="11" fill="#9ca3af" fontFamily="Inter,sans-serif">Safety research focuses on the serious end of this spectrum</text>
       <defs>
         <linearGradient id="riskGrad" x1="0%" y1="0%" x2="100%" y2="0%">
           <stop offset="0%" stopColor="#22c55e"/>
@@ -752,7 +753,7 @@ const Diagrams = {
       <text x="230" y="178" textAnchor="middle" fontSize="11" fill="#6366f1" fontFamily="Inter,sans-serif">Preventing irreversible, large-scale harms as AI becomes more capable</text>
       <rect x="20" y="194" width="420" height="30" rx="8" fill="#f9f8f5" stroke="#e5e2da" strokeWidth="1"/>
       <text x="230" y="208" textAnchor="middle" fontSize="11" fill="#6b7280" fontFamily="Inter,sans-serif" fontWeight="600">The alignment problem: how do you ensure a very capable AI pursues</text>
-      <text x="230" y="220" textAnchor="middle" fontSize="11" fill="#6b7280" fontFamily="Inter,sans-serif">the goals you actually intended {"—"} not a subtly different version of them?</text>
+      <text x="230" y="220" textAnchor="middle" fontSize="11" fill="#6b7280" fontFamily="Inter,sans-serif">the goals you actually intended, not a subtly different version?</text>
     </svg>
   ),
 
@@ -804,10 +805,10 @@ const Diagrams = {
       <text x="345" y="112" textAnchor="middle" fontSize="11" fill="#16a34a" fontFamily="Inter,sans-serif">Answers from your real content. ✓</text>
       <rect x="10" y="130" width="440" height="36" rx="10" fill="#fffbeb" stroke="#fde68a" strokeWidth="1.5"/>
       <text x="230" y="146" textAnchor="middle" fontSize="12" fill="#92400e" fontFamily="Inter,sans-serif" fontWeight="700">RAG = "Look it up first, then answer"</text>
-      <text x="230" y="160" textAnchor="middle" fontSize="11" fill="#92400e" fontFamily="Inter,sans-serif">Just like you would check a document before answering a question about it</text>
+      <text x="230" y="160" textAnchor="middle" fontSize="11" fill="#92400e" fontFamily="Inter,sans-serif">Like checking a document before answering a question about it</text>
       <rect x="10" y="174" width="440" height="30" rx="8" fill="#f9f8f5" stroke="#e5e2da" strokeWidth="1"/>
-      <text x="230" y="188" textAnchor="middle" fontSize="11" fill="#6b7280" fontFamily="Inter,sans-serif" fontWeight="600">Used by: HR chatbots, customer support bots, internal knowledge assistants</text>
-      <text x="230" y="200" textAnchor="middle" fontSize="11" fill="#6b7280" fontFamily="Inter,sans-serif">Any AI that needs to know YOUR specific information {"—"} not just general knowledge</text>
+      <text x="230" y="188" textAnchor="middle" fontSize="11" fill="#6b7280" fontFamily="Inter,sans-serif" fontWeight="600">Used by: HR chatbots, support bots, internal knowledge tools</text>
+      <text x="230" y="200" textAnchor="middle" fontSize="11" fill="#6b7280" fontFamily="Inter,sans-serif">Any AI needing your specific info, not just general knowledge</text>
     </svg>
   ),
 
@@ -832,7 +833,7 @@ const Diagrams = {
       <rect x="10" y="156" width="440" height="22" rx="8" fill="#eef2ff" stroke="#a5b4fc" strokeWidth="1"/>
       <text x="230" y="171" textAnchor="middle" fontSize="11" fill="#4338ca" fontFamily="Inter,sans-serif" fontWeight="700">Vector search finds what you mean, not just what you typed</text>
       <rect x="10" y="185" width="440" height="24" rx="8" fill="#f9f8f5" stroke="#e5e2da" strokeWidth="1"/>
-      <text x="230" y="201" textAnchor="middle" fontSize="11" fill="#6b7280" fontFamily="Inter,sans-serif">Powered by: Spotify recommendations, Google semantic search, Notion AI search</text>
+      <text x="230" y="201" textAnchor="middle" fontSize="11" fill="#6b7280" fontFamily="Inter,sans-serif">Powers: Spotify recommendations, Google Search, Notion AI</text>
     </svg>
   ),
 
@@ -866,7 +867,7 @@ const Diagrams = {
       <text x="230" y="18" textAnchor="middle" fontSize="13" fill="#374151" fontFamily="Inter,sans-serif" fontWeight="700">What You See vs. What is Really There</text>
       <rect x="10" y="30" width="440" height="56" rx="12" fill="#1e1b4b" stroke="#4338ca" strokeWidth="2"/>
       <text x="30" y="52" fontSize="11" fill="#a5b4fc" fontFamily="Inter,sans-serif" fontWeight="700">🔒  HIDDEN SYSTEM PROMPT (you never see this)</text>
-      <text x="30" y="70" fontSize="12" fill="#818cf8" fontFamily="Inter,sans-serif">"You are a helpful cooking assistant. Only discuss food. Never give medical advice."</text>
+      <text x="30" y="70" fontSize="12" fill="#818cf8" fontFamily="Inter,sans-serif">"You are a cooking assistant. Only discuss food recipes."</text>
       <text x="230" y="104" textAnchor="middle" fontSize="20" fill="#6366f1">↓</text>
       <rect x="10" y="112" width="440" height="40" rx="12" fill="#ecfdf5" stroke="#059669" strokeWidth="1.5"/>
       <text x="30" y="130" fontSize="11" fill="#059669" fontFamily="Inter,sans-serif" fontWeight="700">👤  YOU TYPE (this is what you see)</text>
@@ -897,7 +898,7 @@ const Diagrams = {
       <text x="345" y="137" textAnchor="middle" fontSize="11" fill="#dc2626" fontFamily="Inter,sans-serif" fontWeight="700">What happened:</text>
       <text x="345" y="152" textAnchor="middle" fontSize="11" fill="#374151" fontFamily="Inter,sans-serif">AI replied: "Approved."</text>
       <rect x="10" y="170" width="440" height="24" rx="8" fill="#fef3c7" stroke="#fde68a" strokeWidth="1"/>
-      <text x="230" y="186" textAnchor="middle" fontSize="11" fill="#92400e" fontFamily="Inter,sans-serif" fontWeight="700">The attack exploited the AI inability to distinguish "instructions" from "content"</text>
+      <text x="230" y="186" textAnchor="middle" fontSize="11" fill="#92400e" fontFamily="Inter,sans-serif" fontWeight="700">The AI could not tell real instructions from injected ones</text>
     </svg>
   ),
 
