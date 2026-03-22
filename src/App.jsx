@@ -205,20 +205,26 @@ function BadgeModal({badge,onClose}){
 }
 
 function IntroCard({onDismiss}){
-  const steps=["Read a short lesson: broken into focused cards","Answer 3 questions to prove you got it and earn XP","Try the concept live with real AI","Level up, earn badges, build a daily streak"];
+  const steps=[
+    {n:"1",icon:"📖",text:"Read a short lesson broken into focused cards"},
+    {n:"2",icon:"✅",text:"Answer 3 questions to prove you got it and earn XP"},
+    {n:"3",icon:"⚡",text:"Try the concept live with real AI"},
+    {n:"4",icon:"🏆",text:"Level up, earn badges, and build a daily streak"},
+  ];
   return(
-    <div className="vl-slide" style={{background:"#6366f1",borderRadius:20,padding:"28px 24px 24px",marginBottom:20}}>
-      <div style={{fontSize:11,color:"#a5b4fc",fontWeight:700,letterSpacing:1.5,textTransform:"uppercase",marginBottom:12,...F}}>Welcome to VibeLearn</div>
-      <div style={{fontFamily:"'Playfair Display',serif",fontSize:24,fontWeight:800,color:"#fff",marginBottom:24,lineHeight:1.2}}>AI literacy in 5 minutes a topic.</div>
-      <div style={{display:"flex",flexDirection:"column",gap:0,marginBottom:24,border:"1px solid rgba(255,255,255,0.15)",borderRadius:14,overflow:"hidden"}}>
-        {steps.map((text,i)=>(
-          <div key={i} style={{display:"flex",alignItems:"center",gap:14,padding:"14px 16px",background:i%2===0?"rgba(255,255,255,0.06)":"transparent",borderBottom:i<steps.length-1?"1px solid rgba(255,255,255,0.1)":"none"}}>
-            <div style={{width:24,height:24,borderRadius:999,background:"rgba(255,255,255,0.15)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,fontWeight:800,color:"#fff",flexShrink:0,...F}}>{i+1}</div>
-            <span style={{fontSize:15,color:"#e0e7ff",lineHeight:1.6,...F}}>{text}</span>
+    <div className="vl-slide" style={{background:"#fff",borderRadius:20,padding:"36px 32px 32px",marginBottom:24,border:"2px solid #e0e7ff",boxShadow:"0 4px 24px rgba(99,102,241,0.08)"}}>
+      <div style={{fontSize:12,color:"#6366f1",fontWeight:700,letterSpacing:2,textTransform:"uppercase",marginBottom:12,...F}}>Welcome to VibeLearn</div>
+      <div style={{fontFamily:"'Playfair Display',serif",fontSize:32,fontWeight:800,color:"#111827",marginBottom:10,lineHeight:1.15}}>AI literacy in 5 minutes a topic.</div>
+      <div style={{fontSize:16,color:"#6b7280",marginBottom:28,lineHeight:1.7,...F}}>No jargon. No fluff. Just the concepts that actually matter.</div>
+      <div style={{display:"flex",flexDirection:"column",gap:12,marginBottom:32}}>
+        {steps.map((s,i)=>(
+          <div key={i} style={{display:"flex",alignItems:"center",gap:16,padding:"16px 20px",background:"#f9f8f5",borderRadius:14,border:"1px solid #ebe8e0"}}>
+            <div style={{width:42,height:42,borderRadius:12,background:"#eef2ff",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,flexShrink:0}}>{s.icon}</div>
+            <span style={{fontSize:16,color:"#111827",fontWeight:500,lineHeight:1.5,...F}}>{s.text}</span>
           </div>
         ))}
       </div>
-      <button onClick={onDismiss} className="vl-btn" style={{background:"#fff",color:"#6366f1",border:"none",borderRadius:12,padding:"13px 28px",fontSize:15,fontWeight:700,...F,width:"100%"}}>Start Learning →</button>
+      <button onClick={onDismiss} className="vl-btn" style={{background:"#6366f1",color:"#fff",border:"none",borderRadius:14,padding:"17px 28px",fontSize:17,fontWeight:700,...F,width:"100%",boxShadow:"0 4px 16px rgba(99,102,241,0.3)"}}>Start Learning →</button>
     </div>
   );
 }
@@ -651,24 +657,20 @@ export default function VibeLearn(){
 
   return(
     <div style={{background:"#f5f4f0",minHeight:"100vh",...F,paddingBottom:80}}>
-      <div style={{background:"#fff",borderBottom:"1px solid #ebe8e0",padding:"14px 20px"}}>
-        <div style={{maxWidth:880,margin:"0 auto",display:"flex",alignItems:"center",justifyContent:"space-between",gap:12,flexWrap:"wrap"}}>
+      <div style={{background:"#fff",borderBottom:"1px solid #ebe8e0",padding:"16px 24px"}}>
+        <div style={{maxWidth:880,margin:"0 auto",display:"flex",alignItems:"center",justifyContent:"space-between",gap:16,flexWrap:"wrap"}}>
           <div>
-            <div style={{fontFamily:"'Playfair Display',serif",fontSize:22,fontWeight:800,color:"#111827",letterSpacing:-0.5,lineHeight:1}}>Vibe<span style={{color:"#6366f1"}}>Learn</span></div>
-            <div style={{fontSize:11,color:"#9ca3af",marginTop:2,fontWeight:500}}>AI literacy for everyone</div>
+            <div style={{fontFamily:"'Playfair Display',serif",fontSize:28,fontWeight:800,color:"#111827",letterSpacing:-0.5,lineHeight:1}}>Vibe<span style={{color:"#6366f1"}}>Learn</span></div>
+            <div style={{fontSize:13,color:"#9ca3af",marginTop:4,fontWeight:500}}>AI literacy for everyone</div>
           </div>
-          <div style={{display:"flex",alignItems:"center",gap:8,flexWrap:"wrap"}}>
-            <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:3}}>
-              <div style={{display:"flex",gap:6,alignItems:"center"}}>
-                <span style={{background:"#eef2ff",color:"#6366f1",borderRadius:999,padding:"4px 12px",fontSize:12,fontWeight:700}}>{level.label}</span>
-                <span style={{background:"#fff7ed",color:"#d97706",borderRadius:999,padding:"4px 12px",fontSize:12,fontWeight:700,border:"1px solid #fed7aa"}}>🔥 {st.streak}d</span>
+          <div style={{display:"flex",alignItems:"center",gap:12,flexWrap:"wrap"}}>
+            <span style={{background:"#eef2ff",color:"#6366f1",borderRadius:999,padding:"6px 16px",fontSize:14,fontWeight:700}}>{level.label}</span>
+            <span style={{background:"#fff7ed",color:"#d97706",borderRadius:999,padding:"6px 14px",fontSize:14,fontWeight:700,border:"1px solid #fed7aa"}}>🔥 {st.streak}d</span>
+            <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:4}}>
+              <div style={{background:"#f3f4f6",borderRadius:999,height:7,width:120,overflow:"hidden"}}>
+                <div className="vl-xp" style={{background:"linear-gradient(90deg,#6366f1,#818cf8)",height:"100%",width:`${lvlPct}%`,borderRadius:999}}/>
               </div>
-              <div style={{display:"flex",alignItems:"center",gap:6}}>
-                <div style={{background:"#f3f4f6",borderRadius:999,height:5,width:100,overflow:"hidden"}}>
-                  <div className="vl-xp" style={{background:"linear-gradient(90deg,#6366f1,#818cf8)",height:"100%",width:`${lvlPct}%`,borderRadius:999}}/>
-                </div>
-                <span style={{fontSize:11,color:"#9ca3af",fontWeight:600}}>{st.xp}{nextLvl?`/${nextLvl.min}`:""} XP</span>
-              </div>
+              <span style={{fontSize:12,color:"#9ca3af",fontWeight:600}}>{st.xp}{nextLvl?`/${nextLvl.min}`:""} XP</span>
             </div>
           </div>
         </div>
