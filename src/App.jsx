@@ -497,9 +497,16 @@ function ScoreCard({score,completed,onClose}){
   const{label,color}=getScoreLabel(score);
   const shareText=`My AI Literacy Score: ${score}/100 — "${label}" on VibeLearn. ${completed.length}/${TOPICS.length} topics complete. vibelearn-pi.vercel.app`;
 
+  const[copied,setCopied]=useState(false);
   function share(){
-    if(navigator.share){navigator.share({text:shareText});}
-    else{navigator.clipboard?.writeText(shareText).then(()=>alert("Copied to clipboard!"));}
+    if(navigator.share){
+      navigator.share({text:shareText}).catch(()=>{});
+    } else {
+      navigator.clipboard?.writeText(shareText).then(()=>{
+        setCopied(true);
+        setTimeout(()=>setCopied(false),2500);
+      });
+    }
   }
 
   return(
@@ -513,7 +520,7 @@ function ScoreCard({score,completed,onClose}){
           <div style={{fontSize:14,color:"#374151",lineHeight:1.6,...F}}>{completed.length} of {TOPICS.length} topics complete</div>
           {score<100&&<div style={{fontSize:13,color:"#6b7280",marginTop:4,...F}}>Complete more topics to raise your score</div>}
         </div>
-        <button onClick={share} className="vl-btn" style={{background:"#6366f1",color:"#fff",border:"none",borderRadius:12,padding:"14px 24px",fontSize:15,fontWeight:700,...F,width:"100%",marginBottom:10}}>Share My Score</button>
+        <button onClick={share} className="vl-btn" style={{background:copied?"#16a34a":"#6366f1",color:"#fff",border:"none",borderRadius:12,padding:"14px 24px",fontSize:15,fontWeight:700,...F,width:"100%",marginBottom:10,transition:"background 0.2s"}}>{copied?"✓ Copied to clipboard!":"Share My Score"}</button>
         <button onClick={onClose} className="vl-btn" style={{background:"transparent",color:"#6b7280",border:"none",fontSize:14,...F,width:"100%",cursor:"pointer"}}>Close</button>
       </div>
     </div>
@@ -693,10 +700,28 @@ function LessonView({topic,appState,persist,onBack}){
     if(quizIdx<topic.quiz.length-1){
       setQuizIdx(i=>i+1);setSelected(null);setQResult(null);setWhyText("");
     } else {
-      const finalScore=Math.min(score+(qResult==="correct"?0:0),topic.quiz.length);
       const passed=fs>=Math.ceil(topic.quiz.length*0.67);
-      if(passed){setPhase("try");}
-      else{setPhase("retry");}
+      if(passed){
+        // Auto-save on pass — no manual "Save progress" needed
+        if(!done){
+          let s={...appState,completed:[...appState.completed,topic.slug]};
+          s=updateStreak(s);
+          s.xp=(s.xp||0)+50;
+          s.badges=checkBadges(s);
+          const newBadge=s.badges.find(b=>!appState.badges.includes(b));
+          persist(s);
+          showToast("Topic complete ✓");
+          if(newBadge){
+            const trackBadge=TRACKS.find(t=>`track-${t.id}`===newBadge);
+            if(trackBadge){
+              setTimeout(()=>setBdg({icon:trackBadge.emoji,label:trackBadge.label+" Track Complete",desc:trackBadge.tagline||"",isTrack:true}),600);
+            }
+          }
+        }
+        setPhase("try");
+      } else {
+        setPhase("retry");
+      }
     }
   }
 
@@ -932,7 +957,7 @@ function LessonView({topic,appState,persist,onBack}){
               <div style={{fontFamily:"'Playfair Display',serif",fontSize:24,fontWeight:800,color:"#fff",marginBottom:6}}>{done?"Already mastered this one":"Topic complete."}</div>
               <p style={{fontSize:15,color:"#e0e7ff",lineHeight:1.7,...F,marginBottom:20}}>{fs}/{topic.quiz.length} correct · {done?"No new progress recorded":"Added to your profile"}</p>
               <div style={{display:"flex",gap:10,justifyContent:"center",flexWrap:"wrap"}}>
-                <button onClick={()=>{completeTopic();}} className="vl-btn" style={{background:"rgba(255,255,255,0.15)",color:"#fff",border:"1px solid rgba(255,255,255,0.25)",borderRadius:10,padding:"11px 20px",fontSize:14,fontWeight:600,...F}}>Save progress</button>
+                <button onClick={()=>{const text=`Just completed "${topic.title}" on VibeLearn — AI literacy that actually sticks. 🧠 vibelearn-pi.vercel.app`;if(navigator.share){navigator.share({text});}else{navigator.clipboard?.writeText(text).then(()=>showToast("Copied to clipboard ✓"));}}} className="vl-btn" style={{background:"rgba(255,255,255,0.15)",color:"#fff",border:"1px solid rgba(255,255,255,0.25)",borderRadius:10,padding:"11px 20px",fontSize:14,fontWeight:600,...F}}>Share this lesson</button>
                 <button onClick={onBack} className="vl-btn" style={{background:"rgba(255,255,255,0.15)",color:"#fff",border:"1px solid rgba(255,255,255,0.25)",borderRadius:10,padding:"11px 20px",fontSize:14,fontWeight:600,...F}}>Back to topics</button>
               </div>
             </div>
@@ -974,7 +999,7 @@ function TopicGroup({label,emoji,topics,completed,onOpen,locked,xpNeeded,userXP,
         <div style={{flex:1,minWidth:0}}>
           <div style={{fontSize:15,fontWeight:700,color:locked?"#9ca3af":"#111827",...F,marginBottom:2}}>{label}</div>
           {locked
-            ?<div style={{fontSize:14,color:"#6b7280",...F}}>Complete {Math.ceil(xpNeeded/50)} topics to unlock</div>
+            ?<div style={{fontSize:14,color:"#6b7280",...F}}>Complete {xpNeeded/50} topics to unlock · {Math.floor(userXP/50)} done so far</div>
             :<div style={{fontSize:14,color:"#6b7280",...F}}>{doneCount}/{topics.length} complete</div>}
         </div>
         {!locked&&<div style={{display:"flex",alignItems:"center",gap:10}}>
