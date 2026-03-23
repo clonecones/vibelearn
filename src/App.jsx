@@ -745,7 +745,7 @@ function TrackDetail({track,completed,onOpenTopic,onBack}){
           const isDone=completed.includes(t.slug);
           const cm=CAT[t.category]||{color:"#6366f1",bg:"#eef2ff"};
           return(
-            <div key={t.slug} className="vl-hover" onClick={()=>onOpenTopic(t)}
+            <div key={t.slug} className="vl-hover" onClick={()=>onOpenTopic(t,track)}
               style={{background:"#fff",borderRadius:14,padding:"16px 18px",border:isDone?"1.5px solid #bbf7d0":"1.5px solid #ebe8e0",display:"flex",alignItems:"center",gap:14,cursor:"pointer",boxShadow:"0 2px 8px rgba(0,0,0,0.04)"}}>
               <div style={{width:32,height:32,borderRadius:999,background:isDone?"#f0fdf4":"#f3f4f6",border:isDone?"2px solid #22c55e":"2px solid #e5e7eb",display:"flex",alignItems:"center",justifyContent:"center",fontSize:14,fontWeight:800,color:isDone?"#22c55e":"#9ca3af",flexShrink:0}}>
                 {isDone?"✓":i+1}
@@ -764,7 +764,7 @@ function TrackDetail({track,completed,onOpenTopic,onBack}){
 }
 
 // ── LESSON VIEW ───────────────────────────────────────────────────────────────
-function LessonView({topic,appState,persist,onBack}){
+function LessonView({topic,appState,persist,onBack,fromTrack}){
   const[phase,setPhase]=useState("steps");
   const[stepIdx,setStepIdx]=useState(0);
   const[quizIdx,setQuizIdx]=useState(0);
@@ -1083,7 +1083,9 @@ function LessonView({topic,appState,persist,onBack}){
               <p style={{fontSize:15,color:"#e0e7ff",lineHeight:1.7,...F,marginBottom:20}}>{fs}/{topic.quiz.length} correct · {done?"Already counted":"Progress saved ✓"}</p>
               <div style={{display:"flex",gap:10,justifyContent:"center",flexWrap:"wrap"}}>
                 <button onClick={()=>{const text=`Just completed "${topic.title}" on VibeLearn — AI literacy that actually sticks. 🧠 vibelearn-pi.vercel.app`;if(navigator.share){navigator.share({text});}else{navigator.clipboard?.writeText(text).then(()=>showToast("Copied to clipboard ✓"));}}} className="vl-btn" style={{background:"rgba(255,255,255,0.15)",color:"#fff",border:"1px solid rgba(255,255,255,0.25)",borderRadius:10,padding:"11px 20px",fontSize:14,fontWeight:600,...F}}>Share this lesson</button>
-                <button onClick={onBack} className="vl-btn" style={{background:"rgba(255,255,255,0.15)",color:"#fff",border:"1px solid rgba(255,255,255,0.25)",borderRadius:10,padding:"11px 20px",fontSize:14,fontWeight:600,...F}}>Back to topics</button>
+                <button onClick={onBack} className="vl-btn" style={{background:"rgba(255,255,255,0.15)",color:"#fff",border:"1px solid rgba(255,255,255,0.25)",borderRadius:10,padding:"11px 20px",fontSize:14,fontWeight:600,...F}}>
+                  {fromTrack?`Back to ${fromTrack.label}`:"Back to topics"}
+                </button>
               </div>
             </div>
             <div style={{background:"#fff",borderRadius:20,padding:"24px 22px",boxShadow:"0 2px 18px rgba(0,0,0,0.07)",border:"1px solid #ebe8e0",marginBottom:14}}>
@@ -1169,12 +1171,14 @@ export default function VibeLearn(){
   const[showScore,setShowScore]=useState(false);
   const[diagResult,setDiagResult]=useState(null);
   const[activeTrack,setActiveTrack]=useState(null);
+  const[fromTrack,setFromTrack]=useState(null); // track user came from when opening a topic
 
   useEffect(()=>{loadState().then(s=>{setSt(s||defaultState());setReady(true);});},[]);
   const persist=useCallback((s)=>{setSt(s);saveState(s);},[]);
 
   const openTopic=t=>{
     setTopic(t);setView("topic");
+    setFromTrack(null); // clear track context when opening from home
     setTimeout(()=>window.scrollTo({top:0,behavior:"smooth"}),40);
     if(!st.started?.includes(t.slug)&&!st.completed.includes(t.slug)){
       const s={...st,started:[...(st.started||[]),t.slug]};
@@ -1215,13 +1219,18 @@ export default function VibeLearn(){
   }
 
   if(view==="topic"&&topic){
-    return <LessonView topic={topic} appState={st} persist={persist} onBack={()=>{setView("home");setTimeout(()=>window.scrollTo({top:0}),40);}}/>;
+    return <LessonView topic={topic} appState={st} persist={persist} fromTrack={fromTrack}
+      onBack={()=>{
+        if(fromTrack){setActiveTrack(fromTrack);setView("tracks");}
+        else{setView("home");}
+        setTimeout(()=>window.scrollTo({top:0}),40);
+      }}/>;
   }
 
   if(view==="tracks"){
     return <TracksView
       completed={st.completed}
-      onOpenTopic={(t)=>{setTopic(t);setView("topic");setTimeout(()=>window.scrollTo({top:0}),40);}}
+      onOpenTopic={(t,track)=>{setTopic(t);setFromTrack(track||activeTrack||null);setView("topic");setTimeout(()=>window.scrollTo({top:0}),40);}}
       onBack={()=>setView("home")}
       activeTrack={activeTrack}
     />;
@@ -1284,8 +1293,8 @@ export default function VibeLearn(){
 
       <div style={{maxWidth:880,margin:"0 auto",padding:"20px 16px"}}>
 
-        {/* Stats strip */}
-        <div style={{display:"flex",gap:10,marginBottom:20}} className="vl-fade">
+        {/* Stats strip — 2 tiles */}
+        <div style={{display:"flex",gap:10,marginBottom:16}} className="vl-fade">
           <div style={{flex:1,background:"#fff",borderRadius:14,padding:"14px 12px",border:"1px solid #ebe8e0",textAlign:"center",boxShadow:"0 1px 6px rgba(0,0,0,0.04)"}}>
             <div style={{fontSize:20,fontWeight:800,color:"#111827",fontFamily:"'Playfair Display',serif"}}>{st.completed.length}/{TOPICS.length}</div>
             <div style={{fontSize:13,color:"#6b7280",fontWeight:600,marginTop:2,...F}}>Topics Done</div>
@@ -1296,10 +1305,12 @@ export default function VibeLearn(){
             </div>
             <div style={{fontSize:13,color:"#6b7280",fontWeight:600,marginTop:2,...F}}>Tracks</div>
           </div>
-          <div onClick={()=>setView("diagnostic")} className="vl-hover" style={{flex:1,background:"#fff",borderRadius:14,padding:"14px 12px",border:"1px solid #ebe8e0",textAlign:"center",boxShadow:"0 1px 6px rgba(0,0,0,0.04)",cursor:"pointer"}}>
-            <div style={{fontSize:20,...F,color:"#6366f1"}}>🎯</div>
-            <div style={{fontSize:13,color:"#6b7280",fontWeight:600,marginTop:2,...F}}>Diagnostic</div>
-          </div>
+        </div>
+        {/* Diagnostic subtle link */}
+        <div style={{textAlign:"right",marginBottom:16}}>
+          <button onClick={()=>setView("diagnostic")} className="vl-btn" style={{background:"none",border:"none",color:"#9ca3af",fontSize:13,cursor:"pointer",...F,padding:0}}>
+            {st.diagnosticDone?"Retake diagnostic →":"Take the diagnostic →"}
+          </button>
         </div>
 
         {/* Progress bar */}
@@ -1308,63 +1319,81 @@ export default function VibeLearn(){
         </div>
 
         {/* All complete banner */}
-        {!recommended&&st.completed.length===TOPICS.length&&(
+        {st.completed.length===TOPICS.length&&(
           <div className="vl-fade" style={{background:"linear-gradient(135deg,#6366f1,#818cf8)",borderRadius:18,padding:"24px",marginBottom:20,textAlign:"center",boxShadow:"0 6px 24px rgba(99,102,241,0.28)"}}>
             <div style={{fontSize:32,marginBottom:8}}>🎓</div>
             <div style={{fontFamily:"'Playfair Display',serif",fontSize:20,fontWeight:800,color:"#fff",marginBottom:6}}>You've completed all 27 topics!</div>
-            <div style={{fontSize:15,color:"#e0e7ff",...F}}>Your AI Literacy Score is 100/100. Share it.</div>
+            <div style={{fontSize:15,color:"#e0e7ff",...F}}>AI Literacy Score: 100/100. Share it.</div>
           </div>
         )}
 
-        {/* All complete banner */}
-        {!recommended&&st.completed.length===TOPICS.length&&(
-          <div className="vl-fade" style={{background:"linear-gradient(135deg,#6366f1,#818cf8)",borderRadius:18,padding:"24px",marginBottom:20,textAlign:"center",boxShadow:"0 6px 24px rgba(99,102,241,0.28)"}}>
-            <div style={{fontSize:32,marginBottom:8}}>🎓</div>
-            <div style={{fontFamily:"'Playfair Display',serif",fontSize:20,fontWeight:800,color:"#fff",marginBottom:6}}>You've completed all 27 topics!</div>
-            <div style={{fontSize:15,color:"#e0e7ff",...F}}>Your AI Literacy Score is 100/100. Share it.</div>
-          </div>
-        )}
+        {/* PRIMARY CTA — track mode if diagnostic taken, topic mode otherwise */}
+        {st.completed.length<TOPICS.length&&(()=>{
+          const userTrack=st.diagnosticTrack?TRACKS.find(t=>t.id===st.diagnosticTrack):null;
+          const trackDone=userTrack?userTrack.slugs.filter(s=>st.completed.includes(s)).length:0;
+          const trackTotal=userTrack?userTrack.slugs.length:0;
+          const trackComplete=userTrack&&trackDone===trackTotal;
+          const nextTrackTopic=userTrack&&!trackComplete?userTrack.slugs.map(slug=>TOPICS.find(t=>t.slug===slug)).find(t=>t&&!st.completed.includes(t.slug)):null;
 
-        {/* Recommended next */}
-        {recommended&&(
-          <div style={{marginBottom:20}} className="vl-fade">
-            <div style={{fontSize:13,color:"#6b7280",fontWeight:700,letterSpacing:1.5,textTransform:"uppercase",marginBottom:10,...F}}>⭐ Recommended Next</div>
-            {(()=>{const t=recommended;const cm=CAT[t.category]||{color:"#6366f1",bg:"#eef2ff"};return(
-              <div className="vl-hover" onClick={()=>openTopic(t)} style={{background:"linear-gradient(135deg,#6366f1 0%,#818cf8 100%)",borderRadius:18,padding:"20px 22px",boxShadow:"0 6px 24px rgba(99,102,241,0.28)",cursor:"pointer",display:"flex",alignItems:"center",gap:16}}>
-                <div style={{fontSize:36,flexShrink:0}}>{t.emoji}</div>
+          if(userTrack&&!trackComplete&&nextTrackTopic){
+            // Track mode — user has a track, lead with it
+            return(
+              <div style={{marginBottom:20}} className="vl-fade">
+                <div style={{fontSize:13,color:"#6b7280",fontWeight:700,letterSpacing:1.5,textTransform:"uppercase",marginBottom:10,...F}}>
+                  {trackDone===0?"Your recommended track":"Continue your track"}
+                </div>
+                <div style={{background:"#fff",borderRadius:18,border:`2px solid ${userTrack.color}`,overflow:"hidden",boxShadow:"0 4px 20px rgba(0,0,0,0.06)"}}>
+                  {/* Track header */}
+                  <div style={{background:`linear-gradient(135deg,${userTrack.color} 0%,${userTrack.color}dd 100%)`,padding:"18px 20px",display:"flex",alignItems:"center",gap:12}}>
+                    <div style={{fontSize:28}}>{userTrack.emoji}</div>
+                    <div style={{flex:1}}>
+                      <div style={{fontFamily:"'Playfair Display',serif",fontSize:17,fontWeight:800,color:"#fff"}}>{userTrack.label}</div>
+                      <div style={{fontSize:13,color:"rgba(255,255,255,0.8)",...F}}>{trackDone} of {trackTotal} topics complete</div>
+                    </div>
+                    <div style={{background:"rgba(255,255,255,0.2)",borderRadius:999,padding:"4px 12px",fontSize:13,color:"#fff",fontWeight:700,...F}}>{Math.round(trackDone/trackTotal*100)}%</div>
+                  </div>
+                  {/* Progress bar */}
+                  <div style={{height:4,background:"#f3f4f6"}}>
+                    <div style={{background:userTrack.color,height:"100%",width:`${Math.round(trackDone/trackTotal*100)}%`,transition:"width 0.8s ease"}}/>
+                  </div>
+                  {/* Next topic */}
+                  <div className="vl-hover" onClick={()=>{setFromTrack(userTrack);openTopic(nextTrackTopic);}} style={{padding:"16px 20px",display:"flex",alignItems:"center",gap:14,cursor:"pointer"}}>
+                    <div style={{fontSize:26,flexShrink:0}}>{nextTrackTopic.emoji}</div>
+                    <div style={{flex:1,minWidth:0}}>
+                      <div style={{fontSize:13,color:"#6b7280",fontWeight:700,textTransform:"uppercase",letterSpacing:1,marginBottom:2,...F}}>Up next</div>
+                      <div style={{fontFamily:"'Playfair Display',serif",fontSize:17,fontWeight:700,color:"#111827",lineHeight:1.3}}>{nextTrackTopic.title}</div>
+                      <div style={{fontSize:14,color:"#4b5563",lineHeight:1.5,...F}}>{nextTrackTopic.short}</div>
+                    </div>
+                    <div style={{background:userTrack.color,color:"#fff",borderRadius:999,width:36,height:36,display:"flex",alignItems:"center",justifyContent:"center",fontSize:18,flexShrink:0}}>›</div>
+                  </div>
+                  {/* View full track link */}
+                  <div style={{borderTop:"1px solid #f3f4f6",padding:"10px 20px",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+                    <span style={{fontSize:13,color:"#9ca3af",...F}}>{trackTotal-trackDone} topics remaining</span>
+                    <button onClick={()=>{setActiveTrack(userTrack);setView("tracks");}} className="vl-btn" style={{background:"none",border:"none",color:userTrack.color,fontSize:13,fontWeight:700,cursor:"pointer",...F}}>View full track →</button>
+                  </div>
+                </div>
+              </div>
+            );
+          }
+
+          // No track or track complete — show recommended next topic
+          if(recommended){return(
+            <div style={{marginBottom:20}} className="vl-fade">
+              <div style={{fontSize:13,color:"#6b7280",fontWeight:700,letterSpacing:1.5,textTransform:"uppercase",marginBottom:10,...F}}>
+                {userTrack&&trackComplete?"Track complete! Up next":"Recommended Next"}
+              </div>
+              <div className="vl-hover" onClick={()=>openTopic(recommended)} style={{background:"linear-gradient(135deg,#6366f1 0%,#818cf8 100%)",borderRadius:18,padding:"20px 22px",boxShadow:"0 6px 24px rgba(99,102,241,0.28)",cursor:"pointer",display:"flex",alignItems:"center",gap:16}}>
+                <div style={{fontSize:36,flexShrink:0}}>{recommended.emoji}</div>
                 <div style={{flex:1,minWidth:0}}>
-                  <div style={{fontFamily:"'Playfair Display',serif",fontSize:18,fontWeight:800,color:"#fff",lineHeight:1.2,marginBottom:4}}>{t.title}</div>
-                  <div style={{fontSize:14,color:"#e0e7ff",lineHeight:1.6}}>{t.short}</div>
+                  <div style={{fontFamily:"'Playfair Display',serif",fontSize:18,fontWeight:800,color:"#fff",lineHeight:1.2,marginBottom:4}}>{recommended.title}</div>
+                  <div style={{fontSize:14,color:"#e0e7ff",lineHeight:1.6}}>{recommended.short}</div>
                 </div>
                 <div style={{color:"rgba(255,255,255,0.6)",fontSize:20,flexShrink:0}}>›</div>
               </div>
-            );})()}
-          </div>
-        )}
-
-        {/* Track shortcuts */}
-        <div style={{marginBottom:20}}>
-          <div style={{fontSize:13,color:"#6b7280",fontWeight:700,letterSpacing:1.5,textTransform:"uppercase",marginBottom:10,...F}}>Skill Tracks</div>
-          <div style={{display:"flex",gap:8,overflowX:"auto",paddingBottom:4}}>
-            {TRACKS.map(track=>{
-              const done=track.slugs.filter(s=>st.completed.includes(s)).length;
-              const total=track.slugs.length;
-              const complete=done===total;
-              return(
-                <div key={track.id} onClick={()=>{setActiveTrack(track);setView("tracks");}} className="vl-hover"
-                  style={{background:"#fff",border:`1.5px solid ${complete?track.color:track.border}`,borderRadius:14,padding:"12px 14px",flexShrink:0,width:140,cursor:"pointer",position:"relative"}}>
-                  {complete&&<div style={{position:"absolute",top:6,right:8,fontSize:13}}>✓</div>}
-                  <div style={{fontSize:22,marginBottom:6}}>{track.emoji}</div>
-                  <div style={{fontSize:13,fontWeight:700,color:"#111827",marginBottom:4,...F,lineHeight:1.3}}>{track.label}</div>
-                  <div style={{background:"#f3f4f6",borderRadius:999,height:4,overflow:"hidden"}}>
-                    <div style={{background:track.color,height:"100%",width:`${Math.round(done/total*100)}%`,borderRadius:999}}/>
-                  </div>
-                  <div style={{fontSize:13,color:track.color,marginTop:3,fontWeight:600,...F}}>{done}/{total}</div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
+            </div>
+          );}
+          return null;
+        })()}
 
         {/* All topics */}
         <div style={{fontSize:13,color:"#6b7280",fontWeight:700,letterSpacing:1.5,textTransform:"uppercase",marginBottom:12,...F}}>All Topics</div>
