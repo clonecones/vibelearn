@@ -261,11 +261,11 @@ function calcLiteracyScore(completed){
   return Math.round((earned/maxPossible)*100);
 }
 function getScoreLabel(score){
-  if(score===0)return{label:"Not Started",color:"#6b7280"};
-  if(score<25)return{label:"AI Curious",color:"#6366f1"};
-  if(score<50)return{label:"AI Aware",color:"#0891b2"};
-  if(score<75)return{label:"AI Capable",color:"#059669"};
-  if(score<100)return{label:"AI Proficient",color:"#d97706"};
+  if(score===0)return{label:"Not yet started",color:"#6b7280"};
+  if(score<25)return{label:"Foundations",color:"#6366f1"};
+  if(score<50)return{label:"Developing",color:"#0891b2"};
+  if(score<75)return{label:"Capable",color:"#059669"};
+  if(score<100)return{label:"Proficient",color:"#d97706"};
   return{label:"AI Literate",color:"#dc2626"};
 }
 
@@ -529,10 +529,29 @@ function ScoreCard({score,completed,onClose}){
         <div className="vl-score" style={{fontFamily:"'Playfair Display',serif",fontSize:88,fontWeight:800,color,lineHeight:1,marginBottom:4}}>{score}</div>
         <div style={{fontSize:14,color:"#9ca3af",marginBottom:8,...F}}>out of 100</div>
         <div style={{display:"inline-block",background:color+"22",color,borderRadius:999,padding:"6px 18px",fontSize:15,fontWeight:700,marginBottom:20,...F}}>{label}</div>
-        <div style={{background:"#f9f8f5",borderRadius:12,padding:"14px 16px",marginBottom:24}}>
+        <div style={{background:"#f9f8f5",borderRadius:12,padding:"14px 16px",marginBottom:score<100?16:24}}>
           <div style={{fontSize:14,color:"#374151",lineHeight:1.6,...F}}>{completed.length} of {TOPICS.length} topics complete</div>
           {score<100&&<div style={{fontSize:13,color:"#6b7280",marginTop:4,...F}}>Complete more topics to raise your score</div>}
         </div>
+        {score<100&&score>0&&(()=>{
+          const nextTrack=TRACKS.find(t=>t.slugs.some(s=>!completed.includes(s)));
+          const topicsDone=nextTrack?nextTrack.slugs.filter(s=>completed.includes(s)).length:0;
+          const topicsLeft=nextTrack?nextTrack.slugs.length-topicsDone:0;
+          return nextTrack?(
+            <div style={{background:`${nextTrack.color}10`,border:`1.5px solid ${nextTrack.color}33`,borderRadius:12,padding:"14px 16px",marginBottom:16,display:"flex",alignItems:"center",justifyContent:"space-between",gap:12,cursor:"pointer"}} onClick={()=>{onClose();}}>
+              <div>
+                <div style={{fontSize:13,color:"#6b7280",...F,marginBottom:2}}>Next milestone</div>
+                <div style={{fontSize:14,fontWeight:700,color:nextTrack.color,...F}}>{nextTrack.emoji} {nextTrack.label} — {topicsLeft} topics left</div>
+              </div>
+              <span style={{color:nextTrack.color,fontSize:18}}>›</span>
+            </div>
+          ):null;
+        })()}
+        {score===0&&(
+          <div style={{background:"#eef2ff",borderRadius:12,padding:"14px 16px",marginBottom:16}}>
+            <div style={{fontSize:14,color:"#6366f1",fontWeight:600,...F}}>Start with the AI Curious track — 8 topics, ~30 minutes</div>
+          </div>
+        )}
         <button onClick={share} className="vl-btn" style={{background:copied?"#16a34a":"#6366f1",color:"#fff",border:"none",borderRadius:12,padding:"14px 24px",fontSize:15,fontWeight:700,...F,width:"100%",marginBottom:10,transition:"background 0.2s"}}>{copied?"✓ Copied to clipboard!":"Share My Score"}</button>
         <button onClick={onClose} className="vl-btn" style={{background:"transparent",color:"#6b7280",border:"none",fontSize:14,...F,width:"100%",cursor:"pointer"}}>Close</button>
       </div>
@@ -541,7 +560,7 @@ function ScoreCard({score,completed,onClose}){
 }
 
 // ── TRACKS VIEW ───────────────────────────────────────────────────────────────
-function TracksView({completed,onOpenTopic,onBack,activeTrack}){
+function TracksView({completed,onOpenTopic,onBack,activeTrack,recommendedTrackId}){
   const[selected,setSelected]=useState(activeTrack||null);
 
   return(
@@ -574,10 +593,12 @@ function TracksView({completed,onOpenTopic,onBack,activeTrack}){
                 const total=track.slugs.length;
                 const pct=Math.round((done/total)*100);
                 const complete=done===total;
+                const isRecommended=track.id===recommendedTrackId;
                 return(
                   <div key={track.id} className="vl-hover" onClick={()=>setSelected(track)}
-                    style={{background:"#fff",borderRadius:18,padding:"20px 22px",boxShadow:"0 2px 12px rgba(0,0,0,0.05)",border:`1.5px solid ${complete?track.color:track.border}`,cursor:"pointer",position:"relative",overflow:"hidden"}}>
+                    style={{background:isRecommended&&!complete?"#fff":complete?`${track.color}08`:"#fff",borderRadius:18,padding:"20px 22px",boxShadow:isRecommended&&!complete?"0 4px 20px rgba(99,102,241,0.12)":"0 2px 12px rgba(0,0,0,0.05)",border:complete?`2px solid ${track.color}`:isRecommended?`2px solid ${track.color}`:`1.5px solid ${track.border}`,cursor:"pointer",position:"relative",overflow:"hidden"}}>
                     {complete&&<div style={{position:"absolute",top:0,right:0,background:track.color,color:"#fff",fontSize:13,fontWeight:700,padding:"4px 12px",borderRadius:"0 18px 0 12px",...F}}>✓ Complete</div>}
+                    {isRecommended&&!complete&&<div style={{position:"absolute",top:0,right:0,background:track.color,color:"#fff",fontSize:13,fontWeight:700,padding:"4px 12px",borderRadius:"0 18px 0 12px",...F}}>Recommended for you</div>}
                     <div style={{display:"flex",alignItems:"flex-start",gap:14}}>
                       <div style={{fontSize:36,flexShrink:0}}>{track.emoji}</div>
                       <div style={{flex:1,minWidth:0}}>
@@ -899,10 +920,11 @@ function LessonView({topic,appState,persist,onBack,fromTrack}){
       {/* Back bar */}
       <div style={{background:"#fff",borderBottom:"1px solid #ebe8e0",padding:"12px 20px",position:"sticky",top:0,zIndex:100}}>
         <div style={{maxWidth:880,margin:"0 auto",display:"flex",alignItems:"center",gap:12}}>
-          <button onClick={onBack} className="vl-back vl-btn" style={{background:"none",border:"none",color:"#6b7280",fontSize:15,cursor:"pointer",...F,display:"flex",alignItems:"center",gap:4}}>← {fromTrack?fromTrack.label:"Back"}</button>
+          <button onClick={onBack} className="vl-back vl-btn" style={{background:"none",border:"none",color:"#6b7280",fontSize:15,cursor:"pointer",...F,display:"flex",alignItems:"center",gap:4}}>← {fromTrack?`${fromTrack.label} Track`:"Home"}</button>
           <span style={{color:"#e5e2da"}}>·</span>
           <Chip label={topic.category} color={cm.color} bg={cm.bg}/>
           {done&&<Chip label="✓ Done" color="#16a34a" bg="#f0fdf4"/>}
+          {!done&&phase==="steps"&&<span style={{fontSize:13,color:"#9ca3af",...F}}>Progress saved automatically</span>}
           <div style={{marginLeft:"auto"}}>
             <button onClick={onBack} className="vl-btn" style={{background:"none",border:"none",fontFamily:"'Playfair Display',serif",fontSize:18,fontWeight:800,color:"#111827",cursor:"pointer",letterSpacing:-0.5}}>Vibe<span style={{color:"#6366f1"}}>Learn</span></button>
           </div>
@@ -920,10 +942,13 @@ function LessonView({topic,appState,persist,onBack,fromTrack}){
         {/* STEPS */}
         {phase==="steps"&&(
           <div className="vl-fi" key={stepIdx}>
-            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:14}}>
-              <span style={{fontSize:14,color:"#6b7280",fontWeight:600,...F}}>Step {stepIdx+1} of {topic.steps.length}</span>
-              <div style={{display:"flex",gap:5}}>
-                {topic.steps.map((_,i)=>(<div key={i} style={{width:i===stepIdx?20:7,height:7,borderRadius:999,background:i<stepIdx?"#6366f1":i===stepIdx?"#6366f1":"#e5e2da",opacity:i<stepIdx?0.45:1,transition:"all 0.3s"}}/>))}
+            <div style={{marginBottom:14}}>
+              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:8}}>
+                <span style={{fontSize:14,color:"#374151",fontWeight:700,...F}}>Step {stepIdx+1} <span style={{color:"#9ca3af",fontWeight:400}}>of {topic.steps.length}</span></span>
+                <span style={{fontSize:13,color:"#9ca3af",...F}}>{topic.steps.length - stepIdx - 1 > 0 ? `${topic.steps.length - stepIdx - 1} more to go`:"Last step — quiz up next"}</span>
+              </div>
+              <div style={{display:"flex",gap:4}}>
+                {topic.steps.map((_,i)=>(<div key={i} style={{flex:1,height:4,borderRadius:999,background:i<=stepIdx?"#6366f1":"#e5e2da",opacity:i<stepIdx?0.5:1,transition:"all 0.3s"}}/>))}
               </div>
             </div>
             <div className="vl-card-in" style={{marginBottom:16}}>
@@ -990,11 +1015,12 @@ function LessonView({topic,appState,persist,onBack,fromTrack}){
                 </div>
               )}
             </div>
-            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+            {/* Sticky nav footer */}
+            <div style={{position:"sticky",bottom:0,background:"#f5f4f0",padding:"12px 0 16px",marginTop:8,display:"flex",justifyContent:"space-between",alignItems:"center",zIndex:50}}>
               {stepIdx>0
                 ?<button onClick={()=>{setStepIdx(i=>i-1);window.scrollTo({top:0,behavior:"smooth"});}} className="vl-btn" style={{background:"#fff",border:"1.5px solid #e5e2da",color:"#374151",borderRadius:12,padding:"12px 20px",fontSize:15,fontWeight:600,...F}}>← Back</button>
                 :<div/>}
-              <button onClick={nextStep} className="vl-btn" style={{background:cm.color,color:"#fff",border:"none",borderRadius:12,padding:"14px 28px",fontSize:16,fontWeight:700,...F,boxShadow:`0 4px 16px ${cm.color}44`}}>
+              <button onClick={nextStep} className="vl-btn" style={{background:cm.color,color:"#fff",border:"none",borderRadius:14,padding:"15px 32px",fontSize:16,fontWeight:700,...F,boxShadow:`0 4px 20px ${cm.color}55`,minWidth:160}}>
                 {stepIdx<topic.steps.length-1?"Continue →":"Take the Quiz →"}
               </button>
             </div>
@@ -1359,6 +1385,7 @@ export default function VibeLearn(){
       onOpenTopic={(t,track)=>{setTopic(t);setFromTrack(track||activeTrack||null);setView("topic");setTimeout(()=>window.scrollTo({top:0}),40);}}
       onBack={()=>setView("home")}
       activeTrack={activeTrack}
+      recommendedTrackId={st.diagnosticTrack}
     />;
   }
 
@@ -1385,7 +1412,7 @@ export default function VibeLearn(){
             <div style={{fontSize:48,marginBottom:16}}>🧠</div>
             <div style={{fontSize:13,color:"#6366f1",fontWeight:700,letterSpacing:2,textTransform:"uppercase",marginBottom:12,...F}}>Welcome to VibeLearn</div>
             <div style={{fontFamily:"'Playfair Display',serif",fontSize:30,fontWeight:800,color:"#111827",marginBottom:12,lineHeight:1.2}}>AI is moving fast.<br/>Are you keeping up?</div>
-            <div style={{fontSize:16,color:"#6b7280",marginBottom:28,lineHeight:1.7,...F}}>Take a quick 10-question knowledge check and we'll show you exactly where you stand — then build your personal learning path from there.</div>
+            <div style={{fontSize:16,color:"#6b7280",marginBottom:28,lineHeight:1.7,...F}}>Answer 10 quick questions and we'll show you exactly where you stand — then build your personal learning path from there.</div>
             <div style={{background:"#f9f8f5",borderRadius:12,padding:"14px 16px",marginBottom:24,textAlign:"left"}}>
               {[{icon:"⚡",text:"Takes about 2 minutes"},{icon:"🎯",text:"See your AI literacy score instantly"},{icon:"🗺️",text:"Get a personalized learning path"}].map((item,i)=>(
                 <div key={i} style={{display:"flex",alignItems:"center",gap:10,marginBottom:i<2?8:0}}>
@@ -1395,7 +1422,7 @@ export default function VibeLearn(){
               ))}
             </div>
             <button onClick={()=>setView("diagnostic")} className="vl-btn" style={{background:"#6366f1",color:"#fff",border:"none",borderRadius:14,padding:"17px 28px",fontSize:17,fontWeight:700,...F,width:"100%",boxShadow:"0 4px 16px rgba(99,102,241,0.3)",marginBottom:12}}>
-              Start the knowledge check →
+              Start the diagnostic →
             </button>
             <button onClick={()=>{const s={...st,seenIntro:true,diagnosticDone:true};persist(s);}} className="vl-btn" style={{background:"transparent",color:"#9ca3af",border:"none",fontSize:14,...F,cursor:"pointer"}}>
               Skip — browse all topics
@@ -1443,7 +1470,7 @@ export default function VibeLearn(){
         {/* Diagnostic subtle link */}
         <div style={{textAlign:"right",marginBottom:16}}>
           <button onClick={()=>setView("diagnostic")} className="vl-btn" style={{background:"none",border:"none",color:"#9ca3af",fontSize:13,cursor:"pointer",...F,padding:0}}>
-            {st.diagnosticDone?"Retake knowledge check →":"Take the knowledge check →"}
+            {st.diagnosticDone?"Retake diagnostic →":"Take the diagnostic →"}
           </button>
         </div>
 
