@@ -1238,7 +1238,6 @@ Return ONLY valid JSON array, no markdown, no backticks, no explanation. Example
           <div style={{width:8,height:8,borderRadius:999,background:"#ef4444",boxShadow:"0 0 0 3px rgba(239,68,68,0.2)",animation:"pulse 2s ease infinite"}}/>
           <span style={{fontSize:13,color:"#374151",fontWeight:700,letterSpacing:1.5,textTransform:"uppercase",...F}}>AI in the last 48h</span>
         </div>
-        <button onClick={()=>fetchNews()} className="vl-btn" style={{background:"none",border:"none",fontSize:13,color:"#9ca3af",cursor:"pointer",...F,padding:0}}>↻ Refresh</button>
       </div>
 
       {loading&&(
@@ -1276,6 +1275,7 @@ Return ONLY valid JSON array, no markdown, no backticks, no explanation. Example
                 <div style={{flex:1,minWidth:0}}>
                   <div style={{fontSize:14,fontWeight:700,color:"#111827",lineHeight:1.35,marginBottom:3,...F}}>{item.headline}</div>
                   <div style={{fontSize:13,color:"#6b7280",lineHeight:1.5,...F}}>{item.summary}</div>
+                  <a href={`https://news.google.com/search?q=${encodeURIComponent(item.headline)}&hl=en`} target="_blank" rel="noopener noreferrer" style={{fontSize:13,color:"#6366f1",fontWeight:600,textDecoration:"none",display:"inline-block",marginTop:4,...F}}>Read more →</a>
                 </div>
               </div>
             );
