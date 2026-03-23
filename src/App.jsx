@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { Analytics } from '@vercel/analytics/react';
 
 if (!document.getElementById("vl-fonts")) {
   const l = document.createElement("link"); l.id="vl-fonts"; l.rel="stylesheet";
@@ -1372,6 +1373,7 @@ export default function VibeLearn(){
         <TopicGroup label="Intermediate" emoji="🟡" topics={intermediateTopics} completed={st.completed} started={st.started||[]} onOpen={openTopic} locked={false} defaultOpen={false}/>
         <TopicGroup label="Advanced" emoji="🔴" topics={advancedTopics} completed={st.completed} started={st.started||[]} onOpen={openTopic} locked={false} xpNeeded={0} userXP={st.xp} defaultOpen={false}/>
       </div>
+      <Analytics />
     </div>
   );
 }
