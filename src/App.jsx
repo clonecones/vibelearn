@@ -469,8 +469,8 @@ function DiagnosticResults({result,onStart,onExplore}){
   return(
     <div style={{background:"#f5f4f0",minHeight:"100vh",...F}}>
       <div style={{background:"#fff",borderBottom:"1px solid #ebe8e0",padding:"14px 20px"}}>
-        <div style={{maxWidth:600,margin:"0 auto"}}>
-          <div style={{fontFamily:"'Playfair Display',serif",fontSize:22,fontWeight:800,color:"#111827"}}>Vibe<span style={{color:"#6366f1"}}>Learn</span></div>
+        <div style={{maxWidth:600,margin:"0 auto",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+          <button onClick={onExplore} className="vl-btn" style={{background:"none",border:"none",fontFamily:"'Playfair Display',serif",fontSize:22,fontWeight:800,color:"#111827",cursor:"pointer",letterSpacing:-0.5,padding:0}}>Vibe<span style={{color:"#6366f1"}}>Learn</span></button>
         </div>
       </div>
 
@@ -548,8 +548,11 @@ function TracksView({completed,onOpenTopic,onBack,activeTrack}){
     <div style={{background:"#f5f4f0",minHeight:"100vh",...F,paddingBottom:80}}>
       <div style={{background:"#fff",borderBottom:"1px solid #ebe8e0",padding:"14px 20px"}}>
         <div style={{maxWidth:880,margin:"0 auto",display:"flex",alignItems:"center",gap:12}}>
-          <button onClick={onBack} className="vl-back vl-btn" style={{background:"none",border:"none",color:"#6b7280",fontSize:15,cursor:"pointer",...F,display:"flex",alignItems:"center",gap:4}}>← Back</button>
+          <button onClick={onBack} className="vl-back vl-btn" style={{background:"none",border:"none",color:"#6b7280",fontSize:15,cursor:"pointer",...F,display:"flex",alignItems:"center",gap:4}}>← Home</button>
           <div style={{fontFamily:"'Playfair Display',serif",fontSize:20,fontWeight:800,color:"#111827"}}>Skill Tracks</div>
+          <div style={{marginLeft:"auto"}}>
+            <button onClick={onBack} className="vl-btn" style={{background:"none",border:"none",fontFamily:"'Playfair Display',serif",fontSize:18,fontWeight:800,color:"#111827",cursor:"pointer",letterSpacing:-0.5}}>Vibe<span style={{color:"#6366f1"}}>Learn</span></button>
+          </div>
         </div>
       </div>
 
@@ -893,10 +896,13 @@ function LessonView({topic,appState,persist,onBack,fromTrack}){
       {/* Back bar */}
       <div style={{background:"#fff",borderBottom:"1px solid #ebe8e0",padding:"12px 20px",position:"sticky",top:0,zIndex:100}}>
         <div style={{maxWidth:880,margin:"0 auto",display:"flex",alignItems:"center",gap:12}}>
-          <button onClick={onBack} className="vl-back vl-btn" style={{background:"none",border:"none",color:"#6b7280",fontSize:15,cursor:"pointer",...F,display:"flex",alignItems:"center",gap:4}}>← Back</button>
+          <button onClick={onBack} className="vl-back vl-btn" style={{background:"none",border:"none",color:"#6b7280",fontSize:15,cursor:"pointer",...F,display:"flex",alignItems:"center",gap:4}}>← {fromTrack?fromTrack.label:"Back"}</button>
           <span style={{color:"#e5e2da"}}>·</span>
           <Chip label={topic.category} color={cm.color} bg={cm.bg}/>
           {done&&<Chip label="✓ Done" color="#16a34a" bg="#f0fdf4"/>}
+          <div style={{marginLeft:"auto"}}>
+            <button onClick={onBack} className="vl-btn" style={{background:"none",border:"none",fontFamily:"'Playfair Display',serif",fontSize:18,fontWeight:800,color:"#111827",cursor:"pointer",letterSpacing:-0.5}}>Vibe<span style={{color:"#6366f1"}}>Learn</span></button>
+          </div>
         </div>
       </div>
 
@@ -1411,6 +1417,15 @@ export default function VibeLearn(){
         <TopicGroup label="Beginner" emoji="🟢" topics={beginnerTopics} completed={st.completed} started={st.started||[]} onOpen={openTopic} locked={false} defaultOpen={false}/>
         <TopicGroup label="Intermediate" emoji="🟡" topics={intermediateTopics} completed={st.completed} started={st.started||[]} onOpen={openTopic} locked={false} defaultOpen={false}/>
         <TopicGroup label="Advanced" emoji="🔴" topics={advancedTopics} completed={st.completed} started={st.started||[]} onOpen={openTopic} locked={false} xpNeeded={0} userXP={st.xp} defaultOpen={false}/>
+
+        {/* Footer */}
+        <div style={{marginTop:40,paddingTop:20,borderTop:"1px solid #ebe8e0",display:"flex",alignItems:"center",justifyContent:"center",gap:8}}>
+          <span style={{fontSize:12,color:"#c4bfb5",...F}}>Built by</span>
+          <a href="https://www.linkedin.com/in/andrewjcook1/" target="_blank" rel="noopener noreferrer" style={{fontSize:12,color:"#9ca3af",fontWeight:600,...F,textDecoration:"none"}}>Andrew Cook</a>
+          <span style={{fontSize:12,color:"#d4cfc7"}}>·</span>
+          <span style={{fontSize:12,color:"#c4bfb5",...F}}>Powered by</span>
+          <span style={{fontSize:12,color:"#9ca3af",fontWeight:600,...F}}>Claude Sonnet 4.5</span>
+        </div>
       </div>
     </div>
   );
