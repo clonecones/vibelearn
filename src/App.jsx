@@ -1271,7 +1271,7 @@ Return ONLY valid JSON array, no markdown, no backticks, no explanation. Example
             const color=CAT_COLORS[item.category]||"#6366f1";
             return(
               <div key={i} style={{padding:"14px 18px",borderBottom:i<news.length-1?"1px solid #f3f4f6":"none",display:"flex",gap:12,alignItems:"flex-start"}}>
-                <div style={{flexShrink:0,marginTop:2}}>
+                <div style={{flexShrink:0,marginTop:2,width:110,display:"flex"}}>
                   <span style={{background:`${color}15`,color,borderRadius:6,padding:"3px 8px",fontSize:13,fontWeight:700,...F,whiteSpace:"nowrap"}}>{item.signal}</span>
                 </div>
                 <div style={{flex:1,minWidth:0}}>
@@ -1561,7 +1561,7 @@ export default function VibeLearn(){
         {/* Footer */}
         <div style={{marginTop:40,paddingTop:20,borderTop:"1px solid #ebe8e0",display:"flex",alignItems:"center",justifyContent:"center",gap:8}}>
           <span style={{fontSize:13,color:"#c4bfb5",...F}}>Built by</span>
-          <a href="https://www.linkedin.com/in/andrewjcook1/" target="_blank" rel="noopener noreferrer" style={{fontSize:13,color:"#9ca3af",fontWeight:600,...F,textDecoration:"none"}}>Andrew Cook</a>
+          <a href="https://www.linkedin.com/in/acook11/" target="_blank" rel="noopener noreferrer" style={{fontSize:13,color:"#9ca3af",fontWeight:600,...F,textDecoration:"none"}}>Andrew Cook</a>
           <span style={{fontSize:13,color:"#d4cfc7"}}>·</span>
           <span style={{fontSize:13,color:"#c4bfb5",...F}}>Powered by</span>
           <span style={{fontSize:13,color:"#9ca3af",fontWeight:600,...F}}>Claude Sonnet 4.5</span>
