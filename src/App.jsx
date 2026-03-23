@@ -47,7 +47,7 @@ if (!document.getElementById("vl-css")) {
   document.head.appendChild(s);
 }
 
-const ADVANCED_XP_GATE = 200;
+const ADVANCED_XP_GATE = 0;
 
 import Diagrams from "./diagrams.jsx";
 
@@ -1370,7 +1370,7 @@ export default function VibeLearn(){
         <div style={{fontSize:13,color:"#6b7280",fontWeight:700,letterSpacing:1.5,textTransform:"uppercase",marginBottom:12,...F}}>All Topics</div>
         <TopicGroup label="Beginner" emoji="🟢" topics={beginnerTopics} completed={st.completed} started={st.started||[]} onOpen={openTopic} locked={false} defaultOpen={false}/>
         <TopicGroup label="Intermediate" emoji="🟡" topics={intermediateTopics} completed={st.completed} started={st.started||[]} onOpen={openTopic} locked={false} defaultOpen={false}/>
-        <TopicGroup label="Advanced" emoji="🔴" topics={advancedTopics} completed={st.completed} started={st.started||[]} onOpen={openTopic} locked={advancedLocked} xpNeeded={ADVANCED_XP_GATE} userXP={st.xp} defaultOpen={false}/>
+        <TopicGroup label="Advanced" emoji="🔴" topics={advancedTopics} completed={st.completed} started={st.started||[]} onOpen={openTopic} locked={false} xpNeeded={0} userXP={st.xp} defaultOpen={false}/>
       </div>
     </div>
   );
