@@ -123,14 +123,14 @@ function AnalogyCard({step,cm}){
   );
 
   return(
-    <div style={{background:`linear-gradient(135deg,${cm.color}ee 0%,${cm.color}bb 100%)`,borderRadius:20,padding:"32px 28px",overflow:"hidden",position:"relative",minHeight:160}}>
+    <div style={{background:`linear-gradient(135deg,${cm.color} 0%,${cm.color}dd 100%)`,borderRadius:20,padding:"32px 28px",overflow:"hidden",position:"relative",minHeight:160}}>
       <div style={{position:"absolute",top:-10,left:16,fontSize:140,color:"rgba(255,255,255,0.12)",fontFamily:"'Playfair Display',serif",lineHeight:1,pointerEvents:"none",userSelect:"none"}}>"</div>
       <div style={{position:"absolute",bottom:-20,right:16,fontSize:140,color:"rgba(255,255,255,0.08)",fontFamily:"'Playfair Display',serif",lineHeight:1,pointerEvents:"none",userSelect:"none",transform:"rotate(180deg)"}}>"</div>
       <div style={{display:"inline-flex",alignItems:"center",gap:6,background:"rgba(255,255,255,0.2)",borderRadius:999,padding:"4px 12px",marginBottom:20}}>
         <span style={{fontSize:13}}>💡</span>
         <span style={{fontSize:13,color:"rgba(255,255,255,0.9)",fontWeight:700,letterSpacing:1.5,textTransform:"uppercase",fontFamily:"Inter,sans-serif"}}>Analogy</span>
       </div>
-      <p style={{fontSize:21,color:"#fff",lineHeight:1.9,fontStyle:"italic",fontWeight:700,fontFamily:"'Playfair Display',serif",position:"relative",zIndex:1,textShadow:"0 1px 4px rgba(0,0,0,0.15)"}}>{step.body}</p>
+      <p style={{fontSize:21,color:"#fff",lineHeight:1.9,fontStyle:"italic",fontWeight:700,fontFamily:"'Playfair Display',serif",position:"relative",zIndex:1,textShadow:"0 2px 8px rgba(0,0,0,0.4)"}}>{step.body}</p>
     </div>
   );
 }
@@ -261,7 +261,7 @@ function calcLiteracyScore(completed){
   return Math.round((earned/maxPossible)*100);
 }
 function getScoreLabel(score){
-  if(score===0)return{label:"Not Started",color:"#9ca3af"};
+  if(score===0)return{label:"Not Started",color:"#6b7280"};
   if(score<25)return{label:"AI Curious",color:"#6366f1"};
   if(score<50)return{label:"AI Aware",color:"#0891b2"};
   if(score<75)return{label:"AI Capable",color:"#059669"};
@@ -548,8 +548,8 @@ function TracksView({completed,onOpenTopic,onBack,activeTrack}){
             {completed.length===0&&(
               <div style={{background:"#fff",borderRadius:16,padding:"24px",border:"1.5px dashed #d1d5db",textAlign:"center",marginBottom:20}}>
                 <div style={{fontSize:36,marginBottom:12}}>🗺️</div>
-                <div style={{fontFamily:"'Playfair Display',serif",fontSize:18,fontWeight:800,color:"#111827",marginBottom:8}}>Start any topic to begin a track</div>
-                <div style={{fontSize:15,color:"#6b7280",lineHeight:1.6,...F}}>Your progress across all tracks will show here as you complete topics. Pick any track below to see what's inside.</div>
+                <div style={{fontFamily:"'Playfair Display',serif",fontSize:18,fontWeight:800,color:"#111827",marginBottom:8}}>Pick a track to get started</div>
+                <div style={{fontSize:15,color:"#6b7280",lineHeight:1.6,...F}}>Complete topics to earn credentials. Each track takes about 30 minutes.</div>
               </div>
             )}
             <div style={{display:"flex",flexDirection:"column",gap:14}}>
@@ -699,8 +699,13 @@ function LessonView({topic,appState,persist,onBack}){
     if(correct)setScore(s=>s+1);
     if(!correct){
       setWhyLoad(true);
-      callClaude(`In 2 sentences, explain why "${q.opts[i]}" is wrong and "${q.opts[q.answer]}" is the correct answer to: "${q.q}". Be direct and educational.`)
-        .then(t=>{setWhyText(t);setWhyLoad(false);})
+      callClaude(`In exactly 2 plain sentences with no markdown, no headers, no bullet points: explain why "${q.opts[i]}" is wrong and why "${q.opts[q.answer]}" is correct for this question: "${q.q}". Be concise and direct.`)
+        .then(t=>{
+          // Strip any markdown that slips through
+          const clean=t.replace(/#{1,6}\s+/g,'').replace(/\*\*/g,'').replace(/\*/g,'').replace(/`/g,'').replace(/
++/g,' ').trim();
+          setWhyText(clean);setWhyLoad(false);
+        })
         .catch(()=>{setWhyLoad(false);});
     }
   }
