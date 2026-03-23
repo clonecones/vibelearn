@@ -337,7 +337,7 @@ function BadgeModal({badge,onClose}){
 }
 
 // ── DIAGNOSTIC QUIZ ───────────────────────────────────────────────────────────
-function DiagnosticQuiz({onComplete}){
+function DiagnosticQuiz({onComplete,onExit}){
   const[idx,setIdx]=useState(0);
   const[answers,setAnswers]=useState([]);
   const[selected,setSelected]=useState(null);
@@ -416,7 +416,10 @@ function DiagnosticQuiz({onComplete}){
       <div style={{background:"#fff",borderBottom:"1px solid #ebe8e0",padding:"14px 20px"}}>
         <div style={{maxWidth:600,margin:"0 auto",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
           <div style={{fontFamily:"'Playfair Display',serif",fontSize:22,fontWeight:800,color:"#111827"}}>Vibe<span style={{color:"#6366f1"}}>Learn</span></div>
-          <div style={{fontSize:13,color:"#6b7280",...F}}>Question {idx+1} of {DIAGNOSTIC.length}</div>
+          <div style={{display:"flex",alignItems:"center",gap:16}}>
+            <div style={{fontSize:13,color:"#6b7280",...F}}>Question {idx+1} of {DIAGNOSTIC.length}</div>
+            <button onClick={onExit} className="vl-btn" style={{background:"none",border:"none",color:"#9ca3af",fontSize:13,cursor:"pointer",...F,padding:0}}>✕ Exit</button>
+          </div>
         </div>
       </div>
 
@@ -427,7 +430,7 @@ function DiagnosticQuiz({onComplete}){
         </div>
 
         <div className="vl-fi" key={idx}>
-          <div style={{fontSize:13,color:"#6366f1",fontWeight:700,letterSpacing:1.5,textTransform:"uppercase",marginBottom:12,...F}}>AI Literacy Check · {idx+1}/{DIAGNOSTIC.length}</div>
+          <div style={{fontSize:13,color:"#6366f1",fontWeight:700,letterSpacing:1.5,textTransform:"uppercase",marginBottom:12,...F}}>Knowledge Check · {idx+1}/{DIAGNOSTIC.length}</div>
           <div style={{fontFamily:"'Playfair Display',serif",fontSize:24,fontWeight:800,color:"#111827",lineHeight:1.3,marginBottom:28}}>{q.q}</div>
 
           <div style={{display:"flex",flexDirection:"column",gap:10,marginBottom:24}}>
@@ -473,7 +476,7 @@ function DiagnosticResults({result,onStart,onExplore}){
 
       <div style={{maxWidth:600,margin:"0 auto",padding:"32px 16px"}}>
         <div className="vl-fade" style={{background:"#fff",borderRadius:20,padding:"32px 28px",boxShadow:"0 4px 24px rgba(0,0,0,0.06)",border:"1px solid #ebe8e0",marginBottom:20,textAlign:"center"}}>
-          <div style={{fontSize:13,color:"#6366f1",fontWeight:700,letterSpacing:1.5,textTransform:"uppercase",marginBottom:12}}>Your Diagnostic Results</div>
+          <div style={{fontSize:13,color:"#6366f1",fontWeight:700,letterSpacing:1.5,textTransform:"uppercase",marginBottom:12}}>Your Knowledge Check Results</div>
           <div className="vl-score" style={{fontFamily:"'Playfair Display',serif",fontSize:72,fontWeight:800,color:"#111827",lineHeight:1,marginBottom:8}}>{score}<span style={{fontSize:32,color:"#9ca3af"}}>/{total}</span></div>
           <div style={{fontSize:16,color:"#6b7280",marginBottom:24}}>
             {pct===100?"Perfect score! You already know a lot.":pct>=70?"Strong foundation. A few gaps to close.":pct>=40?"Some familiarity. Good starting point.":"Just starting out. That's exactly what we're here for."}
@@ -1215,7 +1218,7 @@ export default function VibeLearn(){
         }}
       />;
     }
-    return <DiagnosticQuiz onComplete={(result)=>setDiagResult(result)}/>;
+    return <DiagnosticQuiz onComplete={(result)=>setDiagResult(result)} onExit={()=>{setView("home");setDiagResult(null);}}/>;
   }
 
   if(view==="topic"&&topic){
@@ -1258,10 +1261,18 @@ export default function VibeLearn(){
           <div className="vl-fade" style={{background:"#fff",borderRadius:20,padding:"36px 28px",boxShadow:"0 4px 24px rgba(0,0,0,0.06)",border:"2px solid #e0e7ff",textAlign:"center"}}>
             <div style={{fontSize:48,marginBottom:16}}>🧠</div>
             <div style={{fontSize:13,color:"#6366f1",fontWeight:700,letterSpacing:2,textTransform:"uppercase",marginBottom:12,...F}}>Welcome to VibeLearn</div>
-            <div style={{fontFamily:"'Playfair Display',serif",fontSize:30,fontWeight:800,color:"#111827",marginBottom:12,lineHeight:1.2}}>AI literacy in 5 minutes a topic.</div>
-            <div style={{fontSize:16,color:"#6b7280",marginBottom:32,lineHeight:1.7,...F}}>No jargon. No fluff. Answer 10 quick questions and we'll build your personalized learning path.</div>
+            <div style={{fontFamily:"'Playfair Display',serif",fontSize:30,fontWeight:800,color:"#111827",marginBottom:12,lineHeight:1.2}}>AI is moving fast.<br/>Are you keeping up?</div>
+            <div style={{fontSize:16,color:"#6b7280",marginBottom:28,lineHeight:1.7,...F}}>Take a quick 10-question knowledge check and we'll show you exactly where you stand — then build your personal learning path from there.</div>
+            <div style={{background:"#f9f8f5",borderRadius:12,padding:"14px 16px",marginBottom:24,textAlign:"left"}}>
+              {[{icon:"⚡",text:"Takes about 2 minutes"},{icon:"🎯",text:"See your AI literacy score instantly"},{icon:"🗺️",text:"Get a personalized learning path"}].map((item,i)=>(
+                <div key={i} style={{display:"flex",alignItems:"center",gap:10,marginBottom:i<2?8:0}}>
+                  <span style={{fontSize:15}}>{item.icon}</span>
+                  <span style={{fontSize:14,color:"#374151",...F}}>{item.text}</span>
+                </div>
+              ))}
+            </div>
             <button onClick={()=>setView("diagnostic")} className="vl-btn" style={{background:"#6366f1",color:"#fff",border:"none",borderRadius:14,padding:"17px 28px",fontSize:17,fontWeight:700,...F,width:"100%",boxShadow:"0 4px 16px rgba(99,102,241,0.3)",marginBottom:12}}>
-              Take the 2-minute diagnostic →
+              Start the knowledge check →
             </button>
             <button onClick={()=>{const s={...st,seenIntro:true,diagnosticDone:true};persist(s);}} className="vl-btn" style={{background:"transparent",color:"#9ca3af",border:"none",fontSize:14,...F,cursor:"pointer"}}>
               Skip — browse all topics
@@ -1279,7 +1290,7 @@ export default function VibeLearn(){
       {/* Header */}
       <div style={{background:"#fff",borderBottom:"1px solid #ebe8e0",padding:"14px 20px",position:"sticky",top:0,zIndex:100}}>
         <div style={{maxWidth:880,margin:"0 auto",display:"flex",alignItems:"center",justifyContent:"space-between",gap:12}}>
-          <div>
+          <div style={{cursor:"pointer"}} onClick={()=>{setView("home");window.scrollTo({top:0});}}>
             <div style={{fontFamily:"'Playfair Display',serif",fontSize:26,fontWeight:800,color:"#111827",letterSpacing:-0.5,lineHeight:1}}>Vibe<span style={{color:"#6366f1"}}>Learn</span></div>
             <div style={{fontSize:13,color:"#6b7280",marginTop:3,fontWeight:500}}>AI literacy for everyone</div>
           </div>
@@ -1309,7 +1320,7 @@ export default function VibeLearn(){
         {/* Diagnostic subtle link */}
         <div style={{textAlign:"right",marginBottom:16}}>
           <button onClick={()=>setView("diagnostic")} className="vl-btn" style={{background:"none",border:"none",color:"#9ca3af",fontSize:13,cursor:"pointer",...F,padding:0}}>
-            {st.diagnosticDone?"Retake diagnostic →":"Take the diagnostic →"}
+            {st.diagnosticDone?"Retake knowledge check →":"Take the knowledge check →"}
           </button>
         </div>
 
