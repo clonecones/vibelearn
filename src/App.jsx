@@ -702,8 +702,7 @@ function LessonView({topic,appState,persist,onBack}){
       callClaude(`In exactly 2 plain sentences with no markdown, no headers, no bullet points: explain why "${q.opts[i]}" is wrong and why "${q.opts[q.answer]}" is correct for this question: "${q.q}". Be concise and direct.`)
         .then(t=>{
           // Strip any markdown that slips through
-          const clean=t.replace(/#{1,6}\s+/g,'').replace(/\*\*/g,'').replace(/\*/g,'').replace(/`/g,'').replace(/
-+/g,' ').trim();
+          const clean=t.split('\n').join(' ').replace(/#+\s*/g,'').replace(/\*\*/g,'').replace(/\*/g,'').replace(/`/g,'').replace(/\s+/g,' ').trim();
           setWhyText(clean);setWhyLoad(false);
         })
         .catch(()=>{setWhyLoad(false);});
