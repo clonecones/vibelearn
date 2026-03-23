@@ -1256,8 +1256,8 @@ export default function VibeLearn(){
 
         {/* All topics */}
         <div style={{fontSize:13,color:"#6b7280",fontWeight:700,letterSpacing:1.5,textTransform:"uppercase",marginBottom:12,...F}}>All Topics</div>
-        <TopicGroup label="Beginner" emoji="🟢" topics={beginnerTopics} completed={st.completed} started={st.started||[]} onOpen={openTopic} locked={false} defaultOpen={true}/>
-        <TopicGroup label="Intermediate" emoji="🟡" topics={intermediateTopics} completed={st.completed} started={st.started||[]} onOpen={openTopic} locked={false} defaultOpen={st.completed.length>0}/>
+        <TopicGroup label="Beginner" emoji="🟢" topics={beginnerTopics} completed={st.completed} started={st.started||[]} onOpen={openTopic} locked={false} defaultOpen={false}/>
+        <TopicGroup label="Intermediate" emoji="🟡" topics={intermediateTopics} completed={st.completed} started={st.started||[]} onOpen={openTopic} locked={false} defaultOpen={false}/>
         <TopicGroup label="Advanced" emoji="🔴" topics={advancedTopics} completed={st.completed} started={st.started||[]} onOpen={openTopic} locked={advancedLocked} xpNeeded={ADVANCED_XP_GATE} userXP={st.xp} defaultOpen={false}/>
       </div>
     </div>
