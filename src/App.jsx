@@ -1171,6 +1171,126 @@ function TopicGroup({label,emoji,topics,completed,started,onOpen,locked,xpNeeded
   );
 }
 
+// ── AI NEWS FEED ──────────────────────────────────────────────────────────────
+const CAT_COLORS={
+  "Model Release":"#6366f1",
+  "Research":"#059669",
+  "Industry":"#0891b2",
+  "Policy & Safety":"#db2777",
+  "Tools & Products":"#d97706",
+};
+
+function AINewsFeed(){
+  const[news,setNews]=useState(null);
+  const[loading,setLoading]=useState(true);
+  const[error,setError]=useState(false);
+  const[expanded,setExpanded]=useState(false);
+  const CACHE_KEY="vl-news-v1";
+  const CACHE_TTL=2*60*60*1000; // 2 hours
+
+  useEffect(()=>{
+    // Check cache first
+    try{
+      const cached=localStorage.getItem(CACHE_KEY);
+      if(cached){
+        const{data,ts}=JSON.parse(cached);
+        if(Date.now()-ts<CACHE_TTL){setNews(data);setLoading(false);return;}
+      }
+    }catch{}
+    fetchNews();
+  },[]);
+
+  async function fetchNews(){
+    setLoading(true);setError(false);
+    try{
+      const prompt=`You are an AI news curator. Return a JSON array of exactly 4 recent AI news items from the last 48 hours. Each item must have:
+- "headline": short punchy headline (max 12 words)
+- "summary": one sentence explaining why it matters to AI practitioners (max 25 words)  
+- "category": exactly one of: "Model Release", "Research", "Industry", "Policy & Safety", "Tools & Products"
+- "signal": one word describing the vibe: "🚀 Launch", "🔬 Research", "💰 Business", "⚖️ Policy", or "🛠️ Tools"
+
+Focus on: new model releases, major lab announcements, AI policy, agentic AI, AI in enterprise, safety research. Skip crypto, gaming, and pure finance unless directly AI-related.
+
+Return ONLY valid JSON array, no markdown, no backticks, no explanation. Example format:
+[{"headline":"OpenAI releases GPT-5","summary":"New model matches PhD-level reasoning on science benchmarks.","category":"Model Release","signal":"🚀 Launch"}]`;
+
+      const r=await fetch("/api/claude",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({prompt})});
+      if(!r.ok)throw new Error("api");
+      const d=await r.json();
+      const text=d.content?.[0]?.text||"";
+      const clean=text.replace(/```json|```/g,"").trim();
+      const items=JSON.parse(clean);
+      if(!Array.isArray(items)||items.length===0)throw new Error("parse");
+      setNews(items);
+      // Cache it
+      try{localStorage.setItem(CACHE_KEY,JSON.stringify({data:items,ts:Date.now()}));}catch{}
+    }catch{
+      setError(true);
+    }finally{
+      setLoading(false);
+    }
+  }
+
+  return(
+    <div style={{marginBottom:24}}>
+      <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:12}}>
+        <div style={{display:"flex",alignItems:"center",gap:8}}>
+          <div style={{width:8,height:8,borderRadius:999,background:"#ef4444",boxShadow:"0 0 0 3px rgba(239,68,68,0.2)",animation:"pulse 2s ease infinite"}}/>
+          <span style={{fontSize:13,color:"#374151",fontWeight:700,letterSpacing:1.5,textTransform:"uppercase",...F}}>AI in the last 48h</span>
+        </div>
+        <button onClick={()=>fetchNews()} className="vl-btn" style={{background:"none",border:"none",fontSize:13,color:"#9ca3af",cursor:"pointer",...F,padding:0}}>↻ Refresh</button>
+      </div>
+
+      {loading&&(
+        <div style={{background:"#fff",borderRadius:16,padding:"20px",border:"1px solid #ebe8e0"}}>
+          <div style={{display:"flex",flexDirection:"column",gap:12}}>
+            {[1,2,3].map(i=>(
+              <div key={i} style={{display:"flex",gap:12,alignItems:"flex-start"}}>
+                <div style={{width:60,height:20,background:"#f3f4f6",borderRadius:6,flexShrink:0,animation:"pulse 1.5s ease infinite"}}/>
+                <div style={{flex:1}}>
+                  <div style={{height:16,background:"#f3f4f6",borderRadius:4,marginBottom:6,animation:"pulse 1.5s ease infinite"}}/>
+                  <div style={{height:13,background:"#f3f4f6",borderRadius:4,width:"80%",animation:"pulse 1.5s ease infinite"}}/>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {error&&(
+        <div style={{background:"#fff",borderRadius:16,padding:"20px",border:"1px solid #ebe8e0",textAlign:"center"}}>
+          <div style={{fontSize:14,color:"#9ca3af",...F}}>Couldn't load news right now.</div>
+          <button onClick={fetchNews} className="vl-btn" style={{marginTop:8,background:"none",border:"none",color:"#6366f1",fontSize:13,fontWeight:600,cursor:"pointer",...F}}>Try again</button>
+        </div>
+      )}
+
+      {news&&!loading&&(
+        <div style={{background:"#fff",borderRadius:16,border:"1px solid #ebe8e0",overflow:"hidden",boxShadow:"0 2px 12px rgba(0,0,0,0.04)"}}>
+          {(expanded?news:news.slice(0,3)).map((item,i)=>{
+            const color=CAT_COLORS[item.category]||"#6366f1";
+            return(
+              <div key={i} style={{padding:"14px 18px",borderBottom:i<(expanded?news.length-1:Math.min(2,news.length-1))?"1px solid #f3f4f6":"none",display:"flex",gap:12,alignItems:"flex-start"}}>
+                <div style={{flexShrink:0,marginTop:2}}>
+                  <span style={{background:`${color}15`,color,borderRadius:6,padding:"3px 8px",fontSize:13,fontWeight:700,...F,whiteSpace:"nowrap"}}>{item.signal}</span>
+                </div>
+                <div style={{flex:1,minWidth:0}}>
+                  <div style={{fontSize:14,fontWeight:700,color:"#111827",lineHeight:1.35,marginBottom:3,...F}}>{item.headline}</div>
+                  <div style={{fontSize:13,color:"#6b7280",lineHeight:1.5,...F}}>{item.summary}</div>
+                </div>
+              </div>
+            );
+          })}
+          {news.length>3&&(
+            <button onClick={()=>setExpanded(e=>!e)} className="vl-btn" style={{width:"100%",background:"#f9f8f5",border:"none",borderTop:"1px solid #f3f4f6",padding:"10px",fontSize:13,color:"#6b7280",fontWeight:600,cursor:"pointer",...F}}>
+              {expanded?"Show less ▲":`+${news.length-3} more stories ▾`}
+            </button>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ── HOME ──────────────────────────────────────────────────────────────────────
 export default function VibeLearn(){
   const[st,setSt]=useState(null);
@@ -1412,6 +1532,9 @@ export default function VibeLearn(){
           return null;
         })()}
 
+        {/* AI News Feed */}
+        <AINewsFeed/>
+
         {/* All topics */}
         <div style={{fontSize:13,color:"#6b7280",fontWeight:700,letterSpacing:1.5,textTransform:"uppercase",marginBottom:12,...F}}>All Topics</div>
         <TopicGroup label="Beginner" emoji="🟢" topics={beginnerTopics} completed={st.completed} started={st.started||[]} onOpen={openTopic} locked={false} defaultOpen={false}/>
@@ -1420,11 +1543,11 @@ export default function VibeLearn(){
 
         {/* Footer */}
         <div style={{marginTop:40,paddingTop:20,borderTop:"1px solid #ebe8e0",display:"flex",alignItems:"center",justifyContent:"center",gap:8}}>
-          <span style={{fontSize:12,color:"#c4bfb5",...F}}>Built by</span>
-          <a href="https://www.linkedin.com/in/andrewjcook1/" target="_blank" rel="noopener noreferrer" style={{fontSize:12,color:"#9ca3af",fontWeight:600,...F,textDecoration:"none"}}>Andrew Cook</a>
-          <span style={{fontSize:12,color:"#d4cfc7"}}>·</span>
-          <span style={{fontSize:12,color:"#c4bfb5",...F}}>Powered by</span>
-          <span style={{fontSize:12,color:"#9ca3af",fontWeight:600,...F}}>Claude Sonnet 4.5</span>
+          <span style={{fontSize:13,color:"#c4bfb5",...F}}>Built by</span>
+          <a href="https://www.linkedin.com/in/andrewjcook1/" target="_blank" rel="noopener noreferrer" style={{fontSize:13,color:"#9ca3af",fontWeight:600,...F,textDecoration:"none"}}>Andrew Cook</a>
+          <span style={{fontSize:13,color:"#d4cfc7"}}>·</span>
+          <span style={{fontSize:13,color:"#c4bfb5",...F}}>Powered by</span>
+          <span style={{fontSize:13,color:"#9ca3af",fontWeight:600,...F}}>Claude Sonnet 4.5</span>
         </div>
       </div>
     </div>
