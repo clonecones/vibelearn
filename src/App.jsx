@@ -311,16 +311,26 @@ function Toast({msg,k}){
 }
 
 function BadgeModal({badge,onClose}){
+  const[showCert,setShowCert]=useState(false);
+  const track=badge.isTrack?TRACKS.find(t=>t.label+" Track Complete"===badge.label||t.emoji===badge.icon):null;
+  if(showCert&&track)return <CertificateModal track={track} onClose={()=>{setShowCert(false);onClose();}}/>;
   return(
     <div onClick={onClose} style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.5)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:999,backdropFilter:"blur(8px)"}}>
-      <div className="vl-pop" onClick={e=>e.stopPropagation()} style={{background:"#fff",borderRadius:28,padding:"44px 40px",textAlign:"center",maxWidth:320,width:"90%",boxShadow:"0 30px 80px rgba(0,0,0,0.22)"}}>
+      <div className="vl-pop" onClick={e=>e.stopPropagation()} style={{background:"#fff",borderRadius:28,padding:"44px 40px",textAlign:"center",maxWidth:340,width:"90%",boxShadow:"0 30px 80px rgba(0,0,0,0.22)"}}>
         <div style={{fontSize:60,marginBottom:16}}>{badge.icon}</div>
         <div style={{fontSize:13,color:"#6366f1",fontWeight:700,letterSpacing:1.5,textTransform:"uppercase",marginBottom:8,...F}}>
           {badge.isTrack?"Track Complete!":"Badge Unlocked"}
         </div>
         <div style={{fontFamily:"'Playfair Display',serif",fontSize:22,fontWeight:800,color:"#111827",marginBottom:8}}>{badge.label}</div>
-        <div style={{fontSize:14,color:"#6b7280",marginBottom:28,lineHeight:1.7,...F}}>{badge.desc}</div>
-        <button onClick={onClose} className="vl-btn" style={{background:"#6366f1",color:"#fff",border:"none",borderRadius:14,padding:"13px 34px",fontSize:15,fontWeight:700,...F}}>Keep going →</button>
+        <div style={{fontSize:14,color:"#6b7280",marginBottom:24,lineHeight:1.7,...F}}>{badge.desc}</div>
+        {badge.isTrack&&track&&(
+          <button onClick={()=>setShowCert(true)} className="vl-btn" style={{background:"#6366f1",color:"#fff",border:"none",borderRadius:14,padding:"13px 34px",fontSize:15,fontWeight:700,...F,width:"100%",marginBottom:10}}>
+            🎓 Get My Credential
+          </button>
+        )}
+        <button onClick={onClose} className="vl-btn" style={{background:badge.isTrack?"transparent":"#6366f1",color:badge.isTrack?"#6b7280":"#fff",border:badge.isTrack?"none":"none",borderRadius:14,padding:"13px 34px",fontSize:15,fontWeight:badge.isTrack?500:700,...F,width:"100%"}}>
+          {badge.isTrack?"Maybe later →":"Keep going →"}
+        </button>
       </div>
     </div>
   );
@@ -588,18 +598,119 @@ function TracksView({completed,onOpenTopic,onBack,activeTrack}){
   );
 }
 
+
+// ── CERTIFICATE MODAL ─────────────────────────────────────────────────────────
+function CertificateModal({track,onClose}){
+  const[name,setName]=useState("");
+  const[downloaded,setDownloaded]=useState(false);
+  const date=new Date().toLocaleDateString("en-US",{year:"numeric",month:"long",day:"numeric"});
+  const displayName=name.trim()||"Your Name";
+
+  function shareLinkedIn(){
+    const text=encodeURIComponent(`I just earned the "${track.label}" credential on VibeLearn — AI literacy that actually sticks. 🎓`);
+    const url=encodeURIComponent("https://vibelearn-pi.vercel.app");
+    window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${url}&summary=${text}`,"_blank","noopener");
+  }
+
+  function downloadCert(){
+    // Build a canvas from the certificate div
+    const cert=document.getElementById("vl-cert-card");
+    if(!cert)return;
+    // Use html2canvas loaded from CDN
+    if(!window.html2canvas){
+      const s=document.createElement("script");
+      s.src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js";
+      s.onload=()=>captureCert();
+      document.head.appendChild(s);
+    } else {
+      captureCert();
+    }
+    function captureCert(){
+      window.html2canvas(cert,{scale:2,backgroundColor:null,logging:false}).then(canvas=>{
+        const a=document.createElement("a");
+        a.download=`VibeLearn-${track.label.replace(/\s+/g,"-")}-Credential.png`;
+        a.href=canvas.toDataURL("image/png");
+        a.click();
+        setDownloaded(true);
+        setTimeout(()=>setDownloaded(false),3000);
+      });
+    }
+  }
+
+  return(
+    <div onClick={onClose} style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.7)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:999,backdropFilter:"blur(12px)",padding:16,overflowY:"auto"}}>
+      <div className="vl-pop" onClick={e=>e.stopPropagation()} style={{width:"100%",maxWidth:520,fontFamily:"Inter,sans-serif"}}>
+
+        {/* Certificate card — this is what gets downloaded */}
+        <div id="vl-cert-card" style={{background:`linear-gradient(135deg,${track.color} 0%,${track.color}dd 60%,${track.color}aa 100%)`,borderRadius:20,padding:"40px 36px",marginBottom:16,position:"relative",overflow:"hidden"}}>
+          {/* Decorative circles */}
+          <div style={{position:"absolute",top:-60,right:-60,width:200,height:200,borderRadius:"50%",background:"rgba(255,255,255,0.06)",pointerEvents:"none"}}/>
+          <div style={{position:"absolute",bottom:-40,left:-40,width:160,height:160,borderRadius:"50%",background:"rgba(255,255,255,0.04)",pointerEvents:"none"}}/>
+
+          {/* Header */}
+          <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:28}}>
+            <div style={{fontFamily:"'Playfair Display',serif",fontSize:18,fontWeight:800,color:"rgba(255,255,255,0.9)"}}>Vibe<span style={{color:"#fff"}}>Learn</span></div>
+            <div style={{background:"rgba(255,255,255,0.2)",borderRadius:999,padding:"4px 14px",fontSize:13,color:"rgba(255,255,255,0.9)",fontWeight:600}}>AI Literacy Credential</div>
+          </div>
+
+          {/* Emoji */}
+          <div style={{fontSize:52,marginBottom:16,lineHeight:1}}>{track.emoji}</div>
+
+          {/* This certifies */}
+          <div style={{fontSize:13,color:"rgba(255,255,255,0.7)",fontWeight:600,letterSpacing:1.5,textTransform:"uppercase",marginBottom:8}}>This certifies that</div>
+
+          {/* Name */}
+          <div style={{fontFamily:"'Playfair Display',serif",fontSize:32,fontWeight:800,color:"#fff",marginBottom:16,lineHeight:1.2,minHeight:42,wordBreak:"break-word"}}>
+            {displayName}
+          </div>
+
+          {/* Track */}
+          <div style={{fontSize:14,color:"rgba(255,255,255,0.8)",marginBottom:4}}>has successfully completed the</div>
+          <div style={{fontFamily:"'Playfair Display',serif",fontSize:22,fontWeight:800,color:"#fff",marginBottom:4}}>{track.label} Track</div>
+          <div style={{fontSize:14,color:"rgba(255,255,255,0.7)",marginBottom:24}}>{track.desc}</div>
+
+          {/* Footer */}
+          <div style={{borderTop:"1px solid rgba(255,255,255,0.2)",paddingTop:16,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+            <div style={{fontSize:13,color:"rgba(255,255,255,0.7)"}}>Issued {date}</div>
+            <div style={{fontSize:13,color:"rgba(255,255,255,0.7)"}}>vibelearn-pi.vercel.app</div>
+          </div>
+        </div>
+
+        {/* Name input */}
+        <div style={{background:"#fff",borderRadius:16,padding:"20px",marginBottom:12}}>
+          <div style={{fontSize:14,color:"#374151",fontWeight:600,marginBottom:8}}>Add your name to the certificate</div>
+          <input
+            value={name}
+            onChange={e=>setName(e.target.value)}
+            placeholder="Enter your name"
+            maxLength={40}
+            style={{width:"100%",borderRadius:10,border:"1.5px solid #e5e2da",padding:"12px 14px",fontSize:16,color:"#111827",background:"#f9f8f5",outline:"none",fontFamily:"Inter,sans-serif"}}
+          />
+        </div>
+
+        {/* Action buttons */}
+        <div style={{display:"flex",gap:10}}>
+          <button onClick={downloadCert} className="vl-btn" style={{flex:1,background:"#111827",color:"#fff",border:"none",borderRadius:12,padding:"14px 16px",fontSize:14,fontWeight:700,fontFamily:"Inter,sans-serif",cursor:"pointer"}}>
+            {downloaded?"✓ Downloaded!":"⬇ Download PNG"}
+          </button>
+          <button onClick={shareLinkedIn} className="vl-btn" style={{flex:1,background:"#0077b5",color:"#fff",border:"none",borderRadius:12,padding:"14px 16px",fontSize:14,fontWeight:700,fontFamily:"Inter,sans-serif",cursor:"pointer"}}>
+            Share on LinkedIn
+          </button>
+        </div>
+        <button onClick={onClose} className="vl-btn" style={{width:"100%",marginTop:10,background:"transparent",color:"rgba(255,255,255,0.6)",border:"none",fontSize:14,cursor:"pointer",fontFamily:"Inter,sans-serif",padding:"8px"}}>
+          Close
+        </button>
+      </div>
+    </div>
+  );
+}
+
 function TrackDetail({track,completed,onOpenTopic,onBack}){
   const trackTopics=track.slugs.map(slug=>TOPICS.find(t=>t.slug===slug)).filter(Boolean);
   const done=trackTopics.filter(t=>completed.includes(t.slug)).length;
   const complete=done===trackTopics.length;
   const pct=Math.round((done/trackTopics.length)*100);
-
-  const[credCopied,setCredCopied]=useState(false);
-  function shareCredential(){
-    const text=`I completed the "${track.label}" track on VibeLearn — AI literacy that actually sticks. 🎓 vibelearn-pi.vercel.app`;
-    if(navigator.share){navigator.share({text}).catch(()=>{});}
-    else{navigator.clipboard?.writeText(text).then(()=>{setCredCopied(true);setTimeout(()=>setCredCopied(false),2500);});}
-  }
+  const[showCert,setShowCert]=useState(false);
 
   return(
     <div className="vl-fade">
@@ -621,10 +732,11 @@ function TrackDetail({track,completed,onOpenTopic,onBack}){
           <span style={{fontSize:14,color:complete?"#fff":track.color,fontWeight:700,...F}}>{done}/{trackTopics.length} complete</span>
         </div>
         {complete&&(
-          <button onClick={shareCredential} className="vl-btn" style={{background:"rgba(255,255,255,0.2)",color:"#fff",border:"1.5px solid rgba(255,255,255,0.4)",borderRadius:12,padding:"12px 20px",fontSize:14,fontWeight:700,...F,width:"100%"}}>
-{credCopied?"✓ Copied!":"🎓 Share My Credential"}
+          <button onClick={()=>setShowCert(true)} className="vl-btn" style={{background:"rgba(255,255,255,0.2)",color:"#fff",border:"1.5px solid rgba(255,255,255,0.4)",borderRadius:12,padding:"14px 20px",fontSize:15,fontWeight:700,...F,width:"100%"}}>
+            🎓 View & Share My Credential
           </button>
         )}
+        {showCert&&<CertificateModal track={track} onClose={()=>setShowCert(false)}/>}
       </div>
 
       {/* Topics */}
