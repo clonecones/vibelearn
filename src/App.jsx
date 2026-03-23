@@ -675,7 +675,10 @@ function CertificateModal({track,onClose}){
           <div style={{fontFamily:"'Playfair Display',serif",fontSize:22,fontWeight:800,color:"#fff",marginBottom:4}}>{track.label} Track</div>
           <div style={{fontSize:14,color:"rgba(255,255,255,0.7)",marginBottom:24}}>{track.desc}</div>
 
-          {/* Footer */}
+          {/* AI News Feed */}
+        <AINewsFeed/>
+
+        {/* Footer */}
           <div style={{borderTop:"1px solid rgba(255,255,255,0.2)",paddingTop:16,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
             <div style={{fontSize:13,color:"rgba(255,255,255,0.7)"}}>Issued {date}</div>
             <div style={{fontSize:13,color:"rgba(255,255,255,0.7)"}}>vibelearn-pi.vercel.app</div>
@@ -1184,7 +1187,6 @@ function AINewsFeed(){
   const[news,setNews]=useState(null);
   const[loading,setLoading]=useState(true);
   const[error,setError]=useState(false);
-  const[expanded,setExpanded]=useState(false);
   const CACHE_KEY="vl-news-v1";
   const CACHE_TTL=2*60*60*1000; // 2 hours
 
@@ -1265,10 +1267,10 @@ Return ONLY valid JSON array, no markdown, no backticks, no explanation. Example
 
       {news&&!loading&&(
         <div style={{background:"#fff",borderRadius:16,border:"1px solid #ebe8e0",overflow:"hidden",boxShadow:"0 2px 12px rgba(0,0,0,0.04)"}}>
-          {(expanded?news:news.slice(0,3)).map((item,i)=>{
+          {news.map((item,i)=>{
             const color=CAT_COLORS[item.category]||"#6366f1";
             return(
-              <div key={i} style={{padding:"14px 18px",borderBottom:i<(expanded?news.length-1:Math.min(2,news.length-1))?"1px solid #f3f4f6":"none",display:"flex",gap:12,alignItems:"flex-start"}}>
+              <div key={i} style={{padding:"14px 18px",borderBottom:i<news.length-1?"1px solid #f3f4f6":"none",display:"flex",gap:12,alignItems:"flex-start"}}>
                 <div style={{flexShrink:0,marginTop:2}}>
                   <span style={{background:`${color}15`,color,borderRadius:6,padding:"3px 8px",fontSize:13,fontWeight:700,...F,whiteSpace:"nowrap"}}>{item.signal}</span>
                 </div>
@@ -1280,11 +1282,6 @@ Return ONLY valid JSON array, no markdown, no backticks, no explanation. Example
               </div>
             );
           })}
-          {news.length>3&&(
-            <button onClick={()=>setExpanded(e=>!e)} className="vl-btn" style={{width:"100%",background:"#f9f8f5",border:"none",borderTop:"1px solid #f3f4f6",padding:"10px",fontSize:13,color:"#6b7280",fontWeight:600,cursor:"pointer",...F}}>
-              {expanded?"Show less ▲":`+${news.length-3} more stories ▾`}
-            </button>
-          )}
         </div>
       )}
     </div>
@@ -1451,8 +1448,14 @@ export default function VibeLearn(){
         </div>
 
         {/* Progress bar */}
-        <div style={{background:"#f3f4f6",borderRadius:999,height:6,marginBottom:20,overflow:"hidden"}}>
-          <div className="vl-xp" style={{background:"linear-gradient(90deg,#6366f1,#818cf8)",height:"100%",width:`${Math.round(st.completed.length/TOPICS.length*100)}%`,borderRadius:999}}/>
+        <div style={{marginBottom:20}}>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:6}}>
+            <span style={{fontSize:13,color:"#6b7280",fontWeight:600,...F}}>Overall progress</span>
+            <span style={{fontSize:13,color:"#6366f1",fontWeight:700,...F}}>{st.completed.length}/{TOPICS.length} topics · {Math.round(st.completed.length/TOPICS.length*100)}%</span>
+          </div>
+          <div style={{background:"#e5e7eb",borderRadius:999,height:10,overflow:"hidden",boxShadow:"inset 0 1px 3px rgba(0,0,0,0.08)"}}>
+            <div className="vl-xp" style={{background:"linear-gradient(90deg,#6366f1,#818cf8)",height:"100%",width:`${Math.round(st.completed.length/TOPICS.length*100)}%`,borderRadius:999,minWidth:st.completed.length>0?"10px":"0px"}}/>
+          </div>
         </div>
 
         {/* All complete banner */}
@@ -1494,14 +1497,20 @@ export default function VibeLearn(){
                     <div style={{background:userTrack.color,height:"100%",width:`${Math.round(trackDone/trackTotal*100)}%`,transition:"width 0.8s ease"}}/>
                   </div>
                   {/* Next topic */}
-                  <div className="vl-hover" onClick={()=>{setFromTrack(userTrack);openTopic(nextTrackTopic);}} style={{padding:"16px 20px",display:"flex",alignItems:"center",gap:14,cursor:"pointer"}}>
-                    <div style={{fontSize:26,flexShrink:0}}>{nextTrackTopic.emoji}</div>
-                    <div style={{flex:1,minWidth:0}}>
-                      <div style={{fontSize:13,color:"#6b7280",fontWeight:700,textTransform:"uppercase",letterSpacing:1,marginBottom:2,...F}}>Up next</div>
-                      <div style={{fontFamily:"'Playfair Display',serif",fontSize:17,fontWeight:700,color:"#111827",lineHeight:1.3}}>{nextTrackTopic.title}</div>
-                      <div style={{fontSize:14,color:"#4b5563",lineHeight:1.5,...F}}>{nextTrackTopic.short}</div>
+                  <div onClick={()=>{setFromTrack(userTrack);openTopic(nextTrackTopic);}} style={{cursor:"pointer"}}>
+                    <div style={{padding:"16px 20px",display:"flex",alignItems:"center",gap:14}}>
+                      <div style={{fontSize:26,flexShrink:0}}>{nextTrackTopic.emoji}</div>
+                      <div style={{flex:1,minWidth:0}}>
+                        <div style={{fontSize:13,color:"#6b7280",fontWeight:700,textTransform:"uppercase",letterSpacing:1,marginBottom:2,...F}}>Up next</div>
+                        <div style={{fontFamily:"'Playfair Display',serif",fontSize:17,fontWeight:700,color:"#111827",lineHeight:1.3}}>{nextTrackTopic.title}</div>
+                        <div style={{fontSize:14,color:"#4b5563",lineHeight:1.5,...F}}>{nextTrackTopic.short}</div>
+                      </div>
                     </div>
-                    <div style={{background:userTrack.color,color:"#fff",borderRadius:999,width:36,height:36,display:"flex",alignItems:"center",justifyContent:"center",fontSize:18,flexShrink:0}}>›</div>
+                    {/* CTA strip */}
+                    <div style={{background:userTrack.color,margin:"0 0 0 0",padding:"12px 20px",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+                      <span style={{fontSize:14,fontWeight:700,color:"#fff",...F}}>Start this topic</span>
+                      <div style={{background:"rgba(255,255,255,0.2)",borderRadius:999,width:28,height:28,display:"flex",alignItems:"center",justifyContent:"center",fontSize:16,color:"#fff"}}>→</div>
+                    </div>
                   </div>
                   {/* View full track link */}
                   <div style={{borderTop:"1px solid #f3f4f6",padding:"10px 20px",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
@@ -1519,27 +1528,35 @@ export default function VibeLearn(){
               <div style={{fontSize:13,color:"#6b7280",fontWeight:700,letterSpacing:1.5,textTransform:"uppercase",marginBottom:10,...F}}>
                 {userTrack&&trackComplete?"Track complete! Up next":"Recommended Next"}
               </div>
-              <div className="vl-hover" onClick={()=>openTopic(recommended)} style={{background:"linear-gradient(135deg,#6366f1 0%,#818cf8 100%)",borderRadius:18,padding:"20px 22px",boxShadow:"0 6px 24px rgba(99,102,241,0.28)",cursor:"pointer",display:"flex",alignItems:"center",gap:16}}>
-                <div style={{fontSize:36,flexShrink:0}}>{recommended.emoji}</div>
-                <div style={{flex:1,minWidth:0}}>
-                  <div style={{fontFamily:"'Playfair Display',serif",fontSize:18,fontWeight:800,color:"#fff",lineHeight:1.2,marginBottom:4}}>{recommended.title}</div>
-                  <div style={{fontSize:14,color:"#e0e7ff",lineHeight:1.6}}>{recommended.short}</div>
+              <div onClick={()=>openTopic(recommended)} style={{cursor:"pointer",borderRadius:20,overflow:"hidden",boxShadow:"0 8px 28px rgba(99,102,241,0.32)",border:"none"}}>
+                {/* Topic info */}
+                <div style={{background:"linear-gradient(135deg,#6366f1 0%,#818cf8 100%)",padding:"20px 22px",display:"flex",alignItems:"center",gap:16}}>
+                  <div style={{fontSize:36,flexShrink:0}}>{recommended.emoji}</div>
+                  <div style={{flex:1,minWidth:0}}>
+                    <div style={{fontSize:13,color:"rgba(255,255,255,0.75)",fontWeight:600,letterSpacing:0.5,marginBottom:4,...F}}>Up next for you</div>
+                    <div style={{fontFamily:"'Playfair Display',serif",fontSize:19,fontWeight:800,color:"#fff",lineHeight:1.2,marginBottom:4}}>{recommended.title}</div>
+                    <div style={{fontSize:14,color:"#e0e7ff",lineHeight:1.5}}>{recommended.short}</div>
+                  </div>
                 </div>
-                <div style={{color:"rgba(255,255,255,0.6)",fontSize:20,flexShrink:0}}>›</div>
+                {/* Explicit CTA button strip — unmistakably tappable */}
+                <div style={{background:"#4f46e5",padding:"14px 22px",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+                  <span style={{fontSize:15,fontWeight:700,color:"#fff",...F}}>Start this topic</span>
+                  <div style={{background:"rgba(255,255,255,0.2)",borderRadius:999,width:32,height:32,display:"flex",alignItems:"center",justifyContent:"center",fontSize:18,color:"#fff"}}>→</div>
+                </div>
               </div>
             </div>
           );}
           return null;
         })()}
 
-        {/* AI News Feed */}
-        <AINewsFeed/>
-
         {/* All topics */}
         <div style={{fontSize:13,color:"#6b7280",fontWeight:700,letterSpacing:1.5,textTransform:"uppercase",marginBottom:12,...F}}>All Topics</div>
         <TopicGroup label="Beginner" emoji="🟢" topics={beginnerTopics} completed={st.completed} started={st.started||[]} onOpen={openTopic} locked={false} defaultOpen={false}/>
         <TopicGroup label="Intermediate" emoji="🟡" topics={intermediateTopics} completed={st.completed} started={st.started||[]} onOpen={openTopic} locked={false} defaultOpen={false}/>
         <TopicGroup label="Advanced" emoji="🔴" topics={advancedTopics} completed={st.completed} started={st.started||[]} onOpen={openTopic} locked={false} xpNeeded={0} userXP={st.xp} defaultOpen={false}/>
+
+        {/* AI News Feed */}
+        <AINewsFeed/>
 
         {/* Footer */}
         <div style={{marginTop:40,paddingTop:20,borderTop:"1px solid #ebe8e0",display:"flex",alignItems:"center",justifyContent:"center",gap:8}}>
