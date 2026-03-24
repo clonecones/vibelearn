@@ -1213,7 +1213,7 @@ function AINewsFeed(){
   const[news,setNews]=useState(null);
   const[loading,setLoading]=useState(true);
   const[error,setError]=useState(false);
-  const CACHE_KEY="vl-news-v1";
+  const CACHE_KEY="vl-news-v2";
   const CACHE_TTL=2*60*60*1000; // 2 hours
 
   useEffect(()=>{
@@ -1231,7 +1231,7 @@ function AINewsFeed(){
   async function fetchNews(){
     setLoading(true);setError(false);
     try{
-      const prompt=`You are an AI news curator. Return a JSON array of exactly 4 recent AI news items from the last 48 hours. Each item must have:
+      const prompt=`You are an AI news curator. Return a JSON array of exactly 4 recent AI news items from the last 24 hours. Each item must have:
 - "headline": short punchy headline (max 12 words)
 - "summary": one sentence explaining why it matters to AI practitioners (max 25 words)  
 - "category": exactly one of: "Model Release", "Research", "Industry", "Policy & Safety", "Tools & Products"
@@ -1242,7 +1242,7 @@ Focus on: new model releases, major lab announcements, AI policy, agentic AI, AI
 Return ONLY valid JSON array, no markdown, no backticks, no explanation. Example format:
 [{"headline":"OpenAI releases GPT-5","summary":"New model matches PhD-level reasoning on science benchmarks.","category":"Model Release","signal":"🚀 Launch"}]`;
 
-      const r=await fetch("/api/claude",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({prompt})});
+      const r=await fetch("/api/claude",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({prompt,type:"news"})});
       if(!r.ok)throw new Error("api");
       const d=await r.json();
       const text=d.content?.[0]?.text||"";
@@ -1264,7 +1264,7 @@ Return ONLY valid JSON array, no markdown, no backticks, no explanation. Example
       <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:12}}>
         <div style={{display:"flex",alignItems:"center",gap:8}}>
           <div style={{width:8,height:8,borderRadius:999,background:"#ef4444",boxShadow:"0 0 0 3px rgba(239,68,68,0.2)",animation:"pulse 2s ease infinite"}}/>
-          <span style={{fontSize:13,color:"#374151",fontWeight:700,letterSpacing:1.5,textTransform:"uppercase",...F}}>AI in the last 48h</span>
+          <span style={{fontSize:13,color:"#374151",fontWeight:700,letterSpacing:1.5,textTransform:"uppercase",...F}}>AI News — Last 24 Hours</span>
         </div>
       </div>
 
