@@ -741,53 +741,78 @@ export default function VibeLearn(){
         )}
 
         {/* Filter pills */}
-        <div className="fu" style={{display:"flex",gap:6,marginBottom:14,alignItems:"center"}}>
+        <div className="fu" style={{display:"flex",gap:6,marginBottom:20,alignItems:"center"}}>
           {["All","Beginner","Intermediate","Advanced"].map(f=>{
             const active=filter===f;
             const dot=f!=="All"?DIFF[f]?.dot:null;
             return(
               <button key={f} onClick={()=>setFilter(f)} className="tap"
-                style={{background:active?"#111":"#fff",color:active?"#fff":"#6b7280",border:active?"1px solid #111":"1px solid #e5e5e5",borderRadius:999,padding:"6px 12px",fontSize:12,fontWeight:active?600:400,...F,whiteSpace:"nowrap",display:"flex",alignItems:"center",gap:4,flexShrink:0}}>
-                {dot&&<span style={{width:5,height:5,borderRadius:999,background:active?"rgba(255,255,255,0.55)":dot}}/>}
+                style={{background:active?"#111":"#fff",color:active?"#fff":"#6b7280",border:active?"1.5px solid #111":"1.5px solid #e5e5e5",borderRadius:999,padding:"7px 14px",fontSize:13,fontWeight:active?600:500,...F,whiteSpace:"nowrap",display:"flex",alignItems:"center",gap:5,flexShrink:0,boxShadow:active?"none":"0 1px 3px rgba(0,0,0,0.05)"}}>
+                {dot&&<span style={{width:6,height:6,borderRadius:999,background:active?"rgba(255,255,255,0.6)":dot,flexShrink:0}}/>}
                 {f}
               </button>
             );
           })}
-          <span style={{fontSize:12,color:"#9ca3af",...F,marginLeft:"auto",flexShrink:0}}>
+          <span style={{fontSize:12,color:"#b0b0b0",...F,marginLeft:"auto",flexShrink:0}}>
             {filtered.filter(t=>st.completed.includes(t.slug)).length}/{filtered.length}
           </span>
         </div>
 
-        {/* Topic list */}
-        <div style={{display:"flex",flexDirection:"column",gap:2}}>
-          {filtered.map((t,i)=>{
-            const cm=CAT[t.category]||{color:"#6366f1",bg:"#eef2ff"};
-            const dd=DIFF[t.difficulty]||DIFF.Beginner;
-            const isDone=st.completed.includes(t.slug);
-            const isStarted=(st.started||[]).includes(t.slug)&&!isDone;
+        {/* Topic list — with section dividers when showing All */}
+        {(()=>{
+          const groups=filter==="All"
+            ?[["Beginner",filtered.filter(t=>t.difficulty==="Beginner")],["Intermediate",filtered.filter(t=>t.difficulty==="Intermediate")],["Advanced",filtered.filter(t=>t.difficulty==="Advanced")]]
+            :[[filter,filtered]];
+          let animIdx=0;
+          return groups.map(([label,topics])=>{
+            if(!topics.length)return null;
+            const dd=DIFF[label]||DIFF.Beginner;
+            const doneInGroup=topics.filter(t=>st.completed.includes(t.slug)).length;
             return(
-              <div key={t.slug} onClick={()=>openTopic(t)} className="tap fu"
-                style={{animationDelay:`${Math.min(i*0.018,0.25)}s`,background:"#fff",borderRadius:14,padding:"13px 15px",display:"flex",alignItems:"center",gap:11,border:"1px solid #ebebeb"}}>
-                <div style={{width:28,height:28,borderRadius:999,background:isDone?"#f0fdf4":"#f7f7f5",border:isDone?"1.5px solid #22c55e":"1.5px solid #e5e5e5",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
-                  {isDone
-                    ?<span style={{fontSize:12,color:"#22c55e",fontWeight:700}}>✓</span>
-                    :<span style={{fontSize:15}}>{t.emoji}</span>}
-                </div>
-                <div style={{flex:1,minWidth:0}}>
-                  <div style={{display:"flex",alignItems:"center",gap:5,marginBottom:2,flexWrap:"wrap"}}>
-                    <span style={{width:5,height:5,borderRadius:999,background:dd.dot,flexShrink:0}}/>
-                    <span style={{fontSize:11,color:"#9ca3af",...F}}>{t.difficulty}</span>
-                    <span style={{color:"#e5e5e5",fontSize:9}}>·</span>
-                    <span style={{fontSize:11,color:cm.color,fontWeight:600,...F,background:cm.bg,borderRadius:999,padding:"1px 7px"}}>{t.category}</span>
-                    {isStarted&&<span style={{fontSize:11,color:"#d97706",fontWeight:500,...F}}>In progress</span>}
+              <div key={label} style={{marginBottom:filter==="All"?28:0}}>
+                {/* Section header — only in All view */}
+                {filter==="All"&&(
+                  <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:10,paddingLeft:2}}>
+                    <div style={{display:"flex",alignItems:"center",gap:7}}>
+                      <span style={{width:8,height:8,borderRadius:999,background:dd.dot,flexShrink:0}}/>
+                      <span style={{fontSize:13,fontWeight:700,color:"#374151",...F,letterSpacing:-0.1}}>{label}</span>
+                    </div>
+                    <span style={{fontSize:12,color:"#b0b0b0",...F}}>{doneInGroup}/{topics.length}</span>
                   </div>
-                  <div style={{fontSize:15,fontWeight:isDone?400:600,color:isDone?"#b0b0b0":"#111",letterSpacing:-0.2,textDecoration:isDone?"line-through":"none",...F}}>{t.title}</div>
+                )}
+                <div style={{display:"flex",flexDirection:"column",gap:8}}>
+                  {topics.map((t)=>{
+                    const cm=CAT[t.category]||{color:"#6366f1",bg:"#eef2ff"};
+                    const isDone=st.completed.includes(t.slug);
+                    const isStarted=(st.started||[]).includes(t.slug)&&!isDone;
+                    const delay=Math.min(animIdx*0.018,0.22);
+                    animIdx++;
+                    return(
+                      <div key={t.slug} onClick={()=>openTopic(t)} className="tap fu"
+                        style={{animationDelay:`${delay}s`,background:"#fff",borderRadius:16,padding:"15px 16px",display:"flex",alignItems:"center",gap:13,border:"1px solid #ebebeb",boxShadow:"0 1px 4px rgba(0,0,0,0.04)"}}>
+                        {/* Icon / done state */}
+                        <div style={{width:40,height:40,borderRadius:12,background:isDone?"#f0fdf4":cm.bg,border:isDone?"1.5px solid #bbf7d0":`1.5px solid ${cm.color}22`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
+                          {isDone
+                            ?<span style={{fontSize:16,color:"#22c55e",fontWeight:700}}>✓</span>
+                            :<span style={{fontSize:20}}>{t.emoji}</span>}
+                        </div>
+                        <div style={{flex:1,minWidth:0}}>
+                          {/* Single metadata line: category chip + in-progress */}
+                          <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:4}}>
+                            <span style={{fontSize:11,color:cm.color,fontWeight:600,...F,background:cm.bg,borderRadius:999,padding:"2px 8px"}}>{t.category}</span>
+                            {isStarted&&<span style={{fontSize:11,color:"#d97706",fontWeight:500,...F}}>· In progress</span>}
+                          </div>
+                          <div style={{fontSize:15,fontWeight:isDone?400:600,color:isDone?"#b8b8b8":"#111",letterSpacing:-0.2,lineHeight:1.3,textDecoration:isDone?"line-through":"none",...F}}>{t.title}</div>
+                        </div>
+                        <span style={{color:"#d4d4d4",fontSize:18,flexShrink:0}}>›</span>
+                      </div>
+                    );
+                  })}
                 </div>
-                <span style={{color:"#d4d4d4",fontSize:16,flexShrink:0}}>›</span>
               </div>
             );
-          })}
-        </div>
+          });
+        })()}
 
         {/* Footer */}
         <div style={{marginTop:44,paddingTop:18,borderTop:"1px solid #ebebeb",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
