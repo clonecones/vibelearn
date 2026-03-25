@@ -317,16 +317,15 @@ function ScoreModal({score,completed,onClose}){
     else navigator.clipboard?.writeText(shareText).then(()=>{setCopied(true);setTimeout(()=>setCopied(false),2500);});
   }
   return(
-    <div onClick={onClose} style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.35)",display:"flex",alignItems:"flex-end",justifyContent:"center",zIndex:999,backdropFilter:"blur(4px)"}}>
-      <div className="fu" onClick={e=>e.stopPropagation()} style={{background:"#fff",borderRadius:"24px 24px 0 0",padding:"28px 24px 44px",width:"100%",maxWidth:560,boxShadow:"0 -4px 32px rgba(0,0,0,0.1)"}}>
-        <div style={{width:32,height:3,background:"#e5e5e5",borderRadius:999,margin:"0 auto 24px"}}/>
+    <div onClick={onClose} style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.4)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:999,backdropFilter:"blur(6px)",padding:"24px 16px"}}>
+      <div className="pi" onClick={e=>e.stopPropagation()} style={{background:"#fff",borderRadius:24,padding:"32px 24px 28px",width:"100%",maxWidth:380,boxShadow:"0 20px 60px rgba(0,0,0,0.2)"}}>
         <div style={{textAlign:"center",marginBottom:24}}>
-          <div className="sr" style={{fontSize:72,fontWeight:800,color,lineHeight:1,letterSpacing:-3,marginBottom:3}}>{score}</div>
-          <div style={{fontSize:12,color:"#9ca3af",marginBottom:8,...F}}>out of 100</div>
-          <div style={{display:"inline-block",background:color+"15",color,borderRadius:999,padding:"4px 14px",fontSize:13,fontWeight:600,...F}}>{label}</div>
+          <div className="sr" style={{fontSize:80,fontWeight:800,color,lineHeight:1,letterSpacing:-3,marginBottom:3}}>{score}</div>
+          <div style={{fontSize:13,color:"#9ca3af",marginBottom:10,...F}}>out of 100</div>
+          <div style={{display:"inline-block",background:color+"18",color,borderRadius:999,padding:"5px 16px",fontSize:14,fontWeight:600,...F}}>{label}</div>
         </div>
-        <div style={{background:"#f7f7f5",borderRadius:12,padding:"12px 14px",marginBottom:16}}>
-          <div style={{fontSize:13,color:"#374151",...F}}>{completed.length} of {TOPICS.length} topics complete</div>
+        <div style={{background:"#f7f7f5",borderRadius:14,padding:"13px 16px",marginBottom:16}}>
+          <div style={{fontSize:14,color:"#374151",...F}}>{completed.length} of {TOPICS.length} topics complete</div>
           {score<100&&<div style={{fontSize:12,color:"#9ca3af",marginTop:2,...F}}>Complete more to raise your score</div>}
         </div>
         <button onClick={share} className="tap"
