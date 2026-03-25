@@ -442,7 +442,7 @@ function LessonView({topic,appState,persist,onBack}){
   }
 
   return(
-    <div style={{background:"#f7f7f5",minHeight:"100vh",...F,paddingBottom:100}}>
+    <div style={{background:"#f7f7f5",minHeight:"100vh",...F,paddingBottom:140}}>
       {toastMsg&&<Toast msg={toastMsg} k={toastKey}/>}
       <div style={{background:"#fff",borderBottom:"1px solid #ebebeb",padding:"12px 20px",position:"sticky",top:0,zIndex:100}}>
         <div style={{maxWidth:680,margin:"0 auto",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
@@ -472,7 +472,7 @@ function LessonView({topic,appState,persist,onBack}){
               ))}
             </div>
             <div style={{marginBottom:14}}>{renderStep()}</div>
-            <div style={{position:"sticky",bottom:0,background:"#f7f7f5",paddingTop:10,paddingBottom:16,display:"flex",justifyContent:"space-between",alignItems:"center",gap:10}}>
+            <div style={{position:"sticky",bottom:0,background:"rgba(247,247,245,0.92)",backdropFilter:"blur(12px)",WebkitBackdropFilter:"blur(12px)",paddingTop:10,paddingBottom:24,display:"flex",justifyContent:"space-between",alignItems:"center",gap:10,borderTop:"1px solid rgba(0,0,0,0.06)",zIndex:50}}>
               {stepIdx>0
                 ?<button onClick={()=>{setStepIdx(i=>i-1);window.scrollTo({top:0,behavior:"smooth"});}} className="tap"
                     style={{background:"#fff",border:"1px solid #e5e5e5",color:"#6b7280",borderRadius:12,padding:"12px 18px",fontSize:14,fontWeight:500,...F}}>← Back</button>
