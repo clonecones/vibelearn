@@ -33,7 +33,10 @@ if (!document.getElementById("vl-css")) {
     .slide-back{animation:slideInLeft 0.3s cubic-bezier(.25,.46,.45,.94) both;}
     .complete-pop{animation:completePop 0.38s cubic-bezier(.34,1.3,.64,1) both;}
     .filter-fade{animation:filterFade 0.17s cubic-bezier(.4,0,.2,1) both;}
-    .tap{transition:opacity 0.12s ease,transform 0.12s ease;cursor:pointer;}
+    @keyframes stepInRight{from{opacity:0;transform:translateX(48px)}to{opacity:1;transform:translateX(0)}}
+    @keyframes stepInLeft{from{opacity:0;transform:translateX(-48px)}to{opacity:1;transform:translateX(0)}}
+    .step-fwd{animation:stepInRight 0.32s cubic-bezier(.25,.46,.45,.94) both;}
+    .step-back{animation:stepInLeft 0.32s cubic-bezier(.25,.46,.45,.94) both;}
     .tap:active{opacity:0.65;transform:scale(0.97);}
     .opt{transition:all 0.13s ease;cursor:pointer;}
     .opt:active{transform:scale(0.98);}
@@ -362,6 +365,7 @@ function ScoreModal({score,completed,onClose}){
 function LessonView({topic,appState,persist,onBack}){
   const[phase,setPhase]=useState("steps");
   const[stepIdx,setStepIdx]=useState(0);
+  const[stepDir,setStepDir]=useState("fwd");
   const[quizIdx,setQuizIdx]=useState(0);
   const[selected,setSelected]=useState(null);
   const[qResult,setQResult]=useState(null);
@@ -385,6 +389,7 @@ function LessonView({topic,appState,persist,onBack}){
   function toast(msg){setToastMsg(msg);setToastKey(k=>k+1);}
 
   function nextStep(){
+    setStepDir("fwd");
     if(stepIdx<topic.steps.length-1)setStepIdx(i=>i+1);
     else{setPhase("quiz");setQuizIdx(0);setScore(0);setSelected(null);setQResult(null);setWhyText("");}
     window.scrollTo({top:0,behavior:"smooth"});
@@ -491,14 +496,21 @@ function LessonView({topic,appState,persist,onBack}){
                 <div key={i} style={{flex:1,height:3,borderRadius:999,background:i<=stepIdx?"#6366f1":"#e5e5e5",transition:"background 0.3s"}}/>
               ))}
             </div>
-            <div style={{marginBottom:14}}>{renderStep()}</div>
+            <div style={{marginBottom:14,overflow:"hidden"}}>
+              <div key={stepIdx} className={stepDir==="fwd"?"step-fwd":"step-back"}>
+                {renderStep()}
+              </div>
+            </div>
             <div style={{position:"sticky",bottom:0,background:"rgba(247,247,245,0.92)",backdropFilter:"blur(12px)",WebkitBackdropFilter:"blur(12px)",paddingTop:10,paddingBottom:24,display:"flex",justifyContent:"space-between",alignItems:"center",gap:10,borderTop:"1px solid rgba(0,0,0,0.06)",zIndex:50}}>
-              {stepIdx>0
-                ?<button onClick={()=>{setStepIdx(i=>i-1);window.scrollTo({top:0,behavior:"smooth"});}} className="tap"
-                    style={{background:"#fff",border:"1px solid #e5e5e5",color:"#6b7280",borderRadius:12,padding:"12px 18px",fontSize:14,fontWeight:500,...F}}>← Back</button>
-                :<div/>}
+              <button
+                onClick={()=>{setStepDir("back");setStepIdx(i=>i-1);window.scrollTo({top:0,behavior:"smooth"});}}
+                className="tap"
+                disabled={stepIdx===0}
+                style={{background:"#fff",border:"1px solid #e5e5e5",color:"#6b7280",borderRadius:12,padding:"12px 18px",fontSize:14,fontWeight:500,...F,visibility:stepIdx===0?"hidden":"visible"}}>
+                ← Back
+              </button>
               <button onClick={nextStep} className="tap"
-                style={{background:cm.color,color:"#fff",border:"none",borderRadius:14,padding:"13px 26px",fontSize:15,fontWeight:600,...F,flex:stepIdx===0?1:0}}>
+                style={{background:cm.color,color:"#fff",border:"none",borderRadius:14,padding:"13px 26px",fontSize:15,fontWeight:600,...F,minWidth:160,textAlign:"center"}}>
                 {stepIdx<topic.steps.length-1?"Continue →":"Take the quiz →"}
               </button>
             </div>
