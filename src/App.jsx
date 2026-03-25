@@ -15,16 +15,24 @@ if (!document.getElementById("vl-css")) {
     textarea{font-size:16px!important;font-family:inherit;}
     textarea:focus{outline:none!important;}
     ::-webkit-scrollbar{width:0px;}
-    @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
     @keyframes fadeIn{from{opacity:0}to{opacity:1}}
     @keyframes popIn{0%{transform:scale(0.92);opacity:0}100%{transform:scale(1);opacity:1}}
     @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
     @keyframes scoreReveal{from{opacity:0;transform:scale(0.7) translateY(8px)}to{opacity:1;transform:scale(1) translateY(0)}}
-    .fu{animation:fadeUp 0.28s cubic-bezier(.4,0,.2,1) both;}
+    @keyframes slideInRight{from{opacity:0;transform:translateX(44px)}to{opacity:1;transform:translateX(0)}}
+    @keyframes slideInLeft{from{opacity:0;transform:translateX(-44px)}to{opacity:1;transform:translateX(0)}}
+    @keyframes completePop{0%{transform:scale(0.82);opacity:0}55%{transform:scale(1.05)}100%{transform:scale(1);opacity:1}}
+    @keyframes filterFade{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+    .fu{animation:fadeUp 0.42s cubic-bezier(.4,0,.2,1) both;}
     .fi{animation:fadeIn 0.2s ease both;}
     .pi{animation:popIn 0.22s cubic-bezier(.4,0,.2,1) both;}
     .pulse{animation:pulse 1.8s ease infinite;}
     .sr{animation:scoreReveal 0.5s cubic-bezier(.34,1.4,.64,1) both;}
+    .slide-in{animation:slideInRight 0.3s cubic-bezier(.25,.46,.45,.94) both;}
+    .slide-back{animation:slideInLeft 0.3s cubic-bezier(.25,.46,.45,.94) both;}
+    .complete-pop{animation:completePop 0.38s cubic-bezier(.34,1.3,.64,1) both;}
+    .filter-fade{animation:filterFade 0.17s cubic-bezier(.4,0,.2,1) both;}
     .tap{transition:opacity 0.12s ease,transform 0.12s ease;cursor:pointer;}
     .tap:active{opacity:0.65;transform:scale(0.97);}
     .opt{transition:all 0.13s ease;cursor:pointer;}
@@ -557,7 +565,7 @@ function LessonView({topic,appState,persist,onBack}){
 
         {phase==="try"&&(
           <div className="fi">
-            <div style={{background:"#111",borderRadius:20,padding:"26px 22px",marginBottom:18,textAlign:"center"}}>
+            <div className="complete-pop" style={{background:"#111",borderRadius:20,padding:"26px 22px",marginBottom:18,textAlign:"center"}}>
               <div style={{fontSize:28,marginBottom:8}}>✓</div>
               <div style={{fontSize:20,fontWeight:700,color:"#fff",marginBottom:4,letterSpacing:-0.3}}>{done?"Already done":"Topic complete"}</div>
               <p style={{fontSize:13,color:"rgba(255,255,255,0.4)",marginBottom:18,...F}}>{fs}/{topic.quiz.length} correct</p>
@@ -603,16 +611,30 @@ export default function VibeLearn(){
   const[showScore,setShowScore]=useState(false);
   const[diagResult,setDiagResult]=useState(null);
   const[filter,setFilter]=useState("All");
+  const[filterKey,setFilterKey]=useState(0);
+  const[navDir,setNavDir]=useState("forward");
 
   useEffect(()=>{loadState().then(s=>{setSt(s||defaultState());setReady(true);});},[]);
   const persist=useCallback((s)=>{setSt(s);saveState(s);},[]);
 
   function openTopic(t){
+    setNavDir("forward");
     setTopic(t);setView("topic");
     setTimeout(()=>window.scrollTo({top:0,behavior:"smooth"}),40);
     if(!st.started?.includes(t.slug)&&!st.completed.includes(t.slug)){
       persist({...st,started:[...(st.started||[]),t.slug]});
     }
+  }
+
+  function goBack(){
+    setNavDir("back");
+    setView("home");
+    setTimeout(()=>window.scrollTo({top:0}),40);
+  }
+
+  function changeFilter(f){
+    setFilter(f);
+    setFilterKey(k=>k+1);
   }
 
   if(!ready||!st)return(
@@ -626,17 +648,28 @@ export default function VibeLearn(){
 
   if(view==="diagnostic"){
     if(diagResult){
-      return <DiagnosticResults
-        result={diagResult}
-        onStart={(t)=>{persist({...st,diagnosticDone:true,diagnosticSlug:t.slug,seenIntro:true});setDiagResult(null);openTopic(t);}}
-        onBrowse={()=>{persist({...st,diagnosticDone:true,seenIntro:true});setDiagResult(null);setView("home");}}/>;
+      return(
+        <div className="slide-in">
+          <DiagnosticResults
+            result={diagResult}
+            onStart={(t)=>{persist({...st,diagnosticDone:true,diagnosticSlug:t.slug,seenIntro:true});setDiagResult(null);openTopic(t);}}
+            onBrowse={()=>{persist({...st,diagnosticDone:true,seenIntro:true});setDiagResult(null);setNavDir("back");setView("home");}}/>
+        </div>
+      );
     }
-    return <DiagnosticQuiz onComplete={r=>setDiagResult(r)} onExit={()=>{setView("home");setDiagResult(null);}}/>;
+    return(
+      <div className="slide-in">
+        <DiagnosticQuiz onComplete={r=>setDiagResult(r)} onExit={()=>{setNavDir("back");setView("home");setDiagResult(null);}}/>
+      </div>
+    );
   }
 
   if(view==="topic"&&topic){
-    return <LessonView topic={topic} appState={st} persist={persist}
-      onBack={()=>{setView("home");setTimeout(()=>window.scrollTo({top:0}),40);}}/>;
+    return(
+      <div className={navDir==="forward"?"slide-in":"slide-back"} key={topic.slug}>
+        <LessonView topic={topic} appState={st} persist={persist} onBack={goBack}/>
+      </div>
+    );
   }
 
   // Home
@@ -673,7 +706,7 @@ export default function VibeLearn(){
   const filtered=filter==="All"?TOPICS:TOPICS.filter(t=>t.difficulty===filter);
 
   return(
-    <div style={{background:"#f7f7f5",minHeight:"100vh",...F,paddingBottom:80}}>
+    <div className={navDir==="back"?"slide-back":"fi"} style={{background:"#f7f7f5",minHeight:"100vh",...F,paddingBottom:80}}>
       {showScore&&<ScoreModal score={score} completed={st.completed} onClose={()=>setShowScore(false)}/>}
 
       {/* Header */}
@@ -746,7 +779,7 @@ export default function VibeLearn(){
             const active=filter===f;
             const dot=f!=="All"?DIFF[f]?.dot:null;
             return(
-              <button key={f} onClick={()=>setFilter(f)} className="tap"
+              <button key={f} onClick={()=>changeFilter(f)} className="tap"
                 style={{background:active?"#111":"#fff",color:active?"#fff":"#6b7280",border:active?"1.5px solid #111":"1.5px solid #e5e5e5",borderRadius:999,padding:"7px 14px",fontSize:13,fontWeight:active?600:500,...F,whiteSpace:"nowrap",display:"flex",alignItems:"center",gap:5,flexShrink:0,boxShadow:active?"none":"0 1px 3px rgba(0,0,0,0.05)"}}>
                 {dot&&<span style={{width:6,height:6,borderRadius:999,background:active?"rgba(255,255,255,0.6)":dot,flexShrink:0}}/>}
                 {f}
@@ -758,7 +791,8 @@ export default function VibeLearn(){
           </span>
         </div>
 
-        {/* Topic list — with section dividers when showing All */}
+        {/* Topic list — keyed to filterKey so cards re-animate on filter change */}
+        <div key={filterKey}>
         {(()=>{
           const groups=filter==="All"
             ?[["Beginner",filtered.filter(t=>t.difficulty==="Beginner")],["Intermediate",filtered.filter(t=>t.difficulty==="Intermediate")],["Advanced",filtered.filter(t=>t.difficulty==="Advanced")]]
@@ -769,7 +803,7 @@ export default function VibeLearn(){
             const dd=DIFF[label]||DIFF.Beginner;
             const doneInGroup=topics.filter(t=>st.completed.includes(t.slug)).length;
             return(
-              <div key={label} style={{marginBottom:filter==="All"?28:0}}>
+              <div key={label} className="filter-fade" style={{marginBottom:filter==="All"?28:0,animationDelay:label==="Beginner"?"0s":label==="Intermediate"?"0.04s":"0.08s"}}>
                 {/* Section header — only in All view */}
                 {filter==="All"&&(
                   <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:10,paddingLeft:2}}>
@@ -785,19 +819,17 @@ export default function VibeLearn(){
                     const cm=CAT[t.category]||{color:"#6366f1",bg:"#eef2ff"};
                     const isDone=st.completed.includes(t.slug);
                     const isStarted=(st.started||[]).includes(t.slug)&&!isDone;
-                    const delay=Math.min(animIdx*0.018,0.22);
+                    const delay=Math.min(animIdx*0.055,0.6);
                     animIdx++;
                     return(
                       <div key={t.slug} onClick={()=>openTopic(t)} className="tap fu"
                         style={{animationDelay:`${delay}s`,background:"#fff",borderRadius:16,padding:"15px 16px",display:"flex",alignItems:"center",gap:13,border:"1px solid #ebebeb",boxShadow:"0 1px 4px rgba(0,0,0,0.04)"}}>
-                        {/* Icon / done state */}
                         <div style={{width:40,height:40,borderRadius:12,background:isDone?"#f0fdf4":cm.bg,border:isDone?"1.5px solid #bbf7d0":`1.5px solid ${cm.color}22`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
                           {isDone
                             ?<span style={{fontSize:16,color:"#22c55e",fontWeight:700}}>✓</span>
                             :<span style={{fontSize:20}}>{t.emoji}</span>}
                         </div>
                         <div style={{flex:1,minWidth:0}}>
-                          {/* Single metadata line: category chip + in-progress */}
                           <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:4}}>
                             <span style={{fontSize:11,color:cm.color,fontWeight:600,...F,background:cm.bg,borderRadius:999,padding:"2px 8px"}}>{t.category}</span>
                             {isStarted&&<span style={{fontSize:11,color:"#d97706",fontWeight:500,...F}}>· In progress</span>}
@@ -813,6 +845,7 @@ export default function VibeLearn(){
             );
           });
         })()}
+        </div>
 
         {/* Footer */}
         <div style={{marginTop:44,paddingTop:18,borderTop:"1px solid #ebebeb",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
