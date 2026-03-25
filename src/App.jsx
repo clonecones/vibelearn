@@ -734,12 +734,12 @@ export default function VibeLearn(){
       <div style={{background:"#fff",borderBottom:"1px solid #ebebeb",padding:"13px 20px",position:"sticky",top:0,zIndex:100}}>
         <div style={{maxWidth:680,margin:"0 auto",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
           <span style={{fontSize:17,fontWeight:700,color:"#111",letterSpacing:-0.3}}>Vibe<span style={{color:"#6366f1"}}>Learn</span></span>
-          {/* Score pill — now shows score + level */}
+          {/* Score pill — score + level */}
           <button onClick={()=>setShowScore(true)} className="tap"
-            style={{background:`${scoreColor}10`,border:`1.5px solid ${scoreColor}30`,borderRadius:12,padding:"5px 12px",cursor:"pointer",display:"flex",alignItems:"center",gap:6}}>
+            style={{background:`${scoreColor}10`,border:`1.5px solid ${scoreColor}35`,borderRadius:12,padding:"5px 12px",cursor:"pointer",display:"flex",alignItems:"center",gap:7}}>
             <span style={{fontSize:15,fontWeight:800,color:scoreColor,letterSpacing:-0.5,lineHeight:1}}>{score}</span>
-            <span style={{width:1,height:12,background:scoreColor,opacity:0.2,flexShrink:0}}/>
-            <span style={{fontSize:12,color:scoreColor,fontWeight:600,...F,opacity:0.85,lineHeight:1}}>{scoreLabel}</span>
+            <span style={{width:1,height:13,background:scoreColor,opacity:0.25,flexShrink:0}}/>
+            <span style={{fontSize:12,color:scoreColor,fontWeight:600,...F,lineHeight:1}}>{scoreLabel}</span>
           </button>
         </div>
       </div>
@@ -754,12 +754,12 @@ export default function VibeLearn(){
 
         {/* ── PROGRESS BAR ── */}
         <div className="fu" style={{marginBottom:26}}>
-          <div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline",marginBottom:6}}>
-            <span style={{fontSize:12,color:"#9ca3af",...F}}>{st.completed.length} of {TOPICS.length} completed</span>
-            <span style={{fontSize:12,color:"#9ca3af",...F}}>{pct}%</span>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline",marginBottom:8}}>
+            <span style={{fontSize:13,fontWeight:600,color:"#374151",...F}}>{st.completed.length} of {TOPICS.length} completed</span>
+            <span style={{fontSize:13,fontWeight:600,color:"#374151",...F}}>{pct}%</span>
           </div>
-          <div style={{background:"#ebebeb",borderRadius:999,height:5,overflow:"hidden"}}>
-            <div style={{background:"#6366f1",height:"100%",width:`${pct}%`,borderRadius:999,transition:"width 1s cubic-bezier(.4,0,.2,1)",minWidth:pct>0?5:0}}/>
+          <div style={{background:"#e5e5e5",borderRadius:999,height:8,overflow:"hidden"}}>
+            <div style={{background:"linear-gradient(90deg,#6366f1,#818cf8)",height:"100%",width:`${pct}%`,borderRadius:999,transition:"width 1s cubic-bezier(.4,0,.2,1)",minWidth:pct>0?8:0}}/>
           </div>
         </div>
 
@@ -768,32 +768,34 @@ export default function VibeLearn(){
           const cm=CAT[nextTopic.category]||{color:"#6366f1"};
           const dd=DIFF[nextTopic.difficulty]||DIFF.Beginner;
           const rt=getReadTime(nextTopic);
-          // Motivating subtitle based on score
           const ctaSub=score<25
-            ?"This gives you the foundation for everything else in the app."
+            ?"The foundation for everything else in this app."
             :score<50
-            ?"Build on what you know — this is your logical next step."
+            ?"Your logical next step."
             :nextTopic.short;
           return(
             <div className="fu" style={{marginBottom:32}}>
               <div onClick={()=>openTopic(nextTopic)} className="tap"
-                style={{background:"#111",borderRadius:20,overflow:"hidden",boxShadow:"0 6px 28px rgba(0,0,0,0.14)"}}>
-                <div style={{padding:"20px 20px 16px",display:"flex",alignItems:"flex-start",gap:13}}>
-                  <div style={{fontSize:32,flexShrink:0,lineHeight:1,marginTop:2}}>{nextTopic.emoji}</div>
+                style={{background:"#111",borderRadius:20,overflow:"hidden",boxShadow:"0 8px 32px rgba(0,0,0,0.18)",border:"1px solid #222"}}>
+                {/* Indigo accent line at top */}
+                <div style={{height:3,background:"linear-gradient(90deg,#6366f1,#818cf8)"}}/>
+                <div style={{padding:"20px 20px 18px",display:"flex",alignItems:"flex-start",gap:14}}>
+                  <div style={{fontSize:34,flexShrink:0,lineHeight:1,marginTop:1}}>{nextTopic.emoji}</div>
                   <div style={{flex:1,minWidth:0}}>
-                    <div style={{fontSize:10,color:"rgba(255,255,255,0.4)",fontWeight:700,letterSpacing:1.3,textTransform:"uppercase",marginBottom:5,...F}}>
+                    <div style={{fontSize:10,color:"rgba(255,255,255,0.35)",fontWeight:700,letterSpacing:1.4,textTransform:"uppercase",marginBottom:6,...F}}>
                       {st.diagnosticDone?"Based on your results · Up next":"Up next"}
                     </div>
-                    <div style={{fontSize:17,fontWeight:700,color:"#fff",lineHeight:1.25,marginBottom:5,letterSpacing:-0.3}}>{nextTopic.title}</div>
-                    <div style={{fontSize:13,color:"rgba(255,255,255,0.5)",lineHeight:1.55,...F}}>{ctaSub}</div>
+                    <div style={{fontSize:19,fontWeight:800,color:"#fff",lineHeight:1.2,marginBottom:6,letterSpacing:-0.4}}>{nextTopic.title}</div>
+                    <div style={{fontSize:13,color:"rgba(255,255,255,0.45)",lineHeight:1.5,...F}}>{ctaSub}</div>
                   </div>
                 </div>
-                <div style={{background:"rgba(255,255,255,0.06)",margin:"0 14px 14px",borderRadius:12,padding:"10px 14px",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
-                  <div style={{display:"flex",alignItems:"center",gap:5}}>
-                    <span style={{width:6,height:6,borderRadius:999,background:dd.dot}}/>
-                    <span style={{fontSize:12,color:"rgba(255,255,255,0.4)",...F}}>{nextTopic.difficulty} · {rt}</span>
+                {/* CTA strip — indigo button feel */}
+                <div style={{background:"#6366f1",margin:"0 14px 14px",borderRadius:12,padding:"13px 16px",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+                  <div style={{display:"flex",alignItems:"center",gap:6}}>
+                    <span style={{width:6,height:6,borderRadius:999,background:"rgba(255,255,255,0.5)"}}/>
+                    <span style={{fontSize:12,color:"rgba(255,255,255,0.7)",...F}}>{nextTopic.difficulty} · {rt}</span>
                   </div>
-                  <span style={{fontSize:13,fontWeight:600,color:"rgba(255,255,255,0.7)",...F}}>Start lesson →</span>
+                  <span style={{fontSize:14,fontWeight:700,color:"#fff",...F,letterSpacing:-0.1}}>Start lesson →</span>
                 </div>
               </div>
             </div>
