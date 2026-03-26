@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { Analytics } from '@vercel/analytics/react';
 
 if (!document.getElementById("vl-fonts")) {
   const l = document.createElement("link"); l.id="vl-fonts"; l.rel="stylesheet";
@@ -893,6 +894,7 @@ export default function VibeLearn(){
           <a href="https://www.linkedin.com/in/acook11/" target="_blank" rel="noopener noreferrer" style={{fontSize:12,color:"#b0b0b0",...F,textDecoration:"none"}}>About</a>
         </div>
       </div>
+      <Analytics />
     </div>
   );
 }
