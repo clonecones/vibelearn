@@ -775,6 +775,45 @@ export default function VibeLearn(){
           </div>
         </div>
 
+        {/* ── STARTER PATH — new users only ── */}
+        {st.completed.length === 0 && (() => {
+          const STARTER_SLUGS = ["llm","prompt","hallucination","ai-sycophancy","ai-governance"];
+          const starterTopics = STARTER_SLUGS.map(s => TOPICS.find(t => t.slug === s)).filter(Boolean);
+          return (
+            <div className="fu" style={{marginBottom:28,background:"#fff",borderRadius:20,border:"1px solid #ebebeb",overflow:"hidden",boxShadow:"0 2px 12px rgba(0,0,0,0.05)"}}>
+              <div style={{background:"linear-gradient(135deg,#6366f1,#818cf8)",padding:"16px 20px 14px"}}>
+                <div style={{fontSize:10,color:"rgba(255,255,255,0.6)",fontWeight:700,letterSpacing:1.4,textTransform:"uppercase",marginBottom:4,...F}}>Recommended start</div>
+                <div style={{fontSize:17,fontWeight:700,color:"#fff",letterSpacing:-0.3,...F}}>AI Essentials — 20 min</div>
+                <div style={{fontSize:12,color:"rgba(255,255,255,0.55)",marginTop:2,...F}}>5 topics · no account needed</div>
+              </div>
+              <div style={{padding:"12px 14px 6px"}}>
+                {starterTopics.map((t, i) => {
+                  const cm = CAT[t.category] || {color:"#6366f1",bg:"#eef2ff"};
+                  return (
+                    <div key={t.slug} onClick={() => openTopic(t)} className="tap"
+                      style={{display:"flex",alignItems:"center",gap:11,padding:"10px 6px",borderBottom:i < starterTopics.length-1?"1px solid #f3f3f3":"none",cursor:"pointer"}}>
+                      <div style={{width:32,height:32,borderRadius:10,background:cm.bg,border:`1.5px solid ${cm.color}22`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,fontSize:16}}>
+                        {t.emoji}
+                      </div>
+                      <div style={{flex:1,minWidth:0}}>
+                        <div style={{fontSize:14,fontWeight:600,color:"#111",letterSpacing:-0.1,...F}}>{t.title}</div>
+                        <div style={{fontSize:11,color:"#b0b0b0",...F}}>{getReadTime(t)}</div>
+                      </div>
+                      <span style={{color:"#d4d4d4",fontSize:16,flexShrink:0}}>›</span>
+                    </div>
+                  );
+                })}
+              </div>
+              <div style={{padding:"10px 20px 14px"}}>
+                <button onClick={() => openTopic(starterTopics[0])} className="tap"
+                  style={{background:"#111",color:"#fff",border:"none",borderRadius:12,padding:"12px 20px",fontSize:14,fontWeight:600,...F,width:"100%",letterSpacing:-0.1}}>
+                  Start: {starterTopics[0]?.title} →
+                </button>
+              </div>
+            </div>
+          );
+        })()}
+
         {/* ── NEXT LESSON CTA ── */}
         {st.completed.length<TOPICS.length&&nextTopic&&(()=>{
           const cm=CAT[nextTopic.category]||{color:"#6366f1"};
