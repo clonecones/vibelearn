@@ -5,8 +5,8 @@ const D = {
   wrap: {width:"100%",fontFamily:"Inter,sans-serif"},
   title: {fontSize:16,fontWeight:800,color:"#111827",textAlign:"center",marginBottom:4,fontFamily:"'Playfair Display',serif"},
   sub: {fontSize:14,color:"#4b5563",textAlign:"center",marginBottom:16,lineHeight:1.5},
-  row: {display:"flex",gap:8,marginBottom:8},
-  col: {flex:1,minWidth:0},
+  row: {display:"flex",gap:8,marginBottom:8,flexWrap:"wrap"},
+  col: {flex:"1 1 140px",minWidth:0},
   pill: (color,bg)=>({display:"inline-flex",alignItems:"center",justifyContent:"center",background:bg,color,borderRadius:999,padding:"5px 14px",fontSize:13,fontWeight:700}),
   card: (bg,border)=>({background:bg,border:`1.5px solid ${border}`,borderRadius:12,padding:"12px 14px"}),
   label: (color,bg)=>({display:"inline-block",background:bg,color,borderRadius:6,padding:"3px 10px",fontSize:13,fontWeight:700,marginBottom:6,letterSpacing:0.5}),
@@ -108,10 +108,10 @@ const Diagrams = {
     <div style={D.wrap}>
       <div style={D.title}>How RAG Works</div>
       <div style={D.sub}>AI looks things up before answering</div>
-      <div style={{display:"flex",gap:6,marginBottom:12,alignItems:"center"}}>
+      <div style={{display:"flex",gap:6,marginBottom:12,alignItems:"center",flexWrap:"wrap"}}>
         {[{label:"RETRIEVE",sub:"Search docs",color:"#059669",bg:"#ecfdf5"},{label:"AUGMENT",sub:"Add to prompt",color:"#6366f1",bg:"#eef2ff"},{label:"GENERATE",sub:"AI answers",color:"#db2777",bg:"#fdf2f8"}].map((s,i)=>(
           <React.Fragment key={i}>
-            <div style={{flex:1,background:s.bg,border:`1.5px solid ${s.color}`,borderRadius:10,padding:"10px 6px",textAlign:"center"}}>
+            <div style={{flex:"1 1 80px",background:s.bg,border:`1.5px solid ${s.color}`,borderRadius:10,padding:"10px 6px",textAlign:"center"}}>
               <div style={{fontSize:13,fontWeight:800,color:s.color,letterSpacing:0.5}}>{s.label}</div>
               <div style={{fontSize:13,color:"#6b7280",marginTop:2}}>{s.sub}</div>
             </div>
@@ -139,10 +139,10 @@ const Diagrams = {
   agent: () => (
     <div style={D.wrap}>
       <div style={D.title}>The Agent Loop</div>
-      <div style={{display:"flex",gap:6,marginBottom:12,alignItems:"center"}}>
+      <div style={{display:"flex",gap:6,marginBottom:12,alignItems:"center",flexWrap:"wrap"}}>
         {[{label:"GOAL",color:"#d97706",bg:"#fffbeb"},{label:"PLAN",color:"#6366f1",bg:"#eef2ff"},{label:"ACT",color:"#059669",bg:"#ecfdf5"},{label:"CHECK",color:"#db2777",bg:"#fdf2f8"}].map((s,i)=>(
           <React.Fragment key={i}>
-            <div style={{flex:1,background:s.bg,border:`1.5px solid ${s.color}`,borderRadius:10,padding:"10px 4px",textAlign:"center"}}>
+            <div style={{flex:"1 1 55px",background:s.bg,border:`1.5px solid ${s.color}`,borderRadius:10,padding:"10px 4px",textAlign:"center"}}>
               <div style={{fontSize:13,fontWeight:800,color:s.color}}>{s.label}</div>
             </div>
             {i<3&&<div style={{color:"#9ca3af",fontSize:16,flexShrink:0}}>›</div>}
@@ -436,7 +436,7 @@ const Diagrams = {
         {label:"CONSTRAINT",example:"Do not mention wavelengths or electromagnetic radiation.",color:"#d97706",bg:"#fffbeb"},
       ].map((item,i)=>(
         <div key={i} style={{display:"flex",gap:0,marginBottom:8,borderRadius:10,overflow:"hidden",border:`1.5px solid ${item.color}`}}>
-          <div style={{background:item.color,color:"#fff",fontWeight:800,fontSize:13,padding:"12px 10px",display:"flex",alignItems:"center",justifyContent:"center",width:90,flexShrink:0,letterSpacing:0.5}}>{item.label}</div>
+          <div style={{background:item.color,color:"#fff",fontWeight:800,fontSize:13,padding:"12px 10px",display:"flex",alignItems:"center",justifyContent:"center",width:80,minWidth:60,flexShrink:0,letterSpacing:0.5}}>{item.label}</div>
           <div style={{background:item.bg,padding:"12px 14px",fontSize:14,color:"#374151",lineHeight:1.5,flex:1}}>{item.example}</div>
         </div>
       ))}
@@ -490,14 +490,14 @@ const Diagrams = {
     <div style={D.wrap}>
       <div style={D.title}>How an API Call Works</div>
       <div style={D.sub}>What happens when you use an AI-powered product</div>
-      <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:12}}>
+      <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:12,flexWrap:"wrap"}}>
         {[
           {label:"YOUR APP",sub:"ChatGPT, Notion...",color:"#6366f1",bg:"#eef2ff"},
           {label:"API",sub:"routes traffic",color:"#fff",bg:"#6366f1"},
           {label:"LLM MODEL",sub:"Claude, GPT-4",color:"#059669",bg:"#ecfdf5"},
         ].map((item,i)=>(
           <React.Fragment key={i}>
-            <div style={{flex:1,...D.card(item.bg,item.color),textAlign:"center",padding:"10px 6px"}}>
+            <div style={{flex:"1 1 80px",...D.card(item.bg,item.color),textAlign:"center",padding:"10px 6px"}}>
               <div style={{fontSize:13,fontWeight:700,color:item.color==="#fff"?"#fff":item.color}}>{item.label}</div>
               <div style={{fontSize:13,color:item.color==="#fff"?"#c7d2fe":"#6b7280"}}>{item.sub}</div>
             </div>
