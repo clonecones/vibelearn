@@ -627,7 +627,7 @@ function LessonView({topic,appState,persist,onBack,onNext}){
                   <div style={{display:"flex",flexDirection:"column",gap:8,width:"100%"}}>
                     {nextUp&&(
                       <button onClick={()=>onNext(nextUp)} className="tap"
-                        style={{background:"#6366f1",color:"#fff",border:"none",borderRadius:12,padding:"13px 16px",fontSize:14,fontWeight:600,...F,width:"100%"}}>
+                        style={{background:"linear-gradient(135deg,#6366f1,#4f46e5)",color:"#fff",border:"none",borderRadius:12,padding:"14px 16px",fontSize:15,fontWeight:700,...F,width:"100%",boxShadow:"0 4px 16px rgba(99,102,241,0.4)",letterSpacing:-0.2}}>
                         Next: {nextUp.title} →
                       </button>
                     )}
@@ -876,24 +876,21 @@ export default function VibeLearn(){
           return(
             <div className="fu" style={{marginBottom:32}}>
               <div onClick={()=>openTopic(nextTopic)} className="tap"
-                style={{background:"#111",borderRadius:20,overflow:"hidden",boxShadow:"0 8px 32px rgba(0,0,0,0.18)",border:"1px solid #222"}}>
-                {/* Indigo accent line at top */}
-                <div style={{height:3,background:"linear-gradient(90deg,#6366f1,#818cf8)"}}/>
+                style={{background:"linear-gradient(135deg,#6366f1,#4f46e5)",borderRadius:20,overflow:"hidden",boxShadow:"0 8px 32px rgba(99,102,241,0.35)",border:"none",cursor:"pointer"}}>
                 <div style={{padding:"20px 20px 18px",display:"flex",alignItems:"flex-start",gap:14}}>
                   <div style={{fontSize:34,flexShrink:0,lineHeight:1,marginTop:1}}>{nextTopic.emoji}</div>
                   <div style={{flex:1,minWidth:0}}>
-                    <div style={{fontSize:10,color:"rgba(255,255,255,0.35)",fontWeight:700,letterSpacing:1.4,textTransform:"uppercase",marginBottom:6,...F}}>
+                    <div style={{fontSize:10,color:"rgba(255,255,255,0.6)",fontWeight:700,letterSpacing:1.4,textTransform:"uppercase",marginBottom:6,...F}}>
                       {st.diagnosticDone?"Based on your results · Up next":"Up next"}
                     </div>
                     <div style={{fontSize:19,fontWeight:800,color:"#fff",lineHeight:1.2,marginBottom:6,letterSpacing:-0.4}}>{nextTopic.title}</div>
-                    <div style={{fontSize:13,color:"rgba(255,255,255,0.45)",lineHeight:1.5,...F}}>{ctaSub}</div>
+                    <div style={{fontSize:13,color:"rgba(255,255,255,0.65)",lineHeight:1.5,...F}}>{ctaSub}</div>
                   </div>
                 </div>
-                {/* CTA strip — indigo button feel */}
-                <div style={{background:"#6366f1",margin:"0 14px 14px",borderRadius:12,padding:"13px 16px",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+                <div style={{background:"rgba(0,0,0,0.18)",margin:"0 14px 14px",borderRadius:12,padding:"13px 16px",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
                   <div style={{display:"flex",alignItems:"center",gap:6}}>
-                    <span style={{width:6,height:6,borderRadius:999,background:"rgba(255,255,255,0.5)"}}/>
-                    <span style={{fontSize:12,color:"rgba(255,255,255,0.7)",...F}}>{nextTopic.difficulty} · {rt}</span>
+                    <span style={{width:6,height:6,borderRadius:999,background:"rgba(255,255,255,0.6)"}}/>
+                    <span style={{fontSize:12,color:"rgba(255,255,255,0.75)",...F}}>{nextTopic.difficulty} · {rt}</span>
                   </div>
                   <span style={{fontSize:14,fontWeight:700,color:"#fff",...F,letterSpacing:-0.1}}>Start lesson →</span>
                 </div>
