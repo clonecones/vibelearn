@@ -218,8 +218,17 @@ function DiagnosticQuiz({onComplete,onExit}){
   const[answers,setAnswers]=useState([]);
   const[selected,setSelected]=useState(null);
   const[answered,setAnswered]=useState(false);
-  const q=DIAGNOSTIC[idx];
-  const isLast=idx===DIAGNOSTIC.length-1;
+
+  // Shuffle all diagnostic options once on mount
+  const shuffledDiagnostic=useState(()=>
+    DIAGNOSTIC.map(q=>{
+      const idxs=[0,1,2,3].sort(()=>Math.random()-0.5);
+      return{...q,opts:idxs.map(i=>q.opts[i]),answer:idxs.indexOf(q.answer)};
+    })
+  )[0];
+
+  const q=shuffledDiagnostic[idx];
+  const isLast=idx===shuffledDiagnostic.length-1;
 
   function pick(i){if(answered)return;setSelected(i);setAnswered(true);}
   function next(){
@@ -379,10 +388,20 @@ function LessonView({topic,appState,persist,onBack,onNext}){
   const[whyText,setWhyText]=useState("");
   const[whyLoad,setWhyLoad]=useState(false);
 
+  // Build shuffled quiz once per topic — stable, seeded by topic slug
+  const shuffledQuiz = useState(()=>
+    topic.quiz.map(q=>{
+      const idxs=[0,1,2,3].sort(()=>Math.random()-0.5);
+      const shuffledOpts=idxs.map(i=>q.opts[i]);
+      const shuffledAnswer=idxs.indexOf(q.answer);
+      return{...q,opts:shuffledOpts,answer:shuffledAnswer,_origOpts:q.opts,_origAnswer:q.answer};
+    })
+  )[0];
+
   const cm=CAT[topic.category]||{color:"#6366f1",bg:"#eef2ff"};
   const dd=DIFF[topic.difficulty]||DIFF.Beginner;
   const step=topic.steps[stepIdx];
-  const q=topic.quiz[quizIdx];
+  const q=shuffledQuiz[quizIdx];
   const done=appState.completed.includes(topic.slug);
   const fs=Math.min(score,topic.quiz.length);
 
