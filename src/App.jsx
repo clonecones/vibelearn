@@ -362,7 +362,7 @@ function ScoreModal({score,completed,onClose}){
   );
 }
 
-function LessonView({topic,appState,persist,onBack}){
+function LessonView({topic,appState,persist,onBack,onNext}){
   const[phase,setPhase]=useState("steps");
   const[stepIdx,setStepIdx]=useState(0);
   const[stepDir,setStepDir]=useState("fwd");
@@ -601,12 +601,26 @@ function LessonView({topic,appState,persist,onBack}){
               <div style={{fontSize:28,marginBottom:8}}>✓</div>
               <div style={{fontSize:20,fontWeight:700,color:"#fff",marginBottom:4,letterSpacing:-0.3}}>{done?"Already done":"Topic complete"}</div>
               <p style={{fontSize:13,color:"rgba(255,255,255,0.4)",marginBottom:18,...F}}>{fs}/{topic.quiz.length} correct</p>
-              <div style={{display:"flex",gap:7,justifyContent:"center",flexWrap:"wrap"}}>
-                <button onClick={()=>{const text=`Just finished "${topic.title}" on VibeLearn \uD83E\uDDE0 vibelearn-pi.vercel.app`;if(navigator.share)navigator.share({text});else navigator.clipboard?.writeText(text).then(()=>toast("Copied \u2713"));}} className="tap"
-                  style={{background:"rgba(255,255,255,0.08)",color:"rgba(255,255,255,0.7)",border:"1px solid rgba(255,255,255,0.12)",borderRadius:10,padding:"9px 16px",fontSize:13,fontWeight:500,...F}}>Share</button>
-                <button onClick={onBack} className="tap"
-                  style={{background:"rgba(255,255,255,0.08)",color:"rgba(255,255,255,0.7)",border:"1px solid rgba(255,255,255,0.12)",borderRadius:10,padding:"9px 16px",fontSize:13,fontWeight:500,...F}}>All topics</button>
-              </div>
+              {(()=>{
+                const currentIdx=TOPICS.findIndex(t=>t.slug===topic.slug);
+                const nextUp=TOPICS[currentIdx+1];
+                return(
+                  <div style={{display:"flex",flexDirection:"column",gap:8,width:"100%"}}>
+                    {nextUp&&(
+                      <button onClick={()=>onNext(nextUp)} className="tap"
+                        style={{background:"#6366f1",color:"#fff",border:"none",borderRadius:12,padding:"13px 16px",fontSize:14,fontWeight:600,...F,width:"100%"}}>
+                        Next: {nextUp.title} →
+                      </button>
+                    )}
+                    <div style={{display:"flex",gap:7,justifyContent:"center"}}>
+                      <button onClick={()=>{const text=`Just finished "${topic.title}" on VibeLearn 🧠 vibelearn-pi.vercel.app`;if(navigator.share)navigator.share({text});else navigator.clipboard?.writeText(text).then(()=>toast("Copied ✓"));}} className="tap"
+                        style={{background:"rgba(255,255,255,0.08)",color:"rgba(255,255,255,0.7)",border:"1px solid rgba(255,255,255,0.12)",borderRadius:10,padding:"9px 16px",fontSize:13,fontWeight:500,...F}}>Share</button>
+                      <button onClick={onBack} className="tap"
+                        style={{background:"rgba(255,255,255,0.08)",color:"rgba(255,255,255,0.7)",border:"1px solid rgba(255,255,255,0.12)",borderRadius:10,padding:"9px 16px",fontSize:13,fontWeight:500,...F}}>All topics</button>
+                    </div>
+                  </div>
+                );
+              })()}
             </div>
             <div style={{background:"#fff",borderRadius:20,padding:"20px 18px",border:"1px solid #ebebeb"}}>
               <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:5}}>
@@ -645,6 +659,7 @@ export default function VibeLearn(){
   const[filter,setFilter]=useState("All");
   const[filterKey,setFilterKey]=useState(0);
   const[navDir,setNavDir]=useState("forward");
+  const[showAllTopics,setShowAllTopics]=useState(false);
 
   useEffect(()=>{loadState().then(s=>{setSt(s||defaultState());setReady(true);});},[]);
   const persist=useCallback((s)=>{setSt(s);saveState(s);},[]);
@@ -699,7 +714,7 @@ export default function VibeLearn(){
   if(view==="topic"&&topic){
     return(
       <div className={navDir==="forward"?"slide-in":"slide-back"} key={topic.slug}>
-        <LessonView topic={topic} appState={st} persist={persist} onBack={goBack}/>
+        <LessonView topic={topic} appState={st} persist={persist} onBack={goBack} onNext={(t)=>openTopic(t)}/>
       </div>
     );
   }
@@ -720,14 +735,14 @@ export default function VibeLearn(){
         <div style={{maxWidth:480,margin:"0 auto",padding:"64px 24px"}}>
           <div className="fu" style={{textAlign:"center"}}>
             <div style={{fontSize:48,marginBottom:22}}>🧠</div>
-            <h1 style={{fontSize:30,fontWeight:800,color:"#111",lineHeight:1.15,marginBottom:10,letterSpacing:-0.8}}>AI literacy<br/>for everyone.</h1>
-            <p style={{fontSize:16,color:"#6b7280",marginBottom:36,lineHeight:1.65,...F}}>10 questions. 2 minutes.<br/>A personalized path through AI.</p>
+            <h1 style={{fontSize:30,fontWeight:800,color:"#111",lineHeight:1.15,marginBottom:10,letterSpacing:-0.8}}>10 questions. 2 minutes.<br/>A personalized path through AI.</h1>
+            <p style={{fontSize:16,color:"#6b7280",marginBottom:36,lineHeight:1.65,...F}}>27 topics covering foundations, skills, agents, and governance. Free. No account.</p>
             <button onClick={()=>setView("diagnostic")} className="tap"
               style={{background:"#111",color:"#fff",border:"none",borderRadius:16,padding:"17px 28px",fontSize:16,fontWeight:600,...F,width:"100%",marginBottom:12,letterSpacing:-0.2}}>
               Take the diagnostic →
             </button>
             <button onClick={()=>persist({...st,seenIntro:true,diagnosticDone:true})} style={{background:"none",border:"none",color:"#9ca3af",fontSize:14,...F,cursor:"pointer"}}>
-              Skip, browse topics
+              Just browse topics
             </button>
           </div>
         </div>
@@ -864,66 +879,107 @@ export default function VibeLearn(){
           </div>
         )}
 
-        {/* ── TOPIC LIST — no filter chips, section headers only ── */}
-        <div key={filterKey}>
-        {(()=>{
-          const groups=[
-            ["Beginner",  TOPICS.filter(t=>t.difficulty==="Beginner")],
-            ["Intermediate",TOPICS.filter(t=>t.difficulty==="Intermediate")],
-            ["Advanced",  TOPICS.filter(t=>t.difficulty==="Advanced")],
-          ];
-          let animIdx=0;
-          return groups.map(([label,topics])=>{
-            if(!topics.length)return null;
-            const dd=DIFF[label]||DIFF.Beginner;
-            const doneInGroup=topics.filter(t=>st.completed.includes(t.slug)).length;
-            return(
-              <div key={label} className="filter-fade" style={{marginBottom:28,animationDelay:label==="Beginner"?"0s":label==="Intermediate"?"0.05s":"0.1s"}}>
-                {/* Section header */}
-                <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:10,paddingLeft:2}}>
-                  <div style={{display:"flex",alignItems:"center",gap:7}}>
-                    <span style={{width:8,height:8,borderRadius:999,background:dd.dot,flexShrink:0}}/>
-                    <span style={{fontSize:13,fontWeight:700,color:"#374151",...F}}>{label}</span>
-                  </div>
-                  <span style={{fontSize:12,color:"#b0b0b0",...F}}>{doneInGroup} of {topics.length} completed</span>
-                </div>
-                <div style={{display:"flex",flexDirection:"column",gap:8}}>
-                  {topics.map((t)=>{
-                    const cm=CAT[t.category]||{color:"#6366f1",bg:"#eef2ff"};
-                    const isDone=st.completed.includes(t.slug);
-                    const isStarted=(st.started||[]).includes(t.slug)&&!isDone;
-                    const rt=getReadTime(t);
-                    const delay=Math.min(animIdx*0.055,0.6);
-                    animIdx++;
+        {/* ── TOPIC LIST ── */}
+        {st.completed.length===0?(
+          // NEW USER — collapsed browse, triggered by toggle
+          <div className="fu">
+            <button onClick={()=>setShowAllTopics(v=>!v)} className="tap"
+              style={{width:"100%",background:"none",border:"1.5px solid #e5e5e5",borderRadius:14,padding:"13px 18px",fontSize:14,fontWeight:600,color:"#6b7280",...F,display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom: showAllTopics?16:0}}>
+              <span>Browse all {TOPICS.length} topics</span>
+              <span style={{fontSize:18,color:"#d4d4d4",transition:"transform 0.2s",display:"inline-block",transform:showAllTopics?"rotate(90deg)":"rotate(0deg)"}}>›</span>
+            </button>
+            {showAllTopics&&(
+              <div key="browse" className="filter-fade">
+                {(()=>{
+                  const groups=[
+                    ["Beginner",TOPICS.filter(t=>t.difficulty==="Beginner")],
+                    ["Intermediate",TOPICS.filter(t=>t.difficulty==="Intermediate")],
+                    ["Advanced",TOPICS.filter(t=>t.difficulty==="Advanced")],
+                  ];
+                  return groups.map(([label,topics])=>{
+                    if(!topics.length)return null;
+                    const dd=DIFF[label]||DIFF.Beginner;
                     return(
-                      <div key={t.slug} onClick={()=>openTopic(t)} className="tap fu"
-                        style={{animationDelay:`${delay}s`,background:isDone?"#f9fdf9":"#fff",borderRadius:16,padding:"15px 16px",display:"flex",alignItems:"center",gap:13,border:isDone?"1px solid #d1fae5":"1px solid #ebebeb",boxShadow:"0 1px 4px rgba(0,0,0,0.04)"}}>
-                        {/* Icon — no strikethrough, green tint bg when done */}
-                        <div style={{width:40,height:40,borderRadius:12,background:isDone?"#dcfce7":cm.bg,border:isDone?"1.5px solid #86efac":`1.5px solid ${cm.color}22`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
-                          {isDone
-                            ?<span style={{fontSize:17,color:"#16a34a",fontWeight:700}}>✓</span>
-                            :<span style={{fontSize:20}}>{t.emoji}</span>}
+                      <div key={label} style={{marginBottom:22}}>
+                        <div style={{display:"flex",alignItems:"center",gap:7,marginBottom:10,paddingLeft:2}}>
+                          <span style={{width:7,height:7,borderRadius:999,background:dd.dot,flexShrink:0}}/>
+                          <span style={{fontSize:13,fontWeight:700,color:"#374151",...F}}>{label}</span>
                         </div>
-                        <div style={{flex:1,minWidth:0}}>
-                          <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:4,flexWrap:"wrap"}}>
-                            <span style={{fontSize:11,color:cm.color,fontWeight:600,...F,background:cm.bg,borderRadius:999,padding:"2px 8px"}}>{t.category}</span>
-                            {isDone&&<span style={{fontSize:11,color:"#16a34a",fontWeight:600,...F}}>Completed</span>}
-                            {isStarted&&<span style={{fontSize:11,color:"#d97706",fontWeight:500,...F}}>In progress</span>}
-                          </div>
-                          {/* Full readable title — no strikethrough */}
-                          <div style={{fontSize:15,fontWeight:600,color:isDone?"#374151":"#111",letterSpacing:-0.2,lineHeight:1.3,...F}}>{t.title}</div>
-                          <div style={{fontSize:12,color:"#b0b0b0",marginTop:3,...F}}>{rt}</div>
+                        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
+                          {topics.map((t)=>{
+                            const cm=CAT[t.category]||{color:"#6366f1",bg:"#eef2ff"};
+                            return(
+                              <div key={t.slug} onClick={()=>openTopic(t)} className="tap"
+                                style={{background:"#fff",borderRadius:14,padding:"13px 12px",border:"1px solid #ebebeb",boxShadow:"0 1px 3px rgba(0,0,0,0.04)",cursor:"pointer"}}>
+                                <div style={{fontSize:20,marginBottom:6}}>{t.emoji}</div>
+                                <div style={{fontSize:13,fontWeight:600,color:"#111",lineHeight:1.3,marginBottom:4,...F}}>{t.title}</div>
+                                <div style={{display:"flex",alignItems:"center",gap:5}}>
+                                  <span style={{fontSize:11,color:cm.color,fontWeight:600,...F,background:cm.bg,borderRadius:999,padding:"2px 7px"}}>{t.category}</span>
+                                </div>
+                              </div>
+                            );
+                          })}
                         </div>
-                        <span style={{color:"#d4d4d4",fontSize:18,flexShrink:0}}>›</span>
                       </div>
                     );
-                  })}
-                </div>
+                  });
+                })()}
               </div>
-            );
-          });
-        })()}
-        </div>
+            )}
+          </div>
+        ):(
+          // RETURNING USER — compact 2-col grid
+          <div key={filterKey}>
+          {(()=>{
+            const groups=[
+              ["Beginner",TOPICS.filter(t=>t.difficulty==="Beginner")],
+              ["Intermediate",TOPICS.filter(t=>t.difficulty==="Intermediate")],
+              ["Advanced",TOPICS.filter(t=>t.difficulty==="Advanced")],
+            ];
+            return groups.map(([label,topics])=>{
+              if(!topics.length)return null;
+              const dd=DIFF[label]||DIFF.Beginner;
+              const doneInGroup=topics.filter(t=>st.completed.includes(t.slug)).length;
+              return(
+                <div key={label} className="filter-fade" style={{marginBottom:24}}>
+                  <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:10,paddingLeft:2}}>
+                    <div style={{display:"flex",alignItems:"center",gap:7}}>
+                      <span style={{width:7,height:7,borderRadius:999,background:dd.dot,flexShrink:0}}/>
+                      <span style={{fontSize:13,fontWeight:700,color:"#374151",...F}}>{label}</span>
+                    </div>
+                    <span style={{fontSize:12,color:"#b0b0b0",...F}}>{doneInGroup}/{topics.length}</span>
+                  </div>
+                  <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
+                    {topics.map((t)=>{
+                      const cm=CAT[t.category]||{color:"#6366f1",bg:"#eef2ff"};
+                      const isDone=st.completed.includes(t.slug);
+                      const isStarted=(st.started||[]).includes(t.slug)&&!isDone;
+                      return(
+                        <div key={t.slug} onClick={()=>openTopic(t)} className="tap"
+                          style={{background:isDone?"#f9fdf9":"#fff",borderRadius:14,padding:"13px 12px",border:isDone?"1px solid #d1fae5":"1px solid #ebebeb",boxShadow:"0 1px 3px rgba(0,0,0,0.04)",cursor:"pointer",position:"relative"}}>
+                          {isDone&&(
+                            <div style={{position:"absolute",top:9,right:9,width:18,height:18,borderRadius:999,background:"#22c55e",display:"flex",alignItems:"center",justifyContent:"center"}}>
+                              <span style={{fontSize:10,color:"#fff",fontWeight:700,lineHeight:1}}>✓</span>
+                            </div>
+                          )}
+                          {isStarted&&(
+                            <div style={{position:"absolute",top:9,right:9,width:7,height:7,borderRadius:999,background:"#f59e0b"}}/>
+                          )}
+                          <div style={{fontSize:20,marginBottom:6}}>{t.emoji}</div>
+                          <div style={{fontSize:13,fontWeight:600,color:isDone?"#6b7280":"#111",lineHeight:1.3,marginBottom:5,...F}}>{t.title}</div>
+                          <div style={{display:"flex",alignItems:"center",gap:5,flexWrap:"wrap"}}>
+                            <span style={{fontSize:11,color:cm.color,fontWeight:600,...F,background:cm.bg,borderRadius:999,padding:"2px 7px"}}>{t.category}</span>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            });
+          })()}
+          </div>
+        )}
 
         {/* ── FOOTER ── */}
         <div style={{marginTop:32,paddingTop:16,borderTop:"1px solid #ebebeb",display:"flex",alignItems:"center",justifyContent:"center",gap:12}}>
@@ -931,7 +987,7 @@ export default function VibeLearn(){
             {st.diagnosticDone?"Retake diagnostic →":"Take the diagnostic →"}
           </button>
           <span style={{color:"#e5e5e5",fontSize:11}}>·</span>
-          <a href="https://www.linkedin.com/in/acook11/" target="_blank" rel="noopener noreferrer" style={{fontSize:12,color:"#b0b0b0",...F,textDecoration:"none"}}>About</a>
+          <a href="https://www.linkedin.com/in/acook11/" target="_blank" rel="noopener noreferrer" style={{fontSize:12,color:"#b0b0b0",...F,textDecoration:"none"}}>Built by Andy Cook</a>
         </div>
       </div>
     </div>
