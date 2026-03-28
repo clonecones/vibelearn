@@ -792,41 +792,54 @@ export default function VibeLearn(){
         </div>
         )}
 
-        {/* ── STARTER PATH — new users only ── */}
-        {st.completed.length === 0 && (() => {
+        {/* ── STARTER PATH — visible until all 5 completed ── */}
+        {(()=>{
           const STARTER_SLUGS = ["llm","prompt","hallucination","ai-sycophancy","ai-governance"];
           const starterTopics = STARTER_SLUGS.map(s => TOPICS.find(t => t.slug === s)).filter(Boolean);
+          const allStarterDone = starterTopics.every(t => st.completed.includes(t.slug));
+          if (allStarterDone) return null;
+          const doneCount = starterTopics.filter(t => st.completed.includes(t.slug)).length;
           return (
             <div className="fu" style={{marginBottom:28,background:"#fff",borderRadius:20,border:"1px solid #ebebeb",overflow:"hidden",boxShadow:"0 2px 12px rgba(0,0,0,0.05)"}}>
               <div style={{background:"linear-gradient(135deg,#6366f1,#818cf8)",padding:"16px 20px 14px"}}>
                 <div style={{fontSize:10,color:"rgba(255,255,255,0.6)",fontWeight:700,letterSpacing:1.4,textTransform:"uppercase",marginBottom:4,...F}}>Recommended start</div>
-                <div style={{fontSize:17,fontWeight:700,color:"#fff",letterSpacing:-0.3,...F}}>AI Essentials — 20 min</div>
+                <div style={{display:"flex",alignItems:"baseline",justifyContent:"space-between"}}>
+                  <div style={{fontSize:17,fontWeight:700,color:"#fff",letterSpacing:-0.3,...F}}>AI Essentials — 20 min</div>
+                  {doneCount > 0 && <div style={{fontSize:12,color:"rgba(255,255,255,0.7)",...F}}>{doneCount}/5 done</div>}
+                </div>
                 <div style={{fontSize:12,color:"rgba(255,255,255,0.55)",marginTop:2,...F}}>5 topics · no account needed</div>
               </div>
               <div style={{padding:"12px 14px 6px"}}>
                 {starterTopics.map((t, i) => {
                   const cm = CAT[t.category] || {color:"#6366f1",bg:"#eef2ff"};
+                  const isDone = st.completed.includes(t.slug);
                   return (
                     <div key={t.slug} onClick={() => openTopic(t)} className="tap"
-                      style={{display:"flex",alignItems:"center",gap:11,padding:"10px 6px",borderBottom:i < starterTopics.length-1?"1px solid #f3f3f3":"none",cursor:"pointer"}}>
-                      <div style={{width:32,height:32,borderRadius:10,background:cm.bg,border:`1.5px solid ${cm.color}22`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,fontSize:16}}>
-                        {t.emoji}
+                      style={{display:"flex",alignItems:"center",gap:11,padding:"10px 6px",borderBottom:i < starterTopics.length-1?"1px solid #f3f3f3":"none",cursor:"pointer",opacity:isDone?0.5:1}}>
+                      <div style={{width:32,height:32,borderRadius:10,background:isDone?"#dcfce7":cm.bg,border:isDone?"1.5px solid #86efac":`1.5px solid ${cm.color}22`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,fontSize:isDone?14:16}}>
+                        {isDone ? <span style={{color:"#16a34a",fontWeight:700}}>✓</span> : t.emoji}
                       </div>
                       <div style={{flex:1,minWidth:0}}>
-                        <div style={{fontSize:14,fontWeight:600,color:"#111",letterSpacing:-0.1,...F}}>{t.title}</div>
+                        <div style={{fontSize:14,fontWeight:600,letterSpacing:-0.1,...F,
+                          color:isDone?"#9ca3af":"#111",
+                          textDecoration:isDone?"line-through":"none"}}>{t.title}</div>
                         <div style={{fontSize:11,color:"#b0b0b0",...F}}>{getReadTime(t)}</div>
                       </div>
-                      <span style={{color:"#d4d4d4",fontSize:16,flexShrink:0}}>›</span>
+                      {isDone
+                        ? <span style={{color:"#22c55e",fontSize:14,flexShrink:0}}>✓</span>
+                        : <span style={{color:"#d4d4d4",fontSize:16,flexShrink:0}}>›</span>}
                     </div>
                   );
                 })}
               </div>
-              <div style={{padding:"10px 20px 14px"}}>
-                <button onClick={() => openTopic(starterTopics[0])} className="tap"
-                  style={{background:"#111",color:"#fff",border:"none",borderRadius:12,padding:"12px 20px",fontSize:14,fontWeight:600,...F,width:"100%",letterSpacing:-0.1}}>
-                  Start: {starterTopics[0]?.title} →
-                </button>
-              </div>
+              {doneCount === 0 && (
+                <div style={{padding:"10px 20px 14px"}}>
+                  <button onClick={() => openTopic(starterTopics[0])} className="tap"
+                    style={{background:"#111",color:"#fff",border:"none",borderRadius:12,padding:"12px 20px",fontSize:14,fontWeight:600,...F,width:"100%",letterSpacing:-0.1}}>
+                    Start: {starterTopics[0]?.title} →
+                  </button>
+                </div>
+              )}
             </div>
           );
         })()}
@@ -947,7 +960,7 @@ export default function VibeLearn(){
                       <span style={{width:7,height:7,borderRadius:999,background:dd.dot,flexShrink:0}}/>
                       <span style={{fontSize:13,fontWeight:700,color:"#374151",...F}}>{label}</span>
                     </div>
-                    <span style={{fontSize:12,color:"#b0b0b0",...F}}>{doneInGroup}/{topics.length}</span>
+                    <span style={{fontSize:12,color:"#b0b0b0",...F}}>{doneInGroup} of {topics.length}</span>
                   </div>
                   <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
                     {topics.map((t)=>{
@@ -969,6 +982,7 @@ export default function VibeLearn(){
                           <div style={{fontSize:13,fontWeight:600,color:isDone?"#6b7280":"#111",lineHeight:1.3,marginBottom:5,...F}}>{t.title}</div>
                           <div style={{display:"flex",alignItems:"center",gap:5,flexWrap:"wrap"}}>
                             <span style={{fontSize:11,color:cm.color,fontWeight:600,...F,background:cm.bg,borderRadius:999,padding:"2px 7px"}}>{t.category}</span>
+                            <span style={{fontSize:11,color:"#c0c0c0",...F}}>{getReadTime(t)}</span>
                           </div>
                         </div>
                       );
