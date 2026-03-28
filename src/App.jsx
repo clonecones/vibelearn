@@ -759,12 +759,13 @@ export default function VibeLearn(){
       <div style={{maxWidth:680,margin:"0 auto",padding:"22px 20px"}}>
 
         {/* ── INTERPRETATION BLOCK ── */}
-        <div className="fu" style={{marginBottom:20}}>
+        <div className="fu" style={{marginBottom:st.completed.length>0?20:14}}>
           <div style={{fontSize:17,fontWeight:700,color:"#111",letterSpacing:-0.3,marginBottom:3,...F}}>{interp.heading}</div>
           <div style={{fontSize:14,color:"#6b7280",lineHeight:1.6,...F}}>{interp.sub}</div>
         </div>
 
-        {/* ── PROGRESS BAR ── */}
+        {/* ── PROGRESS BAR — hidden until first completion ── */}
+        {st.completed.length>0&&(
         <div className="fu" style={{marginBottom:26}}>
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline",marginBottom:8}}>
             <span style={{fontSize:13,fontWeight:600,color:"#374151",...F}}>{st.completed.length} of {TOPICS.length} completed</span>
@@ -774,6 +775,7 @@ export default function VibeLearn(){
             <div style={{background:"linear-gradient(90deg,#6366f1,#818cf8)",height:"100%",width:`${pct}%`,borderRadius:999,transition:"width 1s cubic-bezier(.4,0,.2,1)",minWidth:pct>0?8:0}}/>
           </div>
         </div>
+        )}
 
         {/* ── STARTER PATH — new users only ── */}
         {st.completed.length === 0 && (() => {
@@ -815,7 +817,7 @@ export default function VibeLearn(){
         })()}
 
         {/* ── NEXT LESSON CTA ── */}
-        {st.completed.length<TOPICS.length&&nextTopic&&(()=>{
+        {st.completed.length>0&&st.completed.length<TOPICS.length&&nextTopic&&(()=>{
           const cm=CAT[nextTopic.category]||{color:"#6366f1"};
           const dd=DIFF[nextTopic.difficulty]||DIFF.Beginner;
           const rt=getReadTime(nextTopic);
